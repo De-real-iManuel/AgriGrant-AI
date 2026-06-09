@@ -393,30 +393,6 @@ AgriGrant-AI/
 
 ---
 
-## 🎤 Demo Script (Hackathon Presentation)
-
-### Opening (30 seconds)
-> *"Every year, Nigerian smallholder farmers miss out on billions of naira in agricultural grants — not because they don't qualify, but because the system is too complex to navigate. AgriGrant AI changes that."*
-
-### Live Demo (3 minutes)
-1. Open the web app / UiPath App
-2. Fill in the test farmer profile (use the JSON above)
-3. Show the instant API response — reference number generated, confirmation email sent
-4. Walk through the full AI pipeline: grant discovery → eligibility score → compliance flags → generated letter → submission instructions
-5. Open the confirmation email to show the formatted draft letter
-
-### Highlight Each Agent (1 minute each)
-- **Agent 1:** *"It searches the web in real-time — here are 5 matched grants for this farmer's profile in Rivers State"*
-- **Agent 2:** *"Score: 84/100 — Highly Eligible. BVN ✅, CAC ✅, Cooperative ✅ — zero hard disqualifiers"*
-- **Agent 3:** *"The uploaded bank statement and CAC certificate are cross-validated — names match, no inconsistencies detected"*
-- **Agent 4:** *"Here's the generated letter — formatted specifically for NIRSAL AGSMEIS, complete with the correct reference format and signatory block"*
-- **Agent 5:** *"Full submission package: portal URL, office address as backup, follow-up call schedule, and the email is already sent"*
-
-### Close (30 seconds)
-> *"What used to take 3–4 weeks of confusion and multiple trips to government offices now takes under 10 minutes. AgriGrant AI — making Nigeria's agricultural grants accessible to every farmer."*
-
----
-
 ## 📊 Judges' Evaluation Criteria
 
 ### Innovation & Use of UiPath Agentic Automation
@@ -444,4 +420,4 @@ AgriGrant-AI/
 
 ---
 
-*Built with ❤️ for Nigerian farmers | UiPath Agentic Automation Hackathon 2026*
+*Built with ❤️ for Nigerian farmers by REM Labs | UiPath Agentic Automation Hackathon 2026*
