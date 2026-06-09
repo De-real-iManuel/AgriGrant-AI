@@ -1,4 +1,4 @@
-# 🌾 AgroGrant AI
+# 🌾 AgriGrant AI
 
 > **AI-Powered Nigerian Agricultural Grant Discovery & Application System**
 
@@ -31,13 +31,13 @@ Nigerian smallholder farmers lose **millions in unclaimed agricultural grants** 
 - 🏢 They don't know WHERE or HOW to submit (online portals vs physical offices)
 - 📁 Document preparation is overwhelming (NIN, CAC certificate, bank statements, C of O, cooperative letters)
 
-> **AgroGrant AI reduces the grant application process from 3–4 weeks of confusion to under 10 minutes.**
+> **AgriGrant AI reduces the grant application process from 3–4 weeks of confusion to under 10 minutes.**
 
 ---
 
 ## ✅ The Solution
 
-AgroGrant AI is a **5-agent AI pipeline** built on UiPath Agentic Automation that:
+AgriGrant AI is a **5-agent AI pipeline** built on UiPath Agentic Automation that:
 
 1. **Discovers** matching Nigerian agricultural grants from the web for a farmer's specific profile
 2. **Scores** eligibility (0–100) against Nigerian compliance requirements — honestly, with hard disqualifiers
@@ -51,7 +51,7 @@ AgroGrant AI is a **5-agent AI pipeline** built on UiPath Agentic Automation tha
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    AgroGrant AI — System Architecture            │
+│                    AgriGrant AI — System Architecture            │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                  │
 │  FRONTEND LAYER                                                  │
@@ -222,7 +222,7 @@ END — Grant Package Delivered
 |-----------|-------|
 | Provider | SendGrid |
 | Endpoint | POST https://api.sendgrid.com/v3/mail/send |
-| From | noreply@agrograntai.com (AgroGrant AI) |
+| From | info@agrigrant.xyz (AgriGrant AI) |
 | Auth | Bearer token |
 | Success Code | 202 |
 
@@ -283,7 +283,7 @@ END — Grant Package Delivered
 ## 📁 Project Structure
 
 ```
-AgroGrant-AI/
+AgriGrant-AI/
 ├── Grant Discovery & Matching Agent/      # Agent 1 — UiPath Agentic
 ├── Eligibility & Risk Assessment Agent/   # Agent 2 — UiPath Agentic
 ├── Document Understanding Agent/          # Agent 3 — UiPath Agentic
@@ -311,7 +311,7 @@ AgroGrant-AI/
 
 ## 🚀 How It Works — Demo Flow
 
-1. Farmer opens the AgroGrant AI app (UiPath App or custom web app)
+1. Farmer opens the AgriGrant AI app (UiPath App or custom web app)
 2. Fills a multi-step form: personal details → farm profile → compliance checklist → document upload
 3. Clicks **"Submit My Application"**
 4. **Instant response:** App shows reference number + confirmation email sent
@@ -396,7 +396,7 @@ AgroGrant-AI/
 ## 🎤 Demo Script (Hackathon Presentation)
 
 ### Opening (30 seconds)
-> *"Every year, Nigerian smallholder farmers miss out on billions of naira in agricultural grants — not because they don't qualify, but because the system is too complex to navigate. AgroGrant AI changes that."*
+> *"Every year, Nigerian smallholder farmers miss out on billions of naira in agricultural grants — not because they don't qualify, but because the system is too complex to navigate. AgriGrant AI changes that."*
 
 ### Live Demo (3 minutes)
 1. Open the web app / UiPath App
@@ -413,7 +413,7 @@ AgroGrant-AI/
 - **Agent 5:** *"Full submission package: portal URL, office address as backup, follow-up call schedule, and the email is already sent"*
 
 ### Close (30 seconds)
-> *"What used to take 3–4 weeks of confusion and multiple trips to government offices now takes under 10 minutes. AgroGrant AI — making Nigeria's agricultural grants accessible to every farmer."*
+> *"What used to take 3–4 weeks of confusion and multiple trips to government offices now takes under 10 minutes. AgriGrant AI — making Nigeria's agricultural grants accessible to every farmer."*
 
 ---
 
