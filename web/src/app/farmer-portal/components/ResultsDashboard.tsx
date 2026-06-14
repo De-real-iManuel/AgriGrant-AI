@@ -3,7 +3,7 @@ import React from 'react';
 import {
   Download, Share2, RefreshCw, AlertTriangle,
   Trophy, TrendingUp, Lock, Sparkles, ArrowRight,
-  LayoutDashboard, CheckCircle2,
+  LayoutDashboard, CheckCircle2, ShieldCheck
 } from 'lucide-react';
 import { PipelineOutput } from './portalTypes';
 import GrantCard from './GrantCard';
@@ -15,55 +15,10 @@ interface Props {
   onGoToDashboard: () => void;
 }
 
-function FreemiumBanner({
-  hiddenCount,
-  onUpgrade,
-}: {
-  hiddenCount: number;
-  onUpgrade: () => void;
-}) {
-  return (
-    <div
-      className="rounded-2xl border-2 p-5 flex flex-col sm:flex-row sm:items-center gap-4"
-      style={{ borderColor: 'var(--accent)', backgroundColor: '#FFFBEB' }}
-    >
-      <div
-        className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-        style={{ backgroundColor: 'var(--accent)' }}
-      >
-        <Lock size={22} style={{ color: '#0F172A' }} />
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="font-bold text-sm" style={{ color: '#92400E' }}>
-          {hiddenCount} more grant{hiddenCount !== 1 ? 's' : ''} hidden — Free Plan
-        </p>
-        <p className="text-xs mt-0.5" style={{ color: '#B45309' }}>
-          You're on the Free plan. Upgrade to Pro to unlock all matches, rich AI proposal data, and multi-grant submissions.
-        </p>
-        <ul className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
-          {['Unlimited grant matches', 'AI-written proposals', 'Multi-grant submissions', 'Priority scoring'].map((f) => (
-            <li key={f} className="flex items-center gap-1.5 text-xs" style={{ color: '#92400E' }}>
-              <CheckCircle2 size={12} style={{ color: 'var(--primary)' }} />
-              {f}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <button
-        onClick={onUpgrade}
-        className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-sm whitespace-nowrap transition-all active:scale-95 flex-shrink-0"
-        style={{ backgroundColor: 'var(--accent)', color: '#0F172A' }}
-      >
-        <Sparkles size={15} />
-        Upgrade to Pro
-        <ArrowRight size={14} />
-      </button>
-    </div>
-  );
-}
+
 
 export default function ResultsDashboard({ output, onStartNew, onGoToDashboard }: Props) {
-  const { upgradeToPro, user } = useAuth();
+  const { user } = useAuth();
   const {
     matchedGrants = [],
     profileGaps = [],
@@ -75,16 +30,11 @@ export default function ResultsDashboard({ output, onStartNew, onGoToDashboard }
     stateOfResidence,
     error,
     hiddenGrantsCount = 0,
+    trustScore,
+    trustScoreBreakdown,
   } = output;
 
-  const isPro = user?.plan === 'pro';
   const sortedGrants = [...matchedGrants].sort((a, b) => b.matchScore - a.matchScore);
-
-  const handleUpgrade = () => {
-    upgradeToPro();
-    // After upgrading, prompt user to run the search again
-    onStartNew();
-  };
 
   return (
     <div className="w-full max-w-3xl mx-auto flex flex-col gap-8 pb-12">
@@ -113,15 +63,12 @@ export default function ResultsDashboard({ output, onStartNew, onGoToDashboard }
                 <Trophy size={12} />
                 {totalMatchesFound} Grant{totalMatchesFound !== 1 ? 's' : ''} Found
               </span>
-              {!isPro && (
-                <span
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold"
-                  style={{ backgroundColor: 'rgba(255,255,255,0.15)', color: '#FEF9C3' }}
-                >
-                  <Lock size={10} />
-                  Free — 1 shown
-                </span>
-              )}
+              <span
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold"
+                style={{ backgroundColor: 'rgba(255,255,255,0.15)', color: '#FEF9C3' }}
+              >
+                100% Free for Farmers
+              </span>
             </div>
           </div>
           <TrendingUp size={28} style={{ color: 'var(--accent)', flexShrink: 0 }} />
@@ -153,15 +100,50 @@ export default function ResultsDashboard({ output, onStartNew, onGoToDashboard }
         )}
       </section>
 
-      {/* ── Freemium gate banner ── */}
-      {!isPro && hiddenGrantsCount > 0 && (
-        <FreemiumBanner hiddenCount={hiddenGrantsCount} onUpgrade={handleUpgrade} />
+
+
+      {/* ── Trust Score Section ── */}
+      {trustScore !== undefined && (
+        <section
+          className="rounded-2xl p-5 sm:p-6"
+          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }}
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 rounded-xl" style={{ backgroundColor: '#DBEAFE', color: '#1D4ED8' }}>
+              <ShieldCheck size={24} />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold" style={{ color: 'var(--foreground)' }}>
+                B2B Trust Score: {trustScore}/100
+              </h2>
+              <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
+                Pre-verification score used by grantors to assess your credibility.
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex flex-col gap-2">
+            {trustScoreBreakdown?.map((item, idx) => (
+              <div key={idx} className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: 'var(--muted)' }}>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium" style={{ color: 'var(--foreground)' }}>{item.item}</span>
+                  <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: item.points > 0 ? '#DCFCE7' : '#FEE2E2', color: item.points > 0 ? '#166534' : '#991B1B' }}>
+                    {item.status}
+                  </span>
+                </div>
+                <span className="text-sm font-bold" style={{ color: item.points > 0 ? '#166534' : 'var(--muted-foreground)' }}>
+                  +{item.points} pts
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
       )}
 
       {/* ── Matched Grants Cards ── */}
       <section>
         <h2 className="text-lg font-bold mb-4" style={{ color: 'var(--foreground)' }}>
-          {isPro ? 'All Matched Grants' : 'Your Top Match'}
+          Your Matched Grants
         </h2>
         {sortedGrants.length === 0 ? (
           <div
@@ -213,6 +195,8 @@ export default function ResultsDashboard({ output, onStartNew, onGoToDashboard }
           </p>
         )}
       </section>
+
+
 
       {/* ── Action Buttons ── */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
