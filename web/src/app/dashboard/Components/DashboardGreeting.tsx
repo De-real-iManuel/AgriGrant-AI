@@ -1,7 +1,7 @@
 'use client';
 import React, { useMemo } from 'react';
-import { Plus, Sparkles } from 'lucide-react';
 import Link from 'next/link';
+import { Plus, Sparkles } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 function getGreeting(): string {
@@ -36,22 +36,7 @@ export default function DashboardGreeting() {
         </div>
         <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>
           {time}
-          {user?.plan === 'free' && (
-            <span
-              className="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold"
-              style={{ backgroundColor: '#FEF9C3', color: '#92400E' }}
-            >
-              Free Plan
-            </span>
-          )}
-          {user?.plan === 'pro' && (
-            <span
-              className="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold"
-              style={{ backgroundColor: '#DCFCE7', color: '#166534' }}
-            >
-              ✦ Pro
-            </span>
-          )}
+
         </p>
       </div>
 
@@ -63,7 +48,7 @@ export default function DashboardGreeting() {
           <Sparkles size={13} />
           AI Active
         </div>
-        <Link href="/farmer-portal" className="btn-primary gap-2 text-sm px-5 py-2.5">
+        <Link href="/dashboard/chat" className="btn-primary gap-2 text-sm px-5 py-2.5">
           <Plus size={15} />
           Find Grants
         </Link>
