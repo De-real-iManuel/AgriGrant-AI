@@ -90,31 +90,7 @@ export default function AuthScreen() {
             </div>
           </div>
 
-          {/* Plan comparison teaser */}
-          <div
-            className="rounded-2xl p-4"
-            style={{ backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}
-          >
-            <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--accent)' }}>
-              Plans
-            </p>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { plan: 'Free', price: '₦0/mo', feature: '1 grant match' },
-                { plan: 'Pro', price: '₦2,500/mo', feature: 'Unlimited grants + AI proposals' },
-              ].map((p) => (
-                <div
-                  key={p.plan}
-                  className="rounded-xl p-3 flex flex-col gap-1"
-                  style={{ backgroundColor: 'rgba(255,255,255,0.08)' }}
-                >
-                  <span className="text-xs font-bold text-white">{p.plan}</span>
-                  <span className="text-base font-extrabold" style={{ color: 'var(--accent)' }}>{p.price}</span>
-                  <span className="text-xs" style={{ color: '#86EFAC' }}>{p.feature}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+
 
           <div className="grid grid-cols-3 gap-3">
             {[
