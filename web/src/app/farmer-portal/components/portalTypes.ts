@@ -101,8 +101,15 @@ export interface FarmerFormData {
   hasCACRegistration: boolean;
   hasLandDocument: boolean;
   isMemberOfCooperative: boolean;
+  hasBVN: boolean;
+  hasExistingLoanDefault: boolean;
   // Section D
   additionalNotes: string;
+  // Section E (Documents)
+  ninDocument: string | null;
+  cacDocument: string | null;
+  bankStatement: string | null;
+  landDocument: string | null;
 }
 
 export const defaultFormData: FarmerFormData = {
@@ -121,7 +128,13 @@ export const defaultFormData: FarmerFormData = {
   hasCACRegistration: false,
   hasLandDocument: false,
   isMemberOfCooperative: false,
+  hasBVN: false,
+  hasExistingLoanDefault: false,
   additionalNotes: '',
+  ninDocument: null,
+  cacDocument: null,
+  bankStatement: null,
+  landDocument: null,
 };
 
 export interface MatchedGrant {
@@ -144,7 +157,12 @@ export interface PipelineOutput {
   totalMatchesFound: number;
   farmerName: string;
   stateOfResidence: string;
-  error?: string;
-  isPro?: boolean;
+  eligibilityScore?: number;
+  trustScore?: number;
+  trustScoreBreakdown?: { item: string; points: number; status: string }[];
+  applicationLetterText?: string;
+  submissionInstructions?: string;
+  followUpSchedule?: string;
   hiddenGrantsCount?: number;
+  error?: string;
 }
