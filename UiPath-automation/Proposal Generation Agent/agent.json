@@ -1,0 +1,1106 @@
+{
+  "version": "1.1.0",
+  "settings": {
+    "model": "gpt-4o-2024-11-20",
+    "maxTokens": 16384,
+    "temperature": 0,
+    "engine": "basic-v2",
+    "maxIterations": 25,
+    "mode": "advanced"
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "farmerName",
+      "stateOfResidence",
+      "farmType",
+      "grantName",
+      "grantingOrganization",
+      "grantCategory",
+      "grantObjectives",
+      "requestedAmountNGN",
+      "projectDurationMonths",
+      "fundingPurpose",
+      "expectedBeneficiaries",
+      "isSmallholderFarmer",
+      "isYouthFarmer",
+      "isWomanFarmer",
+      "tonePreference",
+      "documentType"
+    ],
+    "properties": {
+      "farmerName": {
+        "type": "string",
+        "description": "Full legal name of the farmer or agribusiness applicant. Used as the applicant name on all generated documents."
+      },
+      "organizationName": {
+        "type": "string",
+        "description": "Optional: Registered business or cooperative name (e.g., 'Sunrise Farms Nigeria Ltd'). Omit if operating individually."
+      },
+      "farmerAddress": {
+        "type": "string",
+        "description": "Optional: Full postal address of the farmer or business. Used in the letter header."
+      },
+      "farmerPhone": {
+        "type": "string",
+        "description": "Optional: Farmer's contact phone number."
+      },
+      "farmerEmail": {
+        "type": "string",
+        "description": "Optional: Farmer's email address."
+      },
+      "stateOfResidence": {
+        "type": "string",
+        "description": "Nigerian state where the farm operates (e.g., 'Kano', 'Benue', 'Ogun'). Used to localise the problem statement."
+      },
+      "lga": {
+        "type": "string",
+        "description": "Optional: Local Government Area of the farm."
+      },
+      "farmType": {
+        "type": "string",
+        "description": "Primary type of farming operation.",
+        "enum": [
+          "crop",
+          "livestock",
+          "poultry",
+          "fishery/aquaculture",
+          "mixed",
+          "horticulture",
+          "agro-processing",
+          "cooperative",
+          "agribusiness",
+          "other"
+        ]
+      },
+      "cropOrLivestockTypes": {
+        "type": "array",
+        "description": "Specific crops grown or livestock raised (e.g., ['cassava','maize','rice']).",
+        "items": {
+          "type": "string"
+        }
+      },
+      "farmSizeHectares": {
+        "type": "number",
+        "description": "Total farm area in hectares.",
+        "minimum": 0
+      },
+      "yearsInOperation": {
+        "type": "integer",
+        "description": "Number of years the farm has been operating.",
+        "minimum": 0
+      },
+      "annualRevenueNGN": {
+        "type": "number",
+        "description": "Optional: Approximate annual farm revenue in NGN.",
+        "minimum": 0
+      },
+      "isSmallholderFarmer": {
+        "type": "boolean",
+        "description": "True if the farmer is a smallholder (under 5 hectares)."
+      },
+      "isYouthFarmer": {
+        "type": "boolean",
+        "description": "True if the farmer is aged 18–35."
+      },
+      "isWomanFarmer": {
+        "type": "boolean",
+        "description": "True if the farmer is a woman or woman-led business."
+      },
+      "hasCACRegistration": {
+        "type": "boolean",
+        "description": "True if the applicant has CAC business registration."
+      },
+      "isMemberOfCooperative": {
+        "type": "boolean",
+        "description": "True if the farmer is a registered cooperative member."
+      },
+      "grantName": {
+        "type": "string",
+        "description": "Official name of the grant being applied for (e.g., 'CBN Anchor Borrowers Programme'). From Eligibility Agent's topRecommendedGrant."
+      },
+      "grantingOrganization": {
+        "type": "string",
+        "description": "Full name of the organization offering the grant. From Eligibility Agent's sponsorOrganization."
+      },
+      "grantCategory": {
+        "type": "string",
+        "description": "Category of the grant source. Controls letter format and tone.",
+        "enum": [
+          "federal",
+          "state",
+          "NGO",
+          "international",
+          "development-bank",
+          "private"
+        ]
+      },
+      "grantObjectives": {
+        "type": "string",
+        "description": "Key objectives or evaluation criteria of the grant. Every paragraph addresses these."
+      },
+      "grantUrl": {
+        "type": "string",
+        "description": "Optional: URL to the grant portal or application page. From upstream agents. Used in submission instructions."
+      },
+      "applicationDeadline": {
+        "type": "string",
+        "description": "Optional: Application closing date or cycle from upstream agents. Used in preparation checklist."
+      },
+      "requestedAmountNGN": {
+        "type": "number",
+        "description": "Total grant funding amount requested in NGN.",
+        "minimum": 0
+      },
+      "projectTitle": {
+        "type": "string",
+        "description": "Optional: Proposed title for the grant project. Agent generates one if not provided."
+      },
+      "projectDurationMonths": {
+        "type": "integer",
+        "description": "Planned project duration in months.",
+        "minimum": 1
+      },
+      "fundingPurpose": {
+        "type": "string",
+        "description": "Specific use of the grant funds. Core subject of letter and proposal."
+      },
+      "problemStatement": {
+        "type": "string",
+        "description": "Optional: Key challenge the project solves. Agent derives it if not provided."
+      },
+      "proposedActivities": {
+        "type": "string",
+        "description": "Optional: Planned project activities in plain language."
+      },
+      "expectedBeneficiaries": {
+        "type": "integer",
+        "description": "Estimated number of people who will benefit from the project.",
+        "minimum": 1
+      },
+      "existingAssets": {
+        "type": "string",
+        "description": "Optional: Resources the farmer already owns. Demonstrates co-investment."
+      },
+      "previousGrantHistory": {
+        "type": "string",
+        "description": "Optional: Previous grants received or loans repaid. Builds credibility."
+      },
+      "documentType": {
+        "type": "string",
+        "description": "Type of document to generate: 'application_letter', 'full_proposal', or 'both'.",
+        "enum": [
+          "application_letter",
+          "full_proposal",
+          "both"
+        ]
+      },
+      "tonePreference": {
+        "type": "string",
+        "description": "Writing tone: 'formal-academic' for UN/World Bank, 'professional-clear' for Nigerian federal agencies, 'persuasive-impact-driven' for NGOs.",
+        "enum": [
+          "formal-academic",
+          "professional-clear",
+          "persuasive-impact-driven"
+        ]
+      },
+      "grantApplicationForm": {
+        "description": "Optional: Upload the official grant application form (PDF/Word). Agent calls Analyze Files to extract requirements.",
+        "$ref": "#/definitions/job-attachment"
+      },
+      "grantGuidelinesPDF": {
+        "description": "Optional: Upload grant guidelines or call-for-applications document.",
+        "$ref": "#/definitions/job-attachment"
+      },
+      "additionalNotes": {
+        "type": "string",
+        "description": "Optional: Special instructions or emphasis (e.g., 'Emphasize climate-smart agriculture angle')."
+      },
+      "eligibilityVerdict": {
+        "type": "string",
+        "description": "Eligibility verdict from the Eligibility & Assessment Agent. Used to calibrate proposal confidence level.",
+        "enum": [
+          "Highly Eligible",
+          "Eligible",
+          "Conditionally Eligible",
+          "Unlikely Eligible",
+          "Ineligible"
+        ]
+      },
+      "overallEligibilityScore": {
+        "type": "number",
+        "description": "Eligibility score 0–100 from the Eligibility & Assessment Agent. Higher score = more assertive proposal language.",
+        "minimum": 0,
+        "maximum": 100
+      },
+      "eligibilityStrengths": {
+        "type": "array",
+        "description": "Strengths identified by the Eligibility Agent. Weave directly into proposal as evidence of eligibility.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "eligibilityRiskFactors": {
+        "type": "array",
+        "description": "Risk factors from the Eligibility Agent. Address and counter these in the proposal narrative.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "eligibilityRecommendations": {
+        "type": "array",
+        "description": "Recommendations from the Eligibility Agent. Show awareness and mitigation in the proposal.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "documentBoostInsights": {
+        "type": "array",
+        "description": "Key facts extracted from farmer's documents by the Document Understanding Agent (e.g., 'Bank statement confirms NGN 150,000 monthly inflow'). Use as HARD EVIDENCE in the proposal — these are verified, credible proof points.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "documentVerdict": {
+        "type": "string",
+        "description": "Document package verdict from the Document Understanding Agent. Guides how strongly to reference documentation in the proposal.",
+        "enum": [
+          "Strong",
+          "Adequate",
+          "Needs Improvement",
+          "Insufficient",
+          "Rejected"
+        ]
+      },
+      "rpaAttachmentRequired": {
+        "type": "boolean",
+        "description": "Whether documents need to be attached during RPA portal submission. Echo this to output unchanged for the RPA robot."
+      },
+      "documentsToAttachForRPA": {
+        "type": "array",
+        "description": "List of documents the RPA robot must attach. Echo to output unchanged for downstream.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "documentType": {
+              "type": "string"
+            },
+            "fileName": {
+              "type": "string"
+            },
+            "attachmentNotes": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "job-attachment": {
+        "type": "object",
+        "required": [
+          "ID"
+        ],
+        "x-uipath-resource-kind": "JobAttachment",
+        "properties": {
+          "ID": {
+            "type": "string",
+            "description": "Orchestrator attachment key"
+          },
+          "FullName": {
+            "type": "string",
+            "description": "File name"
+          },
+          "MimeType": {
+            "type": "string",
+            "description": "The MIME type of the content, such as \"application/json\" or \"image/png\""
+          },
+          "Metadata": {
+            "type": "object",
+            "description": "Dictionary<string, string> of metadata",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "title": "Inputs"
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "applicantName",
+      "organizationName",
+      "targetGrant",
+      "grantingOrganization",
+      "requestedAmountNGN",
+      "documentType",
+      "applicationLetters",
+      "fullProposalText",
+      "preparationChecklist",
+      "submissionInstructions",
+      "proposalQualityScore",
+      "writingNotes",
+      "disclaimer"
+    ],
+    "properties": {
+      "applicantName": {
+        "type": "string",
+        "description": "Full name of the farmer or agribusiness applicant, echoed from input for report identification."
+      },
+      "organizationName": {
+        "type": "string",
+        "description": "Registered business or cooperative name if provided; otherwise same as applicantName."
+      },
+      "targetGrant": {
+        "type": "string",
+        "description": "Name of the grant being applied for, echoed from input."
+      },
+      "grantingOrganization": {
+        "type": "string",
+        "description": "Name of the granting organization, echoed from input."
+      },
+      "requestedAmountNGN": {
+        "type": "number",
+        "description": "Total grant amount requested in Nigerian Naira, echoed from input."
+      },
+      "documentType": {
+        "type": "string",
+        "description": "Type of document generated, echoed from input: 'application_letter', 'full_proposal', or 'both'.",
+        "enum": [
+          "application_letter",
+          "full_proposal",
+          "both"
+        ]
+      },
+      "applicationLetters": {
+        "type": "array",
+        "description": "Array of ready-to-submit formal application letters. Populated when documentType is 'application_letter' or 'both'. Empty array [] when documentType is 'full_proposal'.",
+        "items": {
+          "type": "object",
+          "required": [
+            "grantName",
+            "letterType",
+            "recipientAddress",
+            "subject",
+            "letterBody",
+            "enclosureList",
+            "recommendedSubmissionMethod",
+            "wordCount"
+          ],
+          "properties": {
+            "grantName": {
+              "type": "string",
+              "description": "Name of the grant this letter is for."
+            },
+            "letterType": {
+              "type": "string",
+              "description": "Format of the letter based on grantCategory: 'formal_government' for CBN/BOA/FMARD, 'state_ministry' for state programs, 'microfinance' for NIRSAL/MFB programs, 'ngo_eoi' for NGO expression of interest, 'development_bank' for World Bank/IFAD/AfDB.",
+              "enum": [
+                "formal_government",
+                "state_ministry",
+                "microfinance",
+                "ngo_eoi",
+                "development_bank"
+              ]
+            },
+            "recipientAddress": {
+              "type": "string",
+              "description": "Full recipient address block for the letter header (e.g., 'The Director, Development Finance Department, Central Bank of Nigeria, CBN Headquarters, Abuja')."
+            },
+            "subject": {
+              "type": "string",
+              "description": "Subject line of the letter in uppercase (e.g., 'RE: APPLICATION FOR THE CBN ANCHOR BORROWERS PROGRAMME — RICE AND MAIZE PRODUCTION, KANO STATE')."
+            },
+            "letterBody": {
+              "type": "string",
+              "description": "Complete formatted application letter body, ready to print and sign. Includes: farmer address header, date (June 2026), recipient address, subject line, salutation, 4–5 body paragraphs (introduction, farm profile, funding need, grant alignment, closing), complimentary close, and signature block. 400–600 words. Must be complete — not a template, not a draft."
+            },
+            "enclosureList": {
+              "type": "array",
+              "description": "List of all supporting documents to attach with the letter (e.g., 'Certified copy of NIN slip', 'CAC Certificate', 'Land document or C of O', 'Recent passport photograph', 'Bank statement (last 6 months)').",
+              "items": {
+                "type": "string"
+              }
+            },
+            "recommendedSubmissionMethod": {
+              "type": "string",
+              "description": "Step-by-step instructions on how to physically or digitally submit this specific letter (e.g., 'Print 3 copies. Hand-deliver to the nearest CBN branch or participating microfinance bank. Request an acknowledgement receipt at submission.')."
+            },
+            "wordCount": {
+              "type": "integer",
+              "description": "Approximate word count of the letterBody."
+            }
+          }
+        }
+      },
+      "proposalTitle": {
+        "type": "string",
+        "description": "Compelling, mission-aligned title of the grant proposal. Empty string when documentType is 'application_letter'."
+      },
+      "projectDurationMonths": {
+        "type": "integer",
+        "description": "Duration of the project in months, echoed from input. 0 when documentType is 'application_letter'."
+      },
+      "coverPage": {
+        "type": "object",
+        "description": "Structured cover page metadata. Populated when documentType is 'full_proposal' or 'both'. Null object when documentType is 'application_letter'.",
+        "properties": {
+          "projectTitle": {
+            "type": "string",
+            "description": "Full project title as it appears on the cover page."
+          },
+          "submittedBy": {
+            "type": "string",
+            "description": "Applicant or organization name."
+          },
+          "submittedTo": {
+            "type": "string",
+            "description": "Granting organization name and department."
+          },
+          "projectLocation": {
+            "type": "string",
+            "description": "State and LGA of the project."
+          },
+          "projectDuration": {
+            "type": "string",
+            "description": "Project duration in readable format (e.g., '18 months: January 2026 – June 2027')."
+          },
+          "totalFundingRequested": {
+            "type": "string",
+            "description": "Amount in NGN formatted with commas (e.g., 'NGN 5,000,000')."
+          },
+          "submissionDate": {
+            "type": "string",
+            "description": "Submission date in format 'Month YYYY'."
+          }
+        }
+      },
+      "executiveSummary": {
+        "type": "string",
+        "description": "Compelling 150–250 word summary covering: who the applicant is, what the project does, where it operates, why it matters, funding requested, and measurable impact. Empty string when documentType is 'application_letter'."
+      },
+      "problemStatement": {
+        "type": "string",
+        "description": "300–450 word section articulating the agricultural challenge using Nigerian context, local statistics, and a clear link to the grant's objectives. Empty string when documentType is 'application_letter'."
+      },
+      "projectDescription": {
+        "type": "string",
+        "description": "400–600 word description of the project covering what, how, who, and why. Demonstrates technical feasibility and policy alignment. Empty string when documentType is 'application_letter'."
+      },
+      "projectObjectives": {
+        "type": "array",
+        "description": "3–5 SMART objectives (Specific, Measurable, Achievable, Relevant, Time-bound). Each written as a complete action statement. Empty array when documentType is 'application_letter'.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "methodology": {
+        "type": "object",
+        "description": "Structured methodology with phased activities. Populated when documentType is 'full_proposal' or 'both'.",
+        "properties": {
+          "overview": {
+            "type": "string",
+            "description": "100–150 word overview of the overall approach."
+          },
+          "activities": {
+            "type": "array",
+            "description": "Phased activity plan covering the full project duration.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "phase": {
+                  "type": "string",
+                  "description": "Phase name (e.g., 'Phase 1: Mobilization and Procurement')."
+                },
+                "timeline": {
+                  "type": "string",
+                  "description": "Time period for this phase (e.g., 'Month 1–3')."
+                },
+                "activities": {
+                  "type": "array",
+                  "description": "List of specific activities in this phase.",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "budgetBreakdown": {
+        "type": "array",
+        "description": "Itemized budget summing to requestedAmountNGN. Empty array when documentType is 'application_letter'.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "lineItem": {
+              "type": "string",
+              "description": "Budget item name (e.g., 'Irrigation Equipment', 'Labour Costs')."
+            },
+            "description": {
+              "type": "string",
+              "description": "Brief description of what this covers."
+            },
+            "amountNGN": {
+              "type": "number",
+              "description": "Amount in NGN for this line item."
+            },
+            "percentageOfTotal": {
+              "type": "string",
+              "description": "Percentage of total budget (e.g., '25%')."
+            },
+            "justification": {
+              "type": "string",
+              "description": "1–2 sentence justification for this expenditure."
+            }
+          }
+        }
+      },
+      "budgetNarrative": {
+        "type": "string",
+        "description": "150–200 word narrative justifying the overall budget, cost-effectiveness, and co-investment. Empty string when documentType is 'application_letter'."
+      },
+      "expectedOutcomes": {
+        "type": "object",
+        "description": "Structured outcomes covering direct outputs, impact, and beneficiary breakdown. Populated when full proposal is generated.",
+        "properties": {
+          "directOutputs": {
+            "type": "array",
+            "description": "Concrete measurable deliverables.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "impactStatements": {
+            "type": "array",
+            "description": "Broader impact statements.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "beneficiaries": {
+            "type": "object",
+            "properties": {
+              "directBeneficiaries": {
+                "type": "integer",
+                "description": "Number of people directly benefiting."
+              },
+              "indirectBeneficiaries": {
+                "type": "integer",
+                "description": "Number of people indirectly benefiting."
+              },
+              "womenBeneficiaries": {
+                "type": "string",
+                "description": "Proportion or number of women beneficiaries (e.g., '60% women', '120 women farmers')."
+              },
+              "youthBeneficiaries": {
+                "type": "string",
+                "description": "Proportion or number of youth beneficiaries (e.g., '35% youth aged 18–35')."
+              }
+            }
+          }
+        }
+      },
+      "sustainabilityPlan": {
+        "type": "string",
+        "description": "250–350 word sustainability section covering revenue model, capacity building, community ownership, government linkages, and environmental sustainability. Empty string when documentType is 'application_letter'."
+      },
+      "organizationalCapacity": {
+        "type": "string",
+        "description": "200–300 word section demonstrating the applicant's ability to execute. Covers experience, assets, team, past achievements, and registrations. Empty string when documentType is 'application_letter'."
+      },
+      "monitoringAndEvaluation": {
+        "type": "object",
+        "description": "M&E framework for tracking project progress. Populated when full proposal is generated.",
+        "properties": {
+          "approach": {
+            "type": "string",
+            "description": "100–150 word description of the overall M&E approach."
+          },
+          "keyIndicators": {
+            "type": "array",
+            "description": "3–5 KPIs with baselines, targets, and measurement methods.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "indicator": {
+                  "type": "string",
+                  "description": "Name of the performance indicator."
+                },
+                "baseline": {
+                  "type": "string",
+                  "description": "Starting value before the project."
+                },
+                "target": {
+                  "type": "string",
+                  "description": "Expected value by project end."
+                },
+                "measurementMethod": {
+                  "type": "string",
+                  "description": "How this will be measured."
+                }
+              }
+            }
+          },
+          "reportingSchedule": {
+            "type": "string",
+            "description": "Reporting frequency and format (e.g., 'Monthly activity reports, quarterly financial reports, final impact report at project close')."
+          }
+        }
+      },
+      "conclusion": {
+        "type": "string",
+        "description": "100–150 word compelling closing paragraph reinforcing alignment with grant objectives and making a direct funding appeal. Empty string when documentType is 'application_letter'."
+      },
+      "fullProposalText": {
+        "type": "string",
+        "description": "Complete, section-headed grant proposal assembled in order: Cover Page → Executive Summary → Problem Statement → Project Description → Objectives → Methodology → Budget → Expected Outcomes → Sustainability → Organizational Capacity → M&E → Conclusion. Ready to print and submit. Empty string when documentType is 'application_letter'."
+      },
+      "preparationChecklist": {
+        "type": "array",
+        "description": "Always populated. Step-by-step checklist of everything the farmer must do and gather before submitting (e.g., 'Print 3 copies of the application letter on A4 paper', 'Obtain certified copy of CAC certificate from a notary public', 'Ensure BVN is linked to an active bank account', 'Attach one recent passport photograph per copy'). Minimum 6 items.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "submissionInstructions": {
+        "type": "string",
+        "description": "Always populated. Step-by-step submission guide specific to the grant: where to submit (portal URL, physical branch address, or ministry office), what to bring or attach, who to address the envelope to, expected processing timeline, and follow-up contact information."
+      },
+      "proposalQualityScore": {
+        "type": "integer",
+        "description": "Quality score (0–100) assessing: grant objective alignment (30pts), narrative strength and evidence (25pts), completeness (20pts), budget credibility (15pts), persuasiveness (10pts). 85–100 = highly competitive; 70–84 = strong; 50–69 = needs improvement; below 50 = major gaps noted in writingNotes.",
+        "minimum": 0,
+        "maximum": 100
+      },
+      "writingNotes": {
+        "type": "array",
+        "description": "1–3 specific improvement notes identifying what additional farmer information would strengthen the documents (e.g., 'Adding a letter of support from the cooperative chairman would significantly increase credibility', 'Including local post-harvest loss statistics for Kano State would strengthen the problem statement'). Empty array if all documents are strong as-is.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "disclaimer": {
+        "type": "string",
+        "description": "Standard disclaimer. Must always read exactly: 'This document was generated by AgroGrant AI. All content should be reviewed by the applicant before submission. Grant requirements, funding amounts, and deadlines should be verified directly with the issuing organization. This output does not constitute legal or financial advice.'"
+      }
+    }
+  },
+  "metadata": {
+    "storageVersion": "50.0.0",
+    "isConversational": false,
+    "targetRuntime": "pythonAgent",
+    "showProjectCreationExperience": false
+  },
+  "type": "lowCode",
+  "projectId": "d8366dad-8609-4941-9c4f-3e91eb52faef",
+  "messages": [
+    {
+      "role": "system",
+      "content": "## Role\nYou are a professional Nigerian agricultural grant writer and application specialist for AgriGrant AI. You generate two types of submission-ready documents: (1) formal application letters for Nigerian federal, state, and microfinance grant programs, and (2) full structured grant proposals for development finance and international donors. Every document is personalized, evidence-based, and precisely aligned with the target grant's objectives and format requirements.\n\nYou receive rich upstream data from the Eligibility & Assessment Agent (strengths, risks, recommendations) and the Document Understanding Agent (documentBoostInsights, verified farmer data). Use these insights to write the strongest possible proposal.\n\n---\n\n## Tool Rules\n\n### Analyze Files\n- Call **Analyze Files** at the START of every run if `grantApplicationForm` or `grantGuidelinesPDF` is present in the input.\n- Use this analysisTask: \"Extract all required sections, mandatory fields, evaluation criteria, scoring rubrics, word/page limits, supporting document requirements, and submission instructions from this grant document.\"\n- Use the extracted requirements to shape EVERY section of the output — override generic templates with requirements found in the file.\n- If Analyze Files returns an error, retry once with a simplified task. After two failures, proceed using domain knowledge and note the gap in `writingNotes`.\n- Do NOT call Analyze Files more than once per file.\n- If no file is uploaded, proceed using domain knowledge of the named grant program.\n\n### No Web Search\n- Do not search the web. All grant research was completed upstream by the Grant Discovery Agent. Use `grantObjectives` and `grantCategory` from input as your sole grant reference.\n\n---\n\n## Using Upstream Agent Data\n\n### From Eligibility & Assessment Agent\n- **eligibilityStrengths**: Weave these directly into the proposal narrative as evidence of eligibility. Quote them as factual farmer strengths.\n- **eligibilityRiskFactors**: Address and counter these in the proposal. Show how the project mitigates identified risks.\n- **eligibilityRecommendations**: If actionable recommendations were made, acknowledge awareness in the proposal (shows diligence).\n- **overallEligibilityScore**: Use to calibrate confidence level in the proposal tone — higher score = more assertive language.\n\n### From Document Understanding Agent\n- **documentBoostInsights**: These are verified facts extracted from the farmer's actual documents (e.g., \"Bank statement confirms NGN 150,000 monthly inflow\"). Weave these into the proposal as EVIDENCE — they are the farmer's most credible proof points.\n- **rpaAttachmentRequired** + **documentsToAttachForRPA**: Echo these through to output unchanged for the RPA robot.\n\n---\n\n## Document Type Rules\nSelect what to generate based on `documentType`:\n- **\"application_letter\"**: Generate the application letter only. Set `fullProposalText` to `\"\"`.\n- **\"full_proposal\"**: Generate the complete 10-section proposal only. Set `applicationLetters` to `[]`.\n- **\"both\"**: Generate BOTH the application letter AND the full proposal. Recommended for competitive grants.\n\n---\n\n## Letter Format by Grant Category\n- **federal** (CBN, BOA, FMARD, NIRSAL): Nigerian formal government letter. Third-person opening. Formal salutation. Structured 4–5 paragraphs.\n- **state**: State ministry letter. Address to \"The Honourable Commissioner for Agriculture, [State] State.\"\n- **NGO / international**: Expression of Interest format. Open with a human impact story. Use \"we\" language. Cite SDG alignment.\n- **development-bank** (World Bank, AfDB, IFAD): Formal technical letter. Cite Nigerian policy alignment (NATIP, APP).\n- **private**: Professional business letter to CSR or foundation contact.\n\n---\n\n## Nigerian Agricultural Context\n- Food security: Nigeria imports over $5B food annually. Post-harvest losses reach 40–50% in some value chains.\n- Smallholders: Over 70% of Nigeria's food is produced by smallholders farming under 2 hectares.\n- Key federal programs: CBN Anchor Borrowers, NIRSAL Plc, BOA, FMARD, NASC, NALDA.\n- National plans: NATIP, APP, ERGP, National Food Security Programme.\n- Gender: Women make up 60–80% of Nigeria's agric labour force but own less than 14% of land.\n- Regional crops: North-West (rice, wheat, groundnut), North-East (sorghum, millet), North-Central (yam, cassava, soybean), South-West (cocoa, cassava), South-East (palm oil, yam), South-South (fish, plantain, rubber).\n\n---\n\n## Work Steps\n\n1. **Check for uploaded files**: If `grantApplicationForm` or `grantGuidelinesPDF` is provided, call Analyze Files immediately.\n2. **Review upstream insights**: Read `eligibilityStrengths`, `eligibilityRiskFactors`, and `documentBoostInsights`. Plan how to incorporate them.\n3. **Determine document type** from `documentType` input.\n4. **Analyze grant alignment**: Identify 3–5 key themes from `grantObjectives`. Every paragraph must address at least one.\n5. **Build farmer narrative**: Synthesize all profile fields + documentBoostInsights into a credible, evidence-backed applicant story.\n6. **Generate application letter** (if applicable): 400–600 word formal letter using the correct format for `grantCategory`. Include all enclosures.\n7. **Generate full proposal** (if applicable): All 10 sections. Budget must sum exactly to `requestedAmountNGN`.\n8. **Build preparation checklist**: At least 6 concrete steps for this specific grant.\n9. **Write submission instructions**: Step-by-step guide on exactly how to submit.\n10. **Echo RPA fields**: Pass `rpaAttachmentRequired` and `documentsToAttachForRPA` to output unchanged.\n11. **Score and review**: Assign `proposalQualityScore` (0–100). Write 1–3 `writingNotes` only if specific additional data would improve it.\n12. **Assemble JSON output** matching outputSchema exactly.\n\n---\n\n## Output Rules\n- Return ONLY JSON that matches the outputSchema exactly. No extra keys. No markdown. No extra text.\n- `applicationLetters[].letterBody` must be COMPLETE, print-ready — full header, date, recipient, subject, salutation, 4–5 paragraphs, close, signature. Never a template.\n- `budgetBreakdown` items must sum exactly to `requestedAmountNGN` when full proposal is generated.\n- `preparationChecklist` must always have at least 6 items regardless of document type.\n- `submissionInstructions` must always be populated with grant-specific guidance.\n- `disclaimer` must always read: \"This document was generated by AgroGrant AI. All content should be reviewed by the applicant before submission. Grant requirements, funding amounts, and deadlines should be verified directly with the issuing organization. This output does not constitute legal or financial advice.\"\n- Echo `rpaAttachmentRequired` and `documentsToAttachForRPA` from input to output unchanged.\n\n---\n\n## Final Reminder\nCall Analyze Files first if files are uploaded. Use documentBoostInsights as evidence in the proposal. Apply the correct letter format for grantCategory. Echo RPA fields for downstream. Return only strict JSON matching the outputSchema.\n",
+      "contentTokens": [
+        {
+          "type": "simpleText",
+          "rawString": "## Role\nYou are a professional Nigerian agricultural grant writer and application specialist for AgriGrant AI. You generate two types of submission-ready documents: (1) formal application letters for Nigerian federal, state, and microfinance grant programs, and (2) full structured grant proposals for development finance and international donors. Every document is personalized, evidence-based, and precisely aligned with the target grant's objectives and format requirements.\n\nYou receive rich upstream data from the Eligibility & Assessment Agent (strengths, risks, recommendations) and the Document Understanding Agent (documentBoostInsights, verified farmer data). Use these insights to write the strongest possible proposal.\n\n---\n\n## Tool Rules\n\n### Analyze Files\n- Call **Analyze Files** at the START of every run if `grantApplicationForm` or `grantGuidelinesPDF` is present in the input.\n- Use this analysisTask: \"Extract all required sections, mandatory fields, evaluation criteria, scoring rubrics, word/page limits, supporting document requirements, and submission instructions from this grant document.\"\n- Use the extracted requirements to shape EVERY section of the output — override generic templates with requirements found in the file.\n- If Analyze Files returns an error, retry once with a simplified task. After two failures, proceed using domain knowledge and note the gap in `writingNotes`.\n- Do NOT call Analyze Files more than once per file.\n- If no file is uploaded, proceed using domain knowledge of the named grant program.\n\n### No Web Search\n- Do not search the web. All grant research was completed upstream by the Grant Discovery Agent. Use `grantObjectives` and `grantCategory` from input as your sole grant reference.\n\n---\n\n## Using Upstream Agent Data\n\n### From Eligibility & Assessment Agent\n- **eligibilityStrengths**: Weave these directly into the proposal narrative as evidence of eligibility. Quote them as factual farmer strengths.\n- **eligibilityRiskFactors**: Address and counter these in the proposal. Show how the project mitigates identified risks.\n- **eligibilityRecommendations**: If actionable recommendations were made, acknowledge awareness in the proposal (shows diligence).\n- **overallEligibilityScore**: Use to calibrate confidence level in the proposal tone — higher score = more assertive language.\n\n### From Document Understanding Agent\n- **documentBoostInsights**: These are verified facts extracted from the farmer's actual documents (e.g., \"Bank statement confirms NGN 150,000 monthly inflow\"). Weave these into the proposal as EVIDENCE — they are the farmer's most credible proof points.\n- **rpaAttachmentRequired** + **documentsToAttachForRPA**: Echo these through to output unchanged for the RPA robot.\n\n---\n\n## Document Type Rules\nSelect what to generate based on `documentType`:\n- **\"application_letter\"**: Generate the application letter only. Set `fullProposalText` to `\"\"`.\n- **\"full_proposal\"**: Generate the complete 10-section proposal only. Set `applicationLetters` to `[]`.\n- **\"both\"**: Generate BOTH the application letter AND the full proposal. Recommended for competitive grants.\n\n---\n\n## Letter Format by Grant Category\n- **federal** (CBN, BOA, FMARD, NIRSAL): Nigerian formal government letter. Third-person opening. Formal salutation. Structured 4–5 paragraphs.\n- **state**: State ministry letter. Address to \"The Honourable Commissioner for Agriculture, [State] State.\"\n- **NGO / international**: Expression of Interest format. Open with a human impact story. Use \"we\" language. Cite SDG alignment.\n- **development-bank** (World Bank, AfDB, IFAD): Formal technical letter. Cite Nigerian policy alignment (NATIP, APP).\n- **private**: Professional business letter to CSR or foundation contact.\n\n---\n\n## Nigerian Agricultural Context\n- Food security: Nigeria imports over $5B food annually. Post-harvest losses reach 40–50% in some value chains.\n- Smallholders: Over 70% of Nigeria's food is produced by smallholders farming under 2 hectares.\n- Key federal programs: CBN Anchor Borrowers, NIRSAL Plc, BOA, FMARD, NASC, NALDA.\n- National plans: NATIP, APP, ERGP, National Food Security Programme.\n- Gender: Women make up 60–80% of Nigeria's agric labour force but own less than 14% of land.\n- Regional crops: North-West (rice, wheat, groundnut), North-East (sorghum, millet), North-Central (yam, cassava, soybean), South-West (cocoa, cassava), South-East (palm oil, yam), South-South (fish, plantain, rubber).\n\n---\n\n## Work Steps\n\n1. **Check for uploaded files**: If `grantApplicationForm` or `grantGuidelinesPDF` is provided, call Analyze Files immediately.\n2. **Review upstream insights**: Read `eligibilityStrengths`, `eligibilityRiskFactors`, and `documentBoostInsights`. Plan how to incorporate them.\n3. **Determine document type** from `documentType` input.\n4. **Analyze grant alignment**: Identify 3–5 key themes from `grantObjectives`. Every paragraph must address at least one.\n5. **Build farmer narrative**: Synthesize all profile fields + documentBoostInsights into a credible, evidence-backed applicant story.\n6. **Generate application letter** (if applicable): 400–600 word formal letter using the correct format for `grantCategory`. Include all enclosures.\n7. **Generate full proposal** (if applicable): All 10 sections. Budget must sum exactly to `requestedAmountNGN`.\n8. **Build preparation checklist**: At least 6 concrete steps for this specific grant.\n9. **Write submission instructions**: Step-by-step guide on exactly how to submit.\n10. **Echo RPA fields**: Pass `rpaAttachmentRequired` and `documentsToAttachForRPA` to output unchanged.\n11. **Score and review**: Assign `proposalQualityScore` (0–100). Write 1–3 `writingNotes` only if specific additional data would improve it.\n12. **Assemble JSON output** matching outputSchema exactly.\n\n---\n\n## Output Rules\n- Return ONLY JSON that matches the outputSchema exactly. No extra keys. No markdown. No extra text.\n- `applicationLetters[].letterBody` must be COMPLETE, print-ready — full header, date, recipient, subject, salutation, 4–5 paragraphs, close, signature. Never a template.\n- `budgetBreakdown` items must sum exactly to `requestedAmountNGN` when full proposal is generated.\n- `preparationChecklist` must always have at least 6 items regardless of document type.\n- `submissionInstructions` must always be populated with grant-specific guidance.\n- `disclaimer` must always read: \"This document was generated by AgroGrant AI. All content should be reviewed by the applicant before submission. Grant requirements, funding amounts, and deadlines should be verified directly with the issuing organization. This output does not constitute legal or financial advice.\"\n- Echo `rpaAttachmentRequired` and `documentsToAttachForRPA` from input to output unchanged.\n\n---\n\n## Final Reminder\nCall Analyze Files first if files are uploaded. Use documentBoostInsights as evidence in the proposal. Apply the correct letter format for grantCategory. Echo RPA fields for downstream. Return only strict JSON matching the outputSchema.\n"
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": "You are generating submission-ready grant documents for a Nigerian farmer. Use every detail from the applicant profile, grant information, AND the upstream agent insights below to produce precise, compelling, and evidence-backed output.\n\n---\n\n## Upstream Agent Insights (USE THESE AS EVIDENCE)\n\n### From Eligibility & Assessment Agent\n- **Eligibility Verdict:** <verdict>{{input.eligibilityVerdict}}</verdict>\n- **Eligibility Score:** <score>{{input.overallEligibilityScore}}</score>\n- **Strengths (weave into proposal as proof of eligibility):** <strengths>{{input.eligibilityStrengths}}</strengths>\n- **Risk Factors (address/counter in proposal):** <risks>{{input.eligibilityRiskFactors}}</risks>\n- **Recommendations:** <recommendations>{{input.eligibilityRecommendations}}</recommendations>\n\n### From Document Understanding Agent\n- **Document Boost Insights (verified facts — use as hard evidence):** <boost_insights>{{input.documentBoostInsights}}</boost_insights>\n- **Document Verdict:** <doc_verdict>{{input.documentVerdict}}</doc_verdict>\n\n### RPA Pass-Through (echo unchanged to output)\n- **RPA Attachment Required:** <rpa_attach>{{input.rpaAttachmentRequired}}</rpa_attach>\n- **Documents to Attach:** <rpa_docs>{{input.documentsToAttachForRPA}}</rpa_docs>\n\n---\n\n## Applicant Profile\n\n- **Farmer / Applicant Name:** <farmer_name>{{input.farmerName}}</farmer_name>\n- **Organization Name:** <org_name>{{input.organizationName}}</org_name>\n- **Postal Address:** <address>{{input.farmerAddress}}</address>\n- **Phone:** <phone>{{input.farmerPhone}}</phone>\n- **Email:** <email>{{input.farmerEmail}}</email>\n- **State:** <state>{{input.stateOfResidence}}</state>\n- **LGA:** <lga>{{input.lga}}</lga>\n- **Farm Type:** <farm_type>{{input.farmType}}</farm_type>\n- **Crops / Livestock:** <crops>{{input.cropOrLivestockTypes}}</crops>\n- **Farm Size (Hectares):** <farm_size>{{input.farmSizeHectares}}</farm_size>\n- **Years in Operation:** <years>{{input.yearsInOperation}}</years>\n- **Annual Revenue (NGN):** <revenue>{{input.annualRevenueNGN}}</revenue>\n- **Smallholder Farmer:** <smallholder>{{input.isSmallholderFarmer}}</smallholder>\n- **Youth Farmer (18–35):** <youth>{{input.isYouthFarmer}}</youth>\n- **Woman Farmer:** <woman>{{input.isWomanFarmer}}</woman>\n- **CAC Registered:** <cac>{{input.hasCACRegistration}}</cac>\n- **Cooperative Member:** <cooperative>{{input.isMemberOfCooperative}}</cooperative>\n- **Existing Assets:** <assets>{{input.existingAssets}}</assets>\n- **Previous Grant History:** <grants>{{input.previousGrantHistory}}</grants>\n\n---\n\n## Grant Details\n\n- **Grant Name:** <grant_name>{{input.grantName}}</grant_name>\n- **Granting Organization:** <grantor>{{input.grantingOrganization}}</grantor>\n- **Grant Category:** <grant_category>{{input.grantCategory}}</grant_category>\n- **Grant Objectives:** <grant_objectives>{{input.grantObjectives}}</grant_objectives>\n- **Grant URL:** <grant_url>{{input.grantUrl}}</grant_url>\n- **Application Deadline:** <deadline>{{input.applicationDeadline}}</deadline>\n- **Requested Amount (NGN):** <amount>{{input.requestedAmountNGN}}</amount>\n- **Project Title:** <project_title>{{input.projectTitle}}</project_title>\n- **Project Duration (Months):** <duration>{{input.projectDurationMonths}}</duration>\n- **Funding Purpose:** <purpose>{{input.fundingPurpose}}</purpose>\n- **Problem Statement:** <problem>{{input.problemStatement}}</problem>\n- **Proposed Activities:** <activities>{{input.proposedActivities}}</activities>\n- **Expected Beneficiaries:** <beneficiaries>{{input.expectedBeneficiaries}}</beneficiaries>\n\n---\n\n## Document Instructions\n\n- **Document Type:** <doc_type>{{input.documentType}}</doc_type>\n- **Tone Preference:** <tone>{{input.tonePreference}}</tone>\n- **Additional Notes:** <notes>{{input.additionalNotes}}</notes>\n\n---\n\n## Steps\n\n1. **Check for uploaded files**: If `grantApplicationForm` or `grantGuidelinesPDF` was provided, call **Analyze Files** immediately to extract required sections, evaluation criteria, scoring rubrics, and submission instructions.\n\n2. **Incorporate upstream evidence**: Before writing, plan how to use:\n   - `eligibilityStrengths` → weave as PROOF of qualification in the proposal narrative\n   - `eligibilityRiskFactors` → address/counter each one showing awareness and mitigation\n   - `documentBoostInsights` → cite as VERIFIED EVIDENCE (e.g., \"As confirmed by our bank records, monthly revenue of NGN 150,000...\")\n   - If `eligibilityVerdict` is \"Highly Eligible\" or \"Eligible\" → use confident, assertive tone\n   - If \"Conditionally Eligible\" → acknowledge gaps while emphasizing strengths and committed mitigation\n\n3. **Determine document type** from `{{input.documentType}}` and apply rules.\n\n4. **Generate Application Letter** (when applicable):\n   Write 400–600 word formal letter using the correct format for `{{input.grantCategory}}`. Structure:\n   - Header: farmer address, phone, email, date (June 2026)\n   - Recipient: correct for grant category\n   - Subject: RE: APPLICATION FOR [GRANT NAME IN UPPERCASE]\n   - Para 1: Introduction (name, farm type, location, years)\n   - Para 2: Farm Profile + documentBoostInsights as evidence\n   - Para 3: Funding Need + how it solves a specific problem\n   - Para 4: Grant Alignment + eligibilityStrengths as proof + counter any riskFactors\n   - Para 5: Closing (commitment, transparency, request for consideration)\n   - Signature block + enclosure list\n\n5. **Generate Full Proposal** (when applicable):\n   All 10 sections. Budget sums exactly to `{{input.requestedAmountNGN}}`. Include:\n   - Executive Summary (150–250 words): mention eligibility score as \"independently verified\"\n   - Problem Statement (300–450 words): Nigerian agricultural statistics + local context\n   - Project Description (400–600 words): weave in documentBoostInsights as evidence\n   - Sustainability Plan (250–350 words): address any riskFactors showing mitigation\n   - Organizational Capacity (200–300 words): use documentBoostInsights (bank statements, registrations) as proof\n   - Budget: 6–10 line items, allocation: activities 50–65%, labour 15–20%, training 8–12%, M&E 5–8%, admin max 15%\n\n6. **Build Preparation Checklist**: At least 6 specific steps tailored to this grant. Reference `applicationDeadline` if available.\n\n7. **Write Submission Instructions**: Step-by-step for `{{input.grantName}}` including portal URL from `grantUrl` if available.\n\n8. **Score and review**: Assign `proposalQualityScore` (0–100). Write 1–3 `writingNotes` only if additional data would improve it.\n\n---\n\n## Output Rules\n- Return ONLY valid JSON matching the outputSchema exactly. No markdown, no preamble.\n- `applicationLetters[].letterBody` must be complete and print-ready — never a template.\n- `preparationChecklist` and `submissionInstructions` must always be populated.\n- `disclaimer` must always read exactly: \"This document was generated by AgroGrant AI. All content should be reviewed by the applicant before submission. Grant requirements, funding amounts, and deadlines should be verified directly with the issuing organization. This output does not constitute legal or financial advice.\"\n",
+      "contentTokens": [
+        {
+          "type": "simpleText",
+          "rawString": "You are generating submission-ready grant documents for a Nigerian farmer. Use every detail from the applicant profile, grant information, AND the upstream agent insights below to produce precise, compelling, and evidence-backed output.\n\n---\n\n## Upstream Agent Insights (USE THESE AS EVIDENCE)\n\n### From Eligibility & Assessment Agent\n- **Eligibility Verdict:** <verdict>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.eligibilityVerdict"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</verdict>\n- **Eligibility Score:** <score>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.overallEligibilityScore"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</score>\n- **Strengths (weave into proposal as proof of eligibility):** <strengths>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.eligibilityStrengths"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</strengths>\n- **Risk Factors (address/counter in proposal):** <risks>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.eligibilityRiskFactors"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</risks>\n- **Recommendations:** <recommendations>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.eligibilityRecommendations"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</recommendations>\n\n### From Document Understanding Agent\n- **Document Boost Insights (verified facts — use as hard evidence):** <boost_insights>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.documentBoostInsights"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</boost_insights>\n- **Document Verdict:** <doc_verdict>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.documentVerdict"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</doc_verdict>\n\n### RPA Pass-Through (echo unchanged to output)\n- **RPA Attachment Required:** <rpa_attach>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.rpaAttachmentRequired"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</rpa_attach>\n- **Documents to Attach:** <rpa_docs>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.documentsToAttachForRPA"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</rpa_docs>\n\n---\n\n## Applicant Profile\n\n- **Farmer / Applicant Name:** <farmer_name>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</farmer_name>\n- **Organization Name:** <org_name>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.organizationName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</org_name>\n- **Postal Address:** <address>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerAddress"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</address>\n- **Phone:** <phone>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerPhone"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</phone>\n- **Email:** <email>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerEmail"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</email>\n- **State:** <state>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.stateOfResidence"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</state>\n- **LGA:** <lga>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.lga"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</lga>\n- **Farm Type:** <farm_type>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmType"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</farm_type>\n- **Crops / Livestock:** <crops>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.cropOrLivestockTypes"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</crops>\n- **Farm Size (Hectares):** <farm_size>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmSizeHectares"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</farm_size>\n- **Years in Operation:** <years>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.yearsInOperation"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</years>\n- **Annual Revenue (NGN):** <revenue>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.annualRevenueNGN"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</revenue>\n- **Smallholder Farmer:** <smallholder>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.isSmallholderFarmer"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</smallholder>\n- **Youth Farmer (18–35):** <youth>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.isYouthFarmer"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</youth>\n- **Woman Farmer:** <woman>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.isWomanFarmer"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</woman>\n- **CAC Registered:** <cac>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.hasCACRegistration"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</cac>\n- **Cooperative Member:** <cooperative>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.isMemberOfCooperative"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</cooperative>\n- **Existing Assets:** <assets>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.existingAssets"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</assets>\n- **Previous Grant History:** <grants>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.previousGrantHistory"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</grants>\n\n---\n\n## Grant Details\n\n- **Grant Name:** <grant_name>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</grant_name>\n- **Granting Organization:** <grantor>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantingOrganization"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</grantor>\n- **Grant Category:** <grant_category>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantCategory"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</grant_category>\n- **Grant Objectives:** <grant_objectives>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantObjectives"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</grant_objectives>\n- **Grant URL:** <grant_url>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantUrl"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</grant_url>\n- **Application Deadline:** <deadline>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.applicationDeadline"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</deadline>\n- **Requested Amount (NGN):** <amount>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.requestedAmountNGN"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</amount>\n- **Project Title:** <project_title>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.projectTitle"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</project_title>\n- **Project Duration (Months):** <duration>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.projectDurationMonths"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</duration>\n- **Funding Purpose:** <purpose>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.fundingPurpose"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</purpose>\n- **Problem Statement:** <problem>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.problemStatement"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</problem>\n- **Proposed Activities:** <activities>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.proposedActivities"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</activities>\n- **Expected Beneficiaries:** <beneficiaries>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.expectedBeneficiaries"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</beneficiaries>\n\n---\n\n## Document Instructions\n\n- **Document Type:** <doc_type>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.documentType"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</doc_type>\n- **Tone Preference:** <tone>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.tonePreference"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</tone>\n- **Additional Notes:** <notes>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.additionalNotes"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</notes>\n\n---\n\n## Steps\n\n1. **Check for uploaded files**: If `grantApplicationForm` or `grantGuidelinesPDF` was provided, call **Analyze Files** immediately to extract required sections, evaluation criteria, scoring rubrics, and submission instructions.\n\n2. **Incorporate upstream evidence**: Before writing, plan how to use:\n   - `eligibilityStrengths` → weave as PROOF of qualification in the proposal narrative\n   - `eligibilityRiskFactors` → address/counter each one showing awareness and mitigation\n   - `documentBoostInsights` → cite as VERIFIED EVIDENCE (e.g., \"As confirmed by our bank records, monthly revenue of NGN 150,000...\")\n   - If `eligibilityVerdict` is \"Highly Eligible\" or \"Eligible\" → use confident, assertive tone\n   - If \"Conditionally Eligible\" → acknowledge gaps while emphasizing strengths and committed mitigation\n\n3. **Determine document type** from `"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.documentType"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "` and apply rules.\n\n4. **Generate Application Letter** (when applicable):\n   Write 400–600 word formal letter using the correct format for `"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantCategory"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "`. Structure:\n   - Header: farmer address, phone, email, date (June 2026)\n   - Recipient: correct for grant category\n   - Subject: RE: APPLICATION FOR [GRANT NAME IN UPPERCASE]\n   - Para 1: Introduction (name, farm type, location, years)\n   - Para 2: Farm Profile + documentBoostInsights as evidence\n   - Para 3: Funding Need + how it solves a specific problem\n   - Para 4: Grant Alignment + eligibilityStrengths as proof + counter any riskFactors\n   - Para 5: Closing (commitment, transparency, request for consideration)\n   - Signature block + enclosure list\n\n5. **Generate Full Proposal** (when applicable):\n   All 10 sections. Budget sums exactly to `"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.requestedAmountNGN"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "`. Include:\n   - Executive Summary (150–250 words): mention eligibility score as \"independently verified\"\n   - Problem Statement (300–450 words): Nigerian agricultural statistics + local context\n   - Project Description (400–600 words): weave in documentBoostInsights as evidence\n   - Sustainability Plan (250–350 words): address any riskFactors showing mitigation\n   - Organizational Capacity (200–300 words): use documentBoostInsights (bank statements, registrations) as proof\n   - Budget: 6–10 line items, allocation: activities 50–65%, labour 15–20%, training 8–12%, M&E 5–8%, admin max 15%\n\n6. **Build Preparation Checklist**: At least 6 specific steps tailored to this grant. Reference `applicationDeadline` if available.\n\n7. **Write Submission Instructions**: Step-by-step for `"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "` including portal URL from `grantUrl` if available.\n\n8. **Score and review**: Assign `proposalQualityScore` (0–100). Write 1–3 `writingNotes` only if additional data would improve it.\n\n---\n\n## Output Rules\n- Return ONLY valid JSON matching the outputSchema exactly. No markdown, no preamble.\n- `applicationLetters[].letterBody` must be complete and print-ready — never a template.\n- `preparationChecklist` and `submissionInstructions` must always be populated.\n- `disclaimer` must always read exactly: \"This document was generated by AgroGrant AI. All content should be reviewed by the applicant before submission. Grant requirements, funding amounts, and deadlines should be verified directly with the issuing organization. This output does not constitute legal or financial advice.\"\n"
+        }
+      ]
+    }
+  ]
+}

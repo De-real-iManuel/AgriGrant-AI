@@ -1,0 +1,1141 @@
+{
+  "version": "1.1.0",
+  "settings": {
+    "model": "anthropic.claude-opus-4-6-v1",
+    "maxTokens": 65535,
+    "temperature": 0,
+    "engine": "basic-v2",
+    "maxIterations": 25,
+    "mode": "standard"
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "farmerName",
+      "farmerPhone",
+      "stateOfResidence",
+      "grantName",
+      "grantingOrganization",
+      "projectTitle",
+      "requestedAmountNGN",
+      "submissionDeadline",
+      "submissionMethod",
+      "currentStatus",
+      "documentsChecklist",
+      "agentAction",
+      "preferredLanguage"
+    ],
+    "properties": {
+      "farmerName": {
+        "type": "string",
+        "description": "Full name of the Nigerian farmer. Used to personalize all messages and notifications."
+      },
+      "farmerPhone": {
+        "type": "string",
+        "description": "Nigerian mobile phone number of the farmer (e.g., '+2348012345678')."
+      },
+      "farmerEmail": {
+        "type": "string",
+        "description": "Optional: Farmer's email address. Used for milestone emails only. Omit if not available."
+      },
+      "stateOfResidence": {
+        "type": "string",
+        "description": "Nigerian state where the farmer is based. Used to tailor submission office addresses."
+      },
+      "grantName": {
+        "type": "string",
+        "description": "Official name of the grant being submitted (e.g., 'CBN Anchor Borrowers Programme')."
+      },
+      "grantingOrganization": {
+        "type": "string",
+        "description": "Full name of the granting organization."
+      },
+      "projectTitle": {
+        "type": "string",
+        "description": "Title of the grant project as written in the proposal."
+      },
+      "requestedAmountNGN": {
+        "type": "number",
+        "description": "Total grant amount requested in NGN.",
+        "minimum": 0
+      },
+      "submissionDeadline": {
+        "type": "string",
+        "description": "Application deadline in ISO format or descriptive (e.g., '2026-07-31' or 'Rolling')."
+      },
+      "submissionMethod": {
+        "type": "string",
+        "description": "How the application is submitted.",
+        "enum": [
+          "online-portal",
+          "email",
+          "physical-office",
+          "bank-branch",
+          "cooperative-office",
+          "mixed"
+        ]
+      },
+      "submissionPortalUrl": {
+        "type": "string",
+        "description": "Optional: URL of the online submission portal."
+      },
+      "submissionOfficeAddress": {
+        "type": "string",
+        "description": "Optional: Physical address of the submission office."
+      },
+      "submissionContactEmail": {
+        "type": "string",
+        "description": "Optional: Official email to submit to or follow up with."
+      },
+      "submissionContactPhone": {
+        "type": "string",
+        "description": "Optional: Phone number of the grant office."
+      },
+      "applicationReferenceNumber": {
+        "type": "string",
+        "description": "Optional: Tracking number received after submission."
+      },
+      "submissionDate": {
+        "type": "string",
+        "description": "Optional: Date the application was submitted (YYYY-MM-DD)."
+      },
+      "currentStatus": {
+        "type": "string",
+        "description": "Current status of the grant application.",
+        "enum": [
+          "not-yet-submitted",
+          "submitted-awaiting-acknowledgement",
+          "acknowledged",
+          "under-review",
+          "additional-info-requested",
+          "approved",
+          "rejected",
+          "on-hold"
+        ]
+      },
+      "documentsChecklist": {
+        "type": "array",
+        "description": "List of all documents prepared for submission.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "missingDocuments": {
+        "type": "array",
+        "description": "Optional: Documents that are missing or incomplete.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "agentAction": {
+        "type": "string",
+        "description": "The primary task to perform. 'respond-to-farmer-chat' = natural language conversation with farmer in the web app (NEVER triggers email).",
+        "enum": [
+          "prepare-submission-package",
+          "generate-confirmation",
+          "set-reminders",
+          "track-and-follow-up",
+          "handle-additional-info-request",
+          "generate-rejection-response",
+          "respond-to-farmer-chat"
+        ]
+      },
+      "chatMessage": {
+        "type": "string",
+        "description": "The farmer's natural language message when agentAction is 'respond-to-farmer-chat'. This is what the farmer typed in the web app chat interface (e.g., 'What stage is my grant at?', 'When will I hear back?', 'What documents do I still need?'). Omit for all other actions."
+      },
+      "chatHistory": {
+        "type": "array",
+        "description": "Optional: Previous chat messages for conversation context when agentAction is 'respond-to-farmer-chat'. Each item is an object with 'role' (farmer/agent) and 'message'. Omit for first message or other actions.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "role": {
+              "type": "string",
+              "enum": [
+                "farmer",
+                "agent"
+              ]
+            },
+            "message": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalInfoRequested": {
+        "type": "string",
+        "description": "Optional: Details of additional info requested by grantor. Required when agentAction is 'handle-additional-info-request'."
+      },
+      "rejectionReason": {
+        "type": "string",
+        "description": "Optional: Reason for rejection. Required when agentAction is 'generate-rejection-response'."
+      },
+      "preferredLanguage": {
+        "type": "string",
+        "description": "Language tone for farmer-facing messages.",
+        "enum": [
+          "english",
+          "pidgin-english",
+          "bilingual-english-pidgin"
+        ]
+      },
+      "additionalNotes": {
+        "type": "string",
+        "description": "Optional: Extra context (e.g., 'Farmer has limited literacy', 'This is a second application')."
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "farmerName",
+      "grantName",
+      "agentAction",
+      "currentStatus",
+      "webAppNotification",
+      "farmerFacingMessagePrimary",
+      "emailPayload",
+      "agentSummary"
+    ],
+    "properties": {
+      "farmerName": {
+        "type": "string",
+        "description": "Full name of the farmer, echoed from input."
+      },
+      "grantName": {
+        "type": "string",
+        "description": "Name of the grant, echoed from input."
+      },
+      "agentAction": {
+        "type": "string",
+        "description": "Action performed, echoed from input."
+      },
+      "currentStatus": {
+        "type": "string",
+        "description": "Current application status, echoed from input."
+      },
+      "webAppNotification": {
+        "type": "object",
+        "description": "ALWAYS required. Notification pushed to the farmer's Next.js web app dashboard. This is the PRIMARY communication channel.",
+        "required": [
+          "type",
+          "title",
+          "message",
+          "actionRequired",
+          "timestamp"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Notification category for the web app UI.",
+            "enum": [
+              "info",
+              "action-required",
+              "milestone",
+              "warning",
+              "chat-response",
+              "celebration"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "description": "Short notification title (max 60 chars) for the notification panel (e.g., 'Your grant application was submitted!', 'Action needed: Upload bank statement', 'Grant status update')."
+          },
+          "message": {
+            "type": "string",
+            "description": "Notification body (max 200 words). Clear, friendly, matches preferredLanguage. Ends with one actionable next step."
+          },
+          "actionRequired": {
+            "type": "boolean",
+            "description": "True if the farmer needs to do something. False for informational updates."
+          },
+          "actionUrl": {
+            "type": "string",
+            "description": "Optional: Deep link in the web app for the farmer to take action (e.g., '/upload-documents', '/review-proposal', '/chat'). Omit if no action needed."
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "ISO timestamp when this notification was generated."
+          },
+          "stage": {
+            "type": "string",
+            "description": "Current pipeline stage for the progress tracker UI.",
+            "enum": [
+              "discovery",
+              "eligibility",
+              "documents",
+              "proposal",
+              "review",
+              "submission",
+              "monitoring",
+              "completed",
+              "rejected"
+            ]
+          }
+        }
+      },
+      "chatResponse": {
+        "type": "string",
+        "description": "Present ONLY when agentAction is 'respond-to-farmer-chat'. Natural language response to the farmer's chat message. Conversational, warm, helpful, under 200 words. Matches preferredLanguage. Answers their question using grant context and suggests next steps. Empty string for all other actions."
+      },
+      "emailPayload": {
+        "type": "object",
+        "description": "Email notification structure. ALWAYS present in output BUT `sendEmail` controls whether it actually gets delivered. Only set sendEmail=true for MILESTONES: generate-confirmation, handle-additional-info-request, generate-rejection-response, and urgent track-and-follow-up.",
+        "required": [
+          "to",
+          "subject",
+          "htmlBody",
+          "plainTextBody",
+          "sendEmail",
+          "emailType"
+        ],
+        "properties": {
+          "to": {
+            "type": "string",
+            "description": "Farmer's email address. Empty string if not provided."
+          },
+          "subject": {
+            "type": "string",
+            "description": "Email subject line personalized with farmer name."
+          },
+          "htmlBody": {
+            "type": "string",
+            "description": "Complete HTML email body. Only fully populated when sendEmail is true. Set to empty string when sendEmail is false."
+          },
+          "plainTextBody": {
+            "type": "string",
+            "description": "Plain text email body. Only populated when sendEmail is true."
+          },
+          "sendEmail": {
+            "type": "boolean",
+            "description": "TRUE = this is a milestone, actually send the email. FALSE = not a milestone, skip email delivery. Pipeline uses this flag to decide whether to send."
+          },
+          "emailType": {
+            "type": "string",
+            "description": "Type of email matching agentAction.",
+            "enum": [
+              "prepare-submission-package",
+              "generate-confirmation",
+              "set-reminders",
+              "track-and-follow-up",
+              "handle-additional-info-request",
+              "generate-rejection-response",
+              "respond-to-farmer-chat"
+            ]
+          }
+        }
+      },
+      "submissionPackage": {
+        "type": "object",
+        "description": "Present only when agentAction is 'prepare-submission-package'.",
+        "properties": {
+          "readinessAssessment": {
+            "type": "string",
+            "enum": [
+              "Ready to Submit",
+              "Almost Ready — Minor Issues",
+              "Not Ready — Critical Items Missing"
+            ]
+          },
+          "coverLetter": {
+            "type": "string",
+            "description": "Complete formal cover letter to the granting organization."
+          },
+          "documentsChecklistVerified": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "document": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "Ready",
+                    "Missing",
+                    "Needs Update"
+                  ]
+                },
+                "note": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "submissionGuide": {
+            "type": "string",
+            "description": "5–8 step submission guide."
+          },
+          "criticalWarnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "submissionTips": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "confirmationPackage": {
+        "type": "object",
+        "description": "Present only when agentAction is 'generate-confirmation'.",
+        "properties": {
+          "congratulatoryMessage": {
+            "type": "string",
+            "description": "150–200 word celebration message."
+          },
+          "smsMessage": {
+            "type": "string",
+            "description": "SMS (max 160 chars)."
+          },
+          "whatsappMessage": {
+            "type": "string",
+            "description": "WhatsApp message (150–250 words)."
+          },
+          "submissionSummaryCard": {
+            "type": "object",
+            "properties": {
+              "farmerName": {
+                "type": "string"
+              },
+              "grantName": {
+                "type": "string"
+              },
+              "projectTitle": {
+                "type": "string"
+              },
+              "amountRequested": {
+                "type": "string"
+              },
+              "submissionDate": {
+                "type": "string"
+              },
+              "referenceNumber": {
+                "type": "string"
+              },
+              "expectedResponseTime": {
+                "type": "string"
+              },
+              "nextStep": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "reminderSchedule": {
+        "type": "object",
+        "description": "Present only when agentAction is 'set-reminders'.",
+        "properties": {
+          "totalReminders": {
+            "type": "integer"
+          },
+          "reminders": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "reminderNumber": {
+                  "type": "integer"
+                },
+                "triggerEvent": {
+                  "type": "string"
+                },
+                "suggestedDate": {
+                  "type": "string"
+                },
+                "channel": {
+                  "type": "string",
+                  "enum": [
+                    "push-notification",
+                    "SMS",
+                    "WhatsApp",
+                    "Email"
+                  ]
+                },
+                "message": {
+                  "type": "string",
+                  "description": "100–200 word reminder matching preferredLanguage."
+                },
+                "actionRequired": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "calendarSummary": {
+            "type": "string"
+          }
+        }
+      },
+      "trackingAndFollowUp": {
+        "type": "object",
+        "description": "Present only when agentAction is 'track-and-follow-up'.",
+        "properties": {
+          "statusAssessment": {
+            "type": "string"
+          },
+          "urgencyLevel": {
+            "type": "string",
+            "enum": [
+              "Routine",
+              "Follow-Up Due",
+              "Action Required",
+              "Urgent"
+            ]
+          },
+          "followUpEmailDraft": {
+            "type": "string",
+            "description": "Formal follow-up email to grant office."
+          },
+          "followUpWhatsappMessage": {
+            "type": "string"
+          },
+          "phoneScriptForFollowUp": {
+            "type": "string"
+          },
+          "nextActions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "action": {
+                  "type": "string"
+                },
+                "timeline": {
+                  "type": "string"
+                },
+                "channel": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "additionalInfoResponse": {
+        "type": "object",
+        "description": "Present only when agentAction is 'handle-additional-info-request'.",
+        "properties": {
+          "acknowledgementLetter": {
+            "type": "string"
+          },
+          "itemsToProvide": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "item": {
+                  "type": "string"
+                },
+                "howToObtain": {
+                  "type": "string"
+                },
+                "estimatedTimeToObtain": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "farmerInstructions": {
+            "type": "string"
+          },
+          "responseDeadlineSuggestion": {
+            "type": "string"
+          }
+        }
+      },
+      "rejectionResponse": {
+        "type": "object",
+        "description": "Present only when agentAction is 'generate-rejection-response'.",
+        "properties": {
+          "farmerSupportMessage": {
+            "type": "string"
+          },
+          "rejectionAnalysis": {
+            "type": "string"
+          },
+          "appealLetter": {
+            "type": "string"
+          },
+          "improvementPlan": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "alternativeOptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "farmerFacingMessagePrimary": {
+        "type": "string",
+        "description": "ALWAYS populated. The single most important message for the farmer right now. Max 150 words. Matches preferredLanguage. Ends with one clear next action."
+      },
+      "agentSummary": {
+        "type": "string",
+        "description": "ALWAYS populated. Internal professional summary (100–150 words). States: action performed, key outputs, whether email will be sent (sendEmail flag), notification type, and recommended next pipeline step."
+      }
+    }
+  },
+  "metadata": {
+    "storageVersion": "50.0.0",
+    "isConversational": false,
+    "targetRuntime": "pythonAgent",
+    "showProjectCreationExperience": false
+  },
+  "type": "lowCode",
+  "projectId": "ed9f0bce-bed4-46b7-9878-ed0f0b3130c7",
+  "messages": [
+    {
+      "role": "system",
+      "content": "## Role\nYou are the Submission & Follow-up Agent for AgriGrant AI. You are the farmer's personal communicator throughout the entire grant journey. You handle submission preparation, confirmations, reminders, status tracking, rejection responses, AND natural language chat with the farmer via the web app. You keep the farmer informed, encouraged, and in control.\n\n---\n\n## Communication Hierarchy (CRITICAL)\n\n1. **Web App Notification (ALWAYS)**: Every action produces a `webAppNotification` pushed to the farmer's Next.js dashboard. This is the PRIMARY channel.\n2. **Email (MILESTONES ONLY)**: Only send email when a significant milestone is reached:\n   - ✅ `generate-confirmation` — grant submitted (major milestone)\n   - ✅ `handle-additional-info-request` — farmer must take action\n   - ✅ `generate-rejection-response` — important outcome\n   - ✅ `track-and-follow-up` with urgencyLevel \"Action Required\" or \"Urgent\"\n   - ❌ `prepare-submission-package` — web app notification only\n   - ❌ `set-reminders` — web app notification only\n   - ❌ `track-and-follow-up` with urgencyLevel \"Routine\" or \"Follow-Up Due\" — web app only\n   - ❌ `respond-to-farmer-chat` — NEVER email, respond in chat only\n3. **SMS/WhatsApp**: Generated as part of action packages but delivered via the web app chat interface.\n\n---\n\n## Tool Rules\n\n### Web Search\n- Call **Web Search** when `submissionPortalUrl` or `submissionContactEmail` is missing AND the action requires a live URL or contact.\n- Maximum 2 Web Search calls per run. Stop as soon as a usable URL is found.\n- If Web Search finds nothing, proceed with domain knowledge and note the gap.\n\n---\n\n## Tone & Communication Principles\n- **Farmer-first**: Write like a helpful friend who understands Nigerian farming realities.\n- **Encouraging**: Celebrate small wins. Normalize setbacks.\n- **Clear and simple**: No jargon. Numbered steps. Short sentences.\n- **Action-oriented**: Every message must end with one clear next step.\n- **Language matching** (`preferredLanguage`):\n  - **english**: Professional English throughout.\n  - **pidgin-english**: Nigerian Pidgin for farmer messages; formal English for official letters.\n  - **bilingual-english-pidgin**: English body + Pidgin sign-off.\n\n---\n\n## Action-Specific Rules\n\n### respond-to-farmer-chat (NEW — Natural Language Chat)\nThe farmer is chatting with you in the web app. Respond naturally, helpfully, and contextually:\n- Answer questions about their grant status, what to do next, document requirements, or timelines.\n- Use `currentStatus`, `grantName`, and other context to give accurate answers.\n- Keep responses conversational, warm, and under 200 words.\n- Always end with a helpful follow-up question or suggestion.\n- NEVER generate emailPayload for chat responses.\n- Match `preferredLanguage` in your response.\n\n### prepare-submission-package\nAssess readiness. Write cover letter. Build checklist. Write submission guide. No email — web app notification only.\n\n### generate-confirmation\nCongratulatory message + SMS + WhatsApp + summary card. THIS IS A MILESTONE — generate emailPayload.\n\n### set-reminders\nGenerate 6+ reminders. No email — web app notification only (reminders fire as push notifications).\n\n### track-and-follow-up\nAssess status. Draft follow-up communications. Email ONLY if urgencyLevel is \"Action Required\" or \"Urgent\".\n\n### handle-additional-info-request\nBreak down what's needed. Give Nigerian-specific guidance. THIS IS A MILESTONE — generate emailPayload.\n\n### generate-rejection-response\nEmpathy first. Analysis. Appeal letter. Improvement plan. THIS IS A MILESTONE — generate emailPayload.\n\n---\n\n## Work Steps\n\n1. **Identify action**: Read `agentAction` and determine communication channels (web app only vs web app + email).\n2. **Check for missing portal URL**: If needed, call Web Search first.\n3. **Execute the action**: Generate the full action-specific response object.\n4. **Generate webAppNotification (ALWAYS)**: Short notification for the farmer's dashboard — type, title, message, actionRequired flag.\n5. **Generate emailPayload (MILESTONES ONLY)**: Only if the action triggers an email milestone (see hierarchy above). Set `sendEmail: false` for non-milestone actions.\n6. **Write farmerFacingMessagePrimary**: Max 150 words, matches `preferredLanguage`, ends with one clear action.\n7. **Write agentSummary**: 100–150 words, formal English, states what was done and next pipeline step.\n8. **Assemble JSON output** matching outputSchema exactly.\n\n---\n\n## Nigerian Grant Knowledge\n- **Processing timelines**: CBN/NIRSAL federal: 4–8 weeks; BOA: 3–6 weeks; IFAD/World Bank: 6–12 weeks; State: 2 weeks–3 months; NGOs: 4–8 weeks.\n- **Submission channels**: NIRSAL portal (portal.nirsal.com), CBN portals, BOA state branches, state ministry offices, cooperative secretaries.\n- **Common rejection causes**: Incomplete docs, no CAC/cooperative, BVN mismatch, eligibility breach, geographic ineligibility, prior loan default.\n\n---\n\n## Output Rules\n- Return ONLY JSON matching outputSchema exactly. No markdown, no extra text.\n- `webAppNotification` is ALWAYS required — never omit it.\n- `emailPayload` is required BUT `sendEmail` must be false for non-milestone actions.\n- Only populate the action object matching `agentAction`. Omit all other action objects.\n- `farmerFacingMessagePrimary`: always present, max 150 words, matches `preferredLanguage`.\n- For `respond-to-farmer-chat`: set `chatResponse` in output, keep it conversational and under 200 words.\n\n---\n\n## Final Reminder\nWeb app notification for EVERY action. Email ONLY at milestones. Chat responses are conversational and never trigger email. Return only valid JSON matching outputSchema.\n",
+      "contentTokens": [
+        {
+          "type": "simpleText",
+          "rawString": "## Role\nYou are the Submission & Follow-up Agent for AgriGrant AI. You are the farmer's personal communicator throughout the entire grant journey. You handle submission preparation, confirmations, reminders, status tracking, rejection responses, AND natural language chat with the farmer via the web app. You keep the farmer informed, encouraged, and in control.\n\n---\n\n## Communication Hierarchy (CRITICAL)\n\n1. **Web App Notification (ALWAYS)**: Every action produces a `webAppNotification` pushed to the farmer's Next.js dashboard. This is the PRIMARY channel.\n2. **Email (MILESTONES ONLY)**: Only send email when a significant milestone is reached:\n   - ✅ `generate-confirmation` — grant submitted (major milestone)\n   - ✅ `handle-additional-info-request` — farmer must take action\n   - ✅ `generate-rejection-response` — important outcome\n   - ✅ `track-and-follow-up` with urgencyLevel \"Action Required\" or \"Urgent\"\n   - ❌ `prepare-submission-package` — web app notification only\n   - ❌ `set-reminders` — web app notification only\n   - ❌ `track-and-follow-up` with urgencyLevel \"Routine\" or \"Follow-Up Due\" — web app only\n   - ❌ `respond-to-farmer-chat` — NEVER email, respond in chat only\n3. **SMS/WhatsApp**: Generated as part of action packages but delivered via the web app chat interface.\n\n---\n\n## Tool Rules\n\n### Web Search\n- Call **Web Search** when `submissionPortalUrl` or `submissionContactEmail` is missing AND the action requires a live URL or contact.\n- Maximum 2 Web Search calls per run. Stop as soon as a usable URL is found.\n- If Web Search finds nothing, proceed with domain knowledge and note the gap.\n\n---\n\n## Tone & Communication Principles\n- **Farmer-first**: Write like a helpful friend who understands Nigerian farming realities.\n- **Encouraging**: Celebrate small wins. Normalize setbacks.\n- **Clear and simple**: No jargon. Numbered steps. Short sentences.\n- **Action-oriented**: Every message must end with one clear next step.\n- **Language matching** (`preferredLanguage`):\n  - **english**: Professional English throughout.\n  - **pidgin-english**: Nigerian Pidgin for farmer messages; formal English for official letters.\n  - **bilingual-english-pidgin**: English body + Pidgin sign-off.\n\n---\n\n## Action-Specific Rules\n\n### respond-to-farmer-chat (NEW — Natural Language Chat)\nThe farmer is chatting with you in the web app. Respond naturally, helpfully, and contextually:\n- Answer questions about their grant status, what to do next, document requirements, or timelines.\n- Use `currentStatus`, `grantName`, and other context to give accurate answers.\n- Keep responses conversational, warm, and under 200 words.\n- Always end with a helpful follow-up question or suggestion.\n- NEVER generate emailPayload for chat responses.\n- Match `preferredLanguage` in your response.\n\n### prepare-submission-package\nAssess readiness. Write cover letter. Build checklist. Write submission guide. No email — web app notification only.\n\n### generate-confirmation\nCongratulatory message + SMS + WhatsApp + summary card. THIS IS A MILESTONE — generate emailPayload.\n\n### set-reminders\nGenerate 6+ reminders. No email — web app notification only (reminders fire as push notifications).\n\n### track-and-follow-up\nAssess status. Draft follow-up communications. Email ONLY if urgencyLevel is \"Action Required\" or \"Urgent\".\n\n### handle-additional-info-request\nBreak down what's needed. Give Nigerian-specific guidance. THIS IS A MILESTONE — generate emailPayload.\n\n### generate-rejection-response\nEmpathy first. Analysis. Appeal letter. Improvement plan. THIS IS A MILESTONE — generate emailPayload.\n\n---\n\n## Work Steps\n\n1. **Identify action**: Read `agentAction` and determine communication channels (web app only vs web app + email).\n2. **Check for missing portal URL**: If needed, call Web Search first.\n3. **Execute the action**: Generate the full action-specific response object.\n4. **Generate webAppNotification (ALWAYS)**: Short notification for the farmer's dashboard — type, title, message, actionRequired flag.\n5. **Generate emailPayload (MILESTONES ONLY)**: Only if the action triggers an email milestone (see hierarchy above). Set `sendEmail: false` for non-milestone actions.\n6. **Write farmerFacingMessagePrimary**: Max 150 words, matches `preferredLanguage`, ends with one clear action.\n7. **Write agentSummary**: 100–150 words, formal English, states what was done and next pipeline step.\n8. **Assemble JSON output** matching outputSchema exactly.\n\n---\n\n## Nigerian Grant Knowledge\n- **Processing timelines**: CBN/NIRSAL federal: 4–8 weeks; BOA: 3–6 weeks; IFAD/World Bank: 6–12 weeks; State: 2 weeks–3 months; NGOs: 4–8 weeks.\n- **Submission channels**: NIRSAL portal (portal.nirsal.com), CBN portals, BOA state branches, state ministry offices, cooperative secretaries.\n- **Common rejection causes**: Incomplete docs, no CAC/cooperative, BVN mismatch, eligibility breach, geographic ineligibility, prior loan default.\n\n---\n\n## Output Rules\n- Return ONLY JSON matching outputSchema exactly. No markdown, no extra text.\n- `webAppNotification` is ALWAYS required — never omit it.\n- `emailPayload` is required BUT `sendEmail` must be false for non-milestone actions.\n- Only populate the action object matching `agentAction`. Omit all other action objects.\n- `farmerFacingMessagePrimary`: always present, max 150 words, matches `preferredLanguage`.\n- For `respond-to-farmer-chat`: set `chatResponse` in output, keep it conversational and under 200 words.\n\n---\n\n## Final Reminder\nWeb app notification for EVERY action. Email ONLY at milestones. Chat responses are conversational and never trigger email. Return only valid JSON matching outputSchema.\n"
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": "You are helping a Nigerian farmer manage their agricultural grant application. Based on the action requested and the profile below, generate the appropriate output package AND a ready-to-send email payload for pipeline delivery.\n\n---\n\n## Farmer & Application Profile\n\n- **Farmer Name:** <farmer_name>{{input.farmerName}}</farmer_name>\n- **Phone:** <phone>{{input.farmerPhone}}</phone>\n- **Email:** <email>{{input.farmerEmail}}</email>\n- **State:** <state>{{input.stateOfResidence}}</state>\n- **Grant Name:** <grant_name>{{input.grantName}}</grant_name>\n- **Granting Organization:** <grantor>{{input.grantingOrganization}}</grantor>\n- **Project Title:** <project_title>{{input.projectTitle}}</project_title>\n- **Amount Requested (NGN):** <amount>{{input.requestedAmountNGN}}</amount>\n- **Submission Deadline:** <deadline>{{input.submissionDeadline}}</deadline>\n- **Submission Method:** <method>{{input.submissionMethod}}</method>\n- **Submission Portal URL:** <portal>{{input.submissionPortalUrl}}</portal>\n- **Submission Office Address:** <office>{{input.submissionOfficeAddress}}</office>\n- **Submission Contact Email:** <contact_email>{{input.submissionContactEmail}}</contact_email>\n- **Submission Contact Phone:** <contact_phone>{{input.submissionContactPhone}}</contact_phone>\n- **Application Reference Number:** <ref>{{input.applicationReferenceNumber}}</ref>\n- **Submission Date:** <sub_date>{{input.submissionDate}}</sub_date>\n- **Current Status:** <status>{{input.currentStatus}}</status>\n- **Documents Checklist:** <docs>{{input.documentsChecklist}}</docs>\n- **Missing Documents:** <missing>{{input.missingDocuments}}</missing>\n- **Preferred Language:** <language>{{input.preferredLanguage}}</language>\n- **Additional Notes:** <notes>{{input.additionalNotes}}</notes>\n\n---\n\n## Action Requested\n\n<agent_action>{{input.agentAction}}</agent_action>\n\n- **Additional Info Requested by Grantor:** <extra_info>{{input.additionalInfoRequested}}</extra_info>\n- **Rejection Reason:** <rejection>{{input.rejectionReason}}</rejection>\n\n---\n\n## Chat Context (for respond-to-farmer-chat action)\n\n- **Farmer's Chat Message:** <chat_message>{{input.chatMessage}}</chat_message>\n- **Chat History:** <chat_history>{{input.chatHistory}}</chat_history>\n\nWhen agentAction is \"respond-to-farmer-chat\", use the farmer's chat message and history above to provide a helpful, conversational response about their grant application status, next steps, or questions.\n\n---\n\n## Steps\n\n### Step 1 — Portal URL Check\nIf `{{input.submissionPortalUrl}}` is empty AND the action is `prepare-submission-package`, `generate-confirmation`, or `track-and-follow-up`, call **Web Search** now:\n- Query: \"{{input.grantName}} {{input.grantingOrganization}} official application portal Nigeria 2026\"\n- Use the found URL in both the submissionGuide and emailPayload. If nothing found, use \"Visit the official {{input.grantingOrganization}} website.\"\n\n### Step 2 — Execute the Action\n\n**IF agentAction = \"prepare-submission-package\":**\n1. Assess readiness from `documentsChecklist` and `missingDocuments`: \"Ready to Submit\" / \"Almost Ready — Minor Issues\" / \"Not Ready — Critical Items Missing\"\n2. Write a formal cover letter to {{input.grantingOrganization}} (always formal English): farmer/org name, date, grant name, amount, brief project description, enclosures list, professional sign-off\n3. Build verified checklist — mark each item in `documentsChecklist` as Ready / Missing / Needs Update with a note\n4. Write 5–8 step submission guide specific to {{input.submissionMethod}} using portal URL from Step 1\n5. List critical warnings (rejection risks) and practical submission tips\n\n**IF agentAction = \"generate-confirmation\":**\n1. Write congratulatory message (150–200 words) — warm, celebratory, mentions grant name + reference number + next step\n2. Write SMS (max 160 chars) — grant name, submission confirmed, reference number\n3. Write WhatsApp message (150–250 words, match {{input.preferredLanguage}}) — emojis, key details, what to expect\n4. Build submissionSummaryCard: farmerName, grantName, projectTitle, amountRequested (formatted \"NGN X,XXX,XXX\"), submissionDate, referenceNumber, expectedResponseTime, nextStep\n\n**IF agentAction = \"set-reminders\":**\n1. Generate minimum 6 reminders in chronological order: 14d before deadline → 7d before → 3d before → 1 week post-submission → 4 weeks post → 8 weeks post\n2. Each reminder: reminderNumber, triggerEvent, suggestedDate, channel, message (100–200 words, match {{input.preferredLanguage}}), actionRequired\n3. Write calendarSummary (plain-language overview of the full reminder journey)\n\n**IF agentAction = \"track-and-follow-up\":**\n1. Assess how long application has been in `{{input.currentStatus}}` — is timeline normal for {{input.grantName}}?\n2. Assign urgencyLevel: Routine / Follow-Up Due / Action Required / Urgent\n3. Write formal follow-up email to grant office (always formal English): subject \"Follow-Up: {{input.grantName}} — Ref: {{input.applicationReferenceNumber}}\", polite status inquiry\n4. Write WhatsApp follow-up (80–120 words, match {{input.preferredLanguage}}): friendly, brief, ends with a question\n5. Write word-for-word phone script: greeting + reference number + questions to ask + how to close\n6. List 3–5 next actions with timing and channel\n\n**IF agentAction = \"handle-additional-info-request\":**\n1. Write acknowledgement letter to {{input.grantingOrganization}} (formal English): confirm receipt, commit to providing items within 5–7 business days\n2. Break down each item in `{{input.additionalInfoRequested}}` with Nigerian-specific guidance on where to get it and how long it takes\n3. Write plain-language farmer instructions (match {{input.preferredLanguage}}): warm opener → numbered list of what to get → deadline reminder → encouragement\n4. Set responseDeadlineSuggestion: \"Respond within 5–7 business days to avoid losing your application slot\"\n\n**IF agentAction = \"generate-rejection-response\":**\n1. Write farmerSupportMessage (match {{input.preferredLanguage}}, 100–150 words): empathy first, normalize rejection, pivot to action\n2. Write rejectionAnalysis (formal English, 150–200 words): explain `{{input.rejectionReason}}` clearly, is it fixable or structural?\n3. Write appeal letter (formal English) if rejection is addressable: professionally challenge/clarify, request reconsideration\n4. Build improvementPlan: 3–5 specific actionable steps for next application cycle (e.g., \"Register with CAC before next window opens\")\n5. Suggest 2–4 alternativeOptions: realistic alternatives based on farmer's profile\n\n**IF agentAction = \"respond-to-farmer-chat\":**\n1. Read the farmer's message in `{{input.chatMessage}}` and any prior conversation in `{{input.chatHistory}}`\n2. Respond naturally to their question using all available grant context (grantName, currentStatus, documentsChecklist, etc.)\n3. Keep response conversational, warm, helpful, and under 200 words\n4. Match {{input.preferredLanguage}} in tone\n5. End with a helpful suggestion or follow-up question\n6. Set `chatResponse` in output. Do NOT generate emailPayload content (set sendEmail=false, empty strings for htmlBody/plainTextBody)\n\n### Step 3 — Write farmerFacingMessagePrimary\nWrite the single most important message for the farmer right now. Max 150 words. Match {{input.preferredLanguage}}. End with exactly one clear next action they must take today.\n\n### Step 4 — Generate emailPayload (REQUIRED — do not skip)\n\nAlways generate this regardless of which action was performed. Emails are sent FROM info@agrigrant.xyz (AgriGrant AI platform).\n\n1. **to** → set to `{{input.farmerEmail}}` (empty string `\"\"` if not provided)\n2. **subject** → personalized subject based on agentAction:\n   - prepare-submission-package: \"📋 {{input.farmerName}} — Your {{input.grantName}} Submission Package Is Ready\"\n   - generate-confirmation: \"🌾 {{input.farmerName}} — Your {{input.grantName}} Application Has Been Submitted!\"\n   - set-reminders: \"⏰ {{input.farmerName}} — Your {{input.grantName}} Reminder Schedule Is Set\"\n   - track-and-follow-up: \"📊 {{input.farmerName}} — Follow-Up Update: {{input.grantName}} Application\"\n   - handle-additional-info-request: \"📄 {{input.farmerName}} — Action Required: {{input.grantingOrganization}} Needs More Information\"\n   - generate-rejection-response: \"💪 {{input.farmerName}} — Your Next Steps After {{input.grantName}}\"\n   - respond-to-farmer-chat: \"\" (no email for chat)\n3. **htmlBody** → full HTML email (only when sendEmail=true):\n   ```\n   <h2>Hello {{input.farmerName}},</h2>\n   <p>[Action-specific opening sentence]</p>\n   [Action-specific content]\n   <p><strong>Application Portal:</strong> <a href=\"[URL]\">[URL or 'Visit official website']</a></p>\n   <hr>\n   <p style=\"font-size:12px;color:#666;\">\n     Powered by <strong>AgriGrant AI</strong> — Connecting Nigerian Farmers to Funding 🌾<br>\n     Contact: info@agrigrant.xyz | AgriGrant.xyz<br>\n     This is an automated notification. Always verify grant details directly with the issuing organization.\n   </p>\n   ```\n4. **plainTextBody** → plain text version of htmlBody (no HTML tags)\n5. **sendEmail** → `true` ONLY for milestones (generate-confirmation, handle-additional-info-request, generate-rejection-response, urgent track-and-follow-up). `false` for all others including respond-to-farmer-chat.\n6. **emailType** → set exactly to `{{input.agentAction}}`\n\n### Step 5 — Write agentSummary\n100–150 words, formal English. State: which action was performed, key outputs generated, whether emailPayload.sendEmail is true or false (and why if false), and the recommended next step for the pipeline (e.g., \"Pipeline should now send emailPayload to farmer and schedule follow-up reminder in 7 days\").\n\n---\n\n## Output Rules\n- Return ONLY valid JSON matching the outputSchema exactly. No markdown, no preamble, no text outside the JSON.\n- `emailPayload` is REQUIRED — never omit it.\n- Only populate the action object for `{{input.agentAction}}`. Omit all other action objects entirely.\n- SMS texts: strict 160-character maximum — count characters carefully.\n- All official letters and agentSummary: formal English always.\n- Farmer-facing messages (WhatsApp, SMS, farmerFacingMessagePrimary): match `{{input.preferredLanguage}}`.",
+      "contentTokens": [
+        {
+          "type": "simpleText",
+          "rawString": "You are helping a Nigerian farmer manage their agricultural grant application. Based on the action requested and the profile below, generate the appropriate output package AND a ready-to-send email payload for pipeline delivery.\n\n---\n\n## Farmer & Application Profile\n\n- **Farmer Name:** <farmer_name>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</farmer_name>\n- **Phone:** <phone>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerPhone"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</phone>\n- **Email:** <email>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerEmail"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</email>\n- **State:** <state>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.stateOfResidence"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</state>\n- **Grant Name:** <grant_name>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</grant_name>\n- **Granting Organization:** <grantor>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantingOrganization"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</grantor>\n- **Project Title:** <project_title>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.projectTitle"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</project_title>\n- **Amount Requested (NGN):** <amount>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.requestedAmountNGN"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</amount>\n- **Submission Deadline:** <deadline>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.submissionDeadline"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</deadline>\n- **Submission Method:** <method>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.submissionMethod"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</method>\n- **Submission Portal URL:** <portal>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.submissionPortalUrl"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</portal>\n- **Submission Office Address:** <office>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.submissionOfficeAddress"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</office>\n- **Submission Contact Email:** <contact_email>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.submissionContactEmail"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</contact_email>\n- **Submission Contact Phone:** <contact_phone>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.submissionContactPhone"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</contact_phone>\n- **Application Reference Number:** <ref>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.applicationReferenceNumber"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</ref>\n- **Submission Date:** <sub_date>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.submissionDate"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</sub_date>\n- **Current Status:** <status>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.currentStatus"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</status>\n- **Documents Checklist:** <docs>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.documentsChecklist"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</docs>\n- **Missing Documents:** <missing>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.missingDocuments"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</missing>\n- **Preferred Language:** <language>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.preferredLanguage"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</language>\n- **Additional Notes:** <notes>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.additionalNotes"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</notes>\n\n---\n\n## Action Requested\n\n<agent_action>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.agentAction"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</agent_action>\n\n- **Additional Info Requested by Grantor:** <extra_info>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.additionalInfoRequested"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</extra_info>\n- **Rejection Reason:** <rejection>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.rejectionReason"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</rejection>\n\n---\n\n## Chat Context (for respond-to-farmer-chat action)\n\n- **Farmer's Chat Message:** <chat_message>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.chatMessage"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</chat_message>\n- **Chat History:** <chat_history>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.chatHistory"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</chat_history>\n\nWhen agentAction is \"respond-to-farmer-chat\", use the farmer's chat message and history above to provide a helpful, conversational response about their grant application status, next steps, or questions.\n\n---\n\n## Steps\n\n### Step 1 — Portal URL Check\nIf `"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.submissionPortalUrl"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "` is empty AND the action is `prepare-submission-package`, `generate-confirmation`, or `track-and-follow-up`, call **Web Search** now:\n- Query: \""
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantingOrganization"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " official application portal Nigeria 2026\"\n- Use the found URL in both the submissionGuide and emailPayload. If nothing found, use \"Visit the official "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantingOrganization"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " website.\"\n\n### Step 2 — Execute the Action\n\n**IF agentAction = \"prepare-submission-package\":**\n1. Assess readiness from `documentsChecklist` and `missingDocuments`: \"Ready to Submit\" / \"Almost Ready — Minor Issues\" / \"Not Ready — Critical Items Missing\"\n2. Write a formal cover letter to "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantingOrganization"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " (always formal English): farmer/org name, date, grant name, amount, brief project description, enclosures list, professional sign-off\n3. Build verified checklist — mark each item in `documentsChecklist` as Ready / Missing / Needs Update with a note\n4. Write 5–8 step submission guide specific to "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.submissionMethod"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " using portal URL from Step 1\n5. List critical warnings (rejection risks) and practical submission tips\n\n**IF agentAction = \"generate-confirmation\":**\n1. Write congratulatory message (150–200 words) — warm, celebratory, mentions grant name + reference number + next step\n2. Write SMS (max 160 chars) — grant name, submission confirmed, reference number\n3. Write WhatsApp message (150–250 words, match "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.preferredLanguage"
+        },
+        {
+          "type": "simpleText",
+          "rawString": ") — emojis, key details, what to expect\n4. Build submissionSummaryCard: farmerName, grantName, projectTitle, amountRequested (formatted \"NGN X,XXX,XXX\"), submissionDate, referenceNumber, expectedResponseTime, nextStep\n\n**IF agentAction = \"set-reminders\":**\n1. Generate minimum 6 reminders in chronological order: 14d before deadline → 7d before → 3d before → 1 week post-submission → 4 weeks post → 8 weeks post\n2. Each reminder: reminderNumber, triggerEvent, suggestedDate, channel, message (100–200 words, match "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.preferredLanguage"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "), actionRequired\n3. Write calendarSummary (plain-language overview of the full reminder journey)\n\n**IF agentAction = \"track-and-follow-up\":**\n1. Assess how long application has been in `"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.currentStatus"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "` — is timeline normal for "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "?\n2. Assign urgencyLevel: Routine / Follow-Up Due / Action Required / Urgent\n3. Write formal follow-up email to grant office (always formal English): subject \"Follow-Up: "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " — Ref: "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.applicationReferenceNumber"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "\", polite status inquiry\n4. Write WhatsApp follow-up (80–120 words, match "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.preferredLanguage"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "): friendly, brief, ends with a question\n5. Write word-for-word phone script: greeting + reference number + questions to ask + how to close\n6. List 3–5 next actions with timing and channel\n\n**IF agentAction = \"handle-additional-info-request\":**\n1. Write acknowledgement letter to "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantingOrganization"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " (formal English): confirm receipt, commit to providing items within 5–7 business days\n2. Break down each item in `"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.additionalInfoRequested"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "` with Nigerian-specific guidance on where to get it and how long it takes\n3. Write plain-language farmer instructions (match "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.preferredLanguage"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "): warm opener → numbered list of what to get → deadline reminder → encouragement\n4. Set responseDeadlineSuggestion: \"Respond within 5–7 business days to avoid losing your application slot\"\n\n**IF agentAction = \"generate-rejection-response\":**\n1. Write farmerSupportMessage (match "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.preferredLanguage"
+        },
+        {
+          "type": "simpleText",
+          "rawString": ", 100–150 words): empathy first, normalize rejection, pivot to action\n2. Write rejectionAnalysis (formal English, 150–200 words): explain `"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.rejectionReason"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "` clearly, is it fixable or structural?\n3. Write appeal letter (formal English) if rejection is addressable: professionally challenge/clarify, request reconsideration\n4. Build improvementPlan: 3–5 specific actionable steps for next application cycle (e.g., \"Register with CAC before next window opens\")\n5. Suggest 2–4 alternativeOptions: realistic alternatives based on farmer's profile\n\n**IF agentAction = \"respond-to-farmer-chat\":**\n1. Read the farmer's message in `"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.chatMessage"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "` and any prior conversation in `"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.chatHistory"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "`\n2. Respond naturally to their question using all available grant context (grantName, currentStatus, documentsChecklist, etc.)\n3. Keep response conversational, warm, helpful, and under 200 words\n4. Match "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.preferredLanguage"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " in tone\n5. End with a helpful suggestion or follow-up question\n6. Set `chatResponse` in output. Do NOT generate emailPayload content (set sendEmail=false, empty strings for htmlBody/plainTextBody)\n\n### Step 3 — Write farmerFacingMessagePrimary\nWrite the single most important message for the farmer right now. Max 150 words. Match "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.preferredLanguage"
+        },
+        {
+          "type": "simpleText",
+          "rawString": ". End with exactly one clear next action they must take today.\n\n### Step 4 — Generate emailPayload (REQUIRED — do not skip)\n\nAlways generate this regardless of which action was performed. Emails are sent FROM info@agrigrant.xyz (AgriGrant AI platform).\n\n1. **to** → set to `"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerEmail"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "` (empty string `\"\"` if not provided)\n2. **subject** → personalized subject based on agentAction:\n   - prepare-submission-package: \"📋 "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " — Your "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " Submission Package Is Ready\"\n   - generate-confirmation: \"🌾 "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " — Your "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " Application Has Been Submitted!\"\n   - set-reminders: \"⏰ "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " — Your "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " Reminder Schedule Is Set\"\n   - track-and-follow-up: \"📊 "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " — Follow-Up Update: "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " Application\"\n   - handle-additional-info-request: \"📄 "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " — Action Required: "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantingOrganization"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " Needs More Information\"\n   - generate-rejection-response: \"💪 "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " — Your Next Steps After "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.grantName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "\"\n   - respond-to-farmer-chat: \"\" (no email for chat)\n3. **htmlBody** → full HTML email (only when sendEmail=true):\n   ```\n   <h2>Hello "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": ",</h2>\n   <p>[Action-specific opening sentence]</p>\n   [Action-specific content]\n   <p><strong>Application Portal:</strong> <a href=\"[URL]\">[URL or 'Visit official website']</a></p>\n   <hr>\n   <p style=\"font-size:12px;color:#666;\">\n     Powered by <strong>AgriGrant AI</strong> — Connecting Nigerian Farmers to Funding 🌾<br>\n     Contact: info@agrigrant.xyz | AgriGrant.xyz<br>\n     This is an automated notification. Always verify grant details directly with the issuing organization.\n   </p>\n   ```\n4. **plainTextBody** → plain text version of htmlBody (no HTML tags)\n5. **sendEmail** → `true` ONLY for milestones (generate-confirmation, handle-additional-info-request, generate-rejection-response, urgent track-and-follow-up). `false` for all others including respond-to-farmer-chat.\n6. **emailType** → set exactly to `"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.agentAction"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "`\n\n### Step 5 — Write agentSummary\n100–150 words, formal English. State: which action was performed, key outputs generated, whether emailPayload.sendEmail is true or false (and why if false), and the recommended next step for the pipeline (e.g., \"Pipeline should now send emailPayload to farmer and schedule follow-up reminder in 7 days\").\n\n---\n\n## Output Rules\n- Return ONLY valid JSON matching the outputSchema exactly. No markdown, no preamble, no text outside the JSON.\n- `emailPayload` is REQUIRED — never omit it.\n- Only populate the action object for `"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.agentAction"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "`. Omit all other action objects entirely.\n- SMS texts: strict 160-character maximum — count characters carefully.\n- All official letters and agentSummary: formal English always.\n- Farmer-facing messages (WhatsApp, SMS, farmerFacingMessagePrimary): match `"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.preferredLanguage"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "`."
+        }
+      ]
+    }
+  ]
+}

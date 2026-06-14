@@ -1,0 +1,92 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "content/Workflow.json",
+      "uniqueId": "530a55b3-9708-43e0-a9a1-2bffb248c232",
+      "type": "Api",
+      "input": {
+        "type": "object",
+        "properties": {
+          "farmerName": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "farmLocation": {
+            "type": "string"
+          },
+          "farmType": {
+            "type": "string"
+          },
+          "cropOrLivestockTypes": {
+            "type": "string"
+          },
+          "farmSizeHectares": {
+            "type": "number"
+          },
+          "annualRevenueNGN": {
+            "type": "number"
+          },
+          "requestedFundingAmountNGN": {
+            "type": "number"
+          },
+          "ownershipStatus": {
+            "type": "string"
+          },
+          "hasBVN": {
+            "type": "boolean"
+          },
+          "hasCACRegistration": {
+            "type": "boolean"
+          },
+          "isMemberOfCooperative": {
+            "type": "boolean"
+          },
+          "hasLandDocument": {
+            "type": "boolean"
+          },
+          "hasFarmBusinessPlan": {
+            "type": "boolean"
+          },
+          "hasExistingLoanDefault": {
+            "type": "boolean"
+          },
+          "isSmallholderFarmer": {
+            "type": "boolean"
+          },
+          "isYouthFarmer": {
+            "type": "boolean"
+          },
+          "isWomanFarmer": {
+            "type": "boolean"
+          },
+          "proposedProjectDescription": {
+            "type": "string"
+          },
+          "submittedDocuments": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "farmerName",
+          "phoneNumber",
+          "farmLocation",
+          "farmType",
+          "farmSizeHectares",
+          "requestedFundingAmountNGN",
+          "hasBVN",
+          "hasCACRegistration",
+          "hasExistingLoanDefault",
+          "proposedProjectDescription"
+        ]
+      },
+      "output": null
+    }
+  ]
+}

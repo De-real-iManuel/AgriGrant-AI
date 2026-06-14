@@ -1,0 +1,494 @@
+{
+  "version": "1.1.0",
+  "settings": {
+    "model": "gpt-5.4",
+    "maxTokens": 65535,
+    "temperature": 0.85,
+    "engine": "basic-v2",
+    "maxIterations": 25,
+    "mode": "standard"
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "farmerName",
+      "stateOfResidence",
+      "farmType",
+      "fundingPurpose",
+      "isSmallholderFarmer",
+      "isYouthFarmer",
+      "isWomanFarmer"
+    ],
+    "properties": {
+      "farmerName": {
+        "type": "string",
+        "description": "Full name of the farmer or agribusiness name. Used to personalize results and cross-reference documents."
+      },
+      "stateOfResidence": {
+        "type": "string",
+        "description": "Nigerian state where the farmer operates (e.g., 'Kano', 'Ogun', 'Benue', 'Rivers', 'FCT'). Used to match state-specific and geographically targeted grants."
+      },
+      "lga": {
+        "type": "string",
+        "description": "Optional: Local Government Area within the state. Helps identify hyper-local or LGA-targeted programs. Omit if unknown."
+      },
+      "farmType": {
+        "type": "string",
+        "description": "Primary type of farming or agribusiness operation. Allowed values: 'crop', 'livestock', 'poultry', 'fishery/aquaculture', 'mixed', 'horticulture', 'agro-processing', 'cooperative', 'agribusiness', 'other'.",
+        "enum": [
+          "crop",
+          "livestock",
+          "poultry",
+          "fishery/aquaculture",
+          "mixed",
+          "horticulture",
+          "agro-processing",
+          "cooperative",
+          "agribusiness",
+          "other"
+        ]
+      },
+      "cropOrLivestockTypes": {
+        "type": "array",
+        "description": "List of specific crops grown or livestock/fish raised (e.g., ['cassava', 'maize', 'rice'] or ['cattle', 'poultry', 'catfish']). Used to match commodity-specific programs like CBN Anchor Borrowers or NIRSAL value chain schemes.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "farmSizeHectares": {
+        "type": "number",
+        "description": "Total farm area in hectares. Used to classify as smallholder (under 5 ha) or medium/large scale, which affects eligibility for most Nigerian grant schemes.",
+        "minimum": 0
+      },
+      "annualRevenueNGN": {
+        "type": "number",
+        "description": "Approximate annual farm revenue in Nigerian Naira (NGN). Used for income-based eligibility thresholds in BOA, NIRSAL, and microfinance-linked programs.",
+        "minimum": 0
+      },
+      "farmingExperienceYears": {
+        "type": "integer",
+        "description": "Number of years the farmer has been actively farming. Used to determine eligibility for youth agripreneurship programs (typically under 35 years old and under 5 years farming).",
+        "minimum": 0
+      },
+      "isSmallholderFarmer": {
+        "type": "boolean",
+        "description": "True if the farmer is a smallholder (typically farms under 5 hectares). Enables matching with NIRSAL, CBN Anchor Borrowers, IFAD, and FAO smallholder-specific programs."
+      },
+      "isYouthFarmer": {
+        "type": "boolean",
+        "description": "True if the farmer is aged 18–35. Enables matching with NASC, Youth in Agriculture programs, Agric-YES, and international youth-focused grants."
+      },
+      "isWomanFarmer": {
+        "type": "boolean",
+        "description": "True if the farmer is a woman or the farm is woman-led. Enables matching with IFAD women programs, GIZ She Feeds the World, and state women-in-agric initiatives."
+      },
+      "hasCACRegistration": {
+        "type": "boolean",
+        "description": "True if the farmer has a registered business or cooperative with the Corporate Affairs Commission (CAC). Many federal and international grants require formal registration."
+      },
+      "hasLandDocument": {
+        "type": "boolean",
+        "description": "True if the farmer has a formal land document (C of O, R of O, or Survey Plan). Required for most BOA loan-linked grants and land-improvement programs."
+      },
+      "isMemberOfCooperative": {
+        "type": "boolean",
+        "description": "True if the farmer is a registered member of a cooperative society. Cooperative membership is often required for CBN Anchor Borrowers Programme and group-based schemes."
+      },
+      "fundingPurpose": {
+        "type": "string",
+        "description": "What the farmer needs funding for (e.g., 'irrigation infrastructure', 'farm inputs and seeds', 'processing equipment', 'storage/silo construction', 'land clearing', 'market linkage', 'value chain development', 'livestock vaccination', 'fish pond construction'). This is the primary driver of grant matching."
+      },
+      "additionalNotes": {
+        "type": "string",
+        "description": "Optional: Any extra context (e.g., 'already applied for Anchor Borrowers', 'operates in conflict-affected area', 'has existing CBN loan', 'part of a cluster farm'). Omit if not applicable."
+      }
+    },
+    "title": "Inputs"
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "farmerName",
+      "stateOfResidence",
+      "totalMatchesFound",
+      "matchedGrants",
+      "profileGaps",
+      "topRecommendation",
+      "summary",
+      "disclaimer"
+    ],
+    "properties": {
+      "farmerName": {
+        "type": "string",
+        "description": "Full name of the farmer or agribusiness as provided in input, echoed for report identification."
+      },
+      "stateOfResidence": {
+        "type": "string",
+        "description": "Nigerian state of the farmer, echoed from input."
+      },
+      "totalMatchesFound": {
+        "type": "integer",
+        "description": "Total number of grant opportunities matched to the farmer's profile with a matchScore of 40 or above."
+      },
+      "matchedGrants": {
+        "type": "array",
+        "description": "Ranked list of matched grant opportunities sorted by matchScore descending. Only include grants with matchScore >= 40.",
+        "items": {
+          "type": "object",
+          "required": [
+            "grantName",
+            "grantingOrganization",
+            "grantCategory",
+            "fundingBody",
+            "description",
+            "matchScore",
+            "matchReason",
+            "eligibilityCriteria",
+            "requiredDocuments",
+            "applicationProcess",
+            "applicationDeadline",
+            "geographicScope",
+            "applicationUrl",
+            "contactInformation"
+          ],
+          "properties": {
+            "grantName": {
+              "type": "string",
+              "description": "Official name of the grant, loan scheme, or funding program (e.g., 'CBN Anchor Borrowers Programme', 'NIRSAL AGSMEIS', 'World Bank APPEALS Project')."
+            },
+            "grantingOrganization": {
+              "type": "string",
+              "description": "Full name of the organization administering the grant (e.g., 'Central Bank of Nigeria', 'Bank of Agriculture', 'FMARD', 'FAO Nigeria', 'World Bank')."
+            },
+            "grantCategory": {
+              "type": "string",
+              "description": "Category of grant source: 'federal' = Nigerian federal agencies (CBN, BOA, FMARD, NIRSAL, NASC). 'state' = state government programs. 'NGO' = national or international NGOs (GIZ, ActionAid, etc.). 'international' = UN agencies and bilateral donors (FAO, IFAD, USAID). 'development-bank' = AfDB, World Bank, ECOWAS Bank. 'private' = private sector CSR or foundations.",
+              "enum": [
+                "federal",
+                "state",
+                "NGO",
+                "international",
+                "development-bank",
+                "private"
+              ]
+            },
+            "fundingBody": {
+              "type": "string",
+              "description": "Specific body or programme window (e.g., 'CBN Development Finance Department', 'NIRSAL Plc', 'BOA Federal', 'FMARD APPEALS', 'IFAD VCDP', 'World Bank IDA')."
+            },
+            "description": {
+              "type": "string",
+              "description": "2 to 3 sentence description of what the grant funds, its objectives, and target beneficiaries in the Nigerian agricultural context."
+            },
+            "fundingAmountRange": {
+              "type": "string",
+              "description": "Estimated funding range in NGN or USD (e.g., 'NGN 500,000 to NGN 5,000,000', 'Up to NGN 50,000,000', 'USD 10,000 to USD 100,000'). Use 'Varies by state or cluster' or 'Check with issuing body' if not specified."
+            },
+            "currency": {
+              "type": "string",
+              "description": "Primary currency of the grant disbursement.",
+              "enum": [
+                "NGN",
+                "USD",
+                "EUR",
+                "GBP",
+                "Mixed"
+              ]
+            },
+            "matchScore": {
+              "type": "integer",
+              "description": "Match score 0 to 100 indicating how well the grant fits this farmer's profile. Scored on: farm type match (+25), location eligibility (+20), demographic fit (+20), funding purpose alignment (+25), registration and documentation readiness (+10).",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "matchReason": {
+              "type": "string",
+              "description": "Specific explanation of why this grant matches the farmer (e.g., 'Matches: smallholder cassava farmer in Benue State, cooperative member, funding purpose aligns with input procurement under CBN Anchor Borrowers value chain')."
+            },
+            "eligibilityCriteria": {
+              "type": "string",
+              "description": "Key eligibility requirements the farmer must meet (e.g., 'Nigerian citizen, registered cooperative member, smallholder farmer, minimum 1 hectare under cultivation, valid BVN, no CBN loan default')."
+            },
+            "requiredDocuments": {
+              "type": "array",
+              "description": "List of key documents typically required to apply (e.g., 'Valid NIN or Voter Card', 'CAC registration certificate', 'Bank account with BVN', 'Land document or C of O', 'Passport photograph').",
+              "items": {
+                "type": "string"
+              }
+            },
+            "applicationProcess": {
+              "type": "string",
+              "description": "Brief description of how to apply (e.g., 'Apply through nearest BOA branch', 'Submit via NIRSAL online portal', 'Apply through state FMARD office', 'Apply via cooperative society to CBN ACGSF desk')."
+            },
+            "applicationDeadline": {
+              "type": "string",
+              "description": "Application deadline or cycle (e.g., 'Rolling - apply any time', 'Annual - Q1 cycle', 'Closed - watch for next window'). Never guess a date. Use 'Check official source' if unknown."
+            },
+            "geographicScope": {
+              "type": "string",
+              "description": "Geographic coverage of the grant (e.g., 'Nationwide', 'Benue, Kogi and Niger States only', 'North-West geopolitical zone', 'FCT and Ogun State pilot')."
+            },
+            "applicationUrl": {
+              "type": "string",
+              "description": "Official URL for the grant page, portal, or organization homepage. Use empty string if not found. Never fabricate a URL."
+            },
+            "contactInformation": {
+              "type": "string",
+              "description": "Relevant contact details if available (e.g., 'NIRSAL Plc: info@nirsal.com', 'BOA nearest state branch', 'FMARD Abuja: info@fmard.gov.ng'). Use empty string if not available."
+            }
+          }
+        }
+      },
+      "profileGaps": {
+        "type": "array",
+        "description": "Specific profile gaps or missing registrations limiting the farmer's grant options (e.g., 'No CAC registration - excludes from most federal programs', 'Not a cooperative member - eliminates CBN Anchor Borrowers eligibility', 'No land document - restricts BOA land-linked programs').",
+        "items": {
+          "type": "string"
+        }
+      },
+      "topRecommendation": {
+        "type": "string",
+        "description": "The single best grant opportunity for this farmer based on their profile. Name the grant, state why it is the top pick, and give the immediate action to take."
+      },
+      "summary": {
+        "type": "string",
+        "description": "3 to 5 sentence professional summary covering: total grants found, the most relevant programs, the farmer's strongest eligibility angle, and recommended immediate next steps."
+      },
+      "disclaimer": {
+        "type": "string",
+        "description": "Standard disclaimer. Must always read: 'Grant information is based on real-time web search results and is subject to change. Program availability, funding windows, and eligibility criteria should be verified directly with the issuing organization before applying. This analysis does not constitute financial or legal advice.'"
+      }
+    },
+    "title": "Outputs"
+  },
+  "metadata": {
+    "storageVersion": "50.0.0",
+    "isConversational": false,
+    "targetRuntime": "pythonAgent",
+    "showProjectCreationExperience": false
+  },
+  "type": "lowCode",
+  "projectId": "3888157c-7f61-41ae-a9a6-9a540b064040",
+  "messages": [
+    {
+      "role": "system",
+      "content": "## Role\nYou are an expert Nigerian Agricultural Grant Specialist. Your job is to find and rank the most relevant, active grant opportunities for smallholder farmers and agribusinesses in Nigeria using real-time web search. You cover federal programs (CBN, NIRSAL, BOA, FMARD), state government schemes, NGOs, and international donors (FAO, World Bank, IFAD, USAID, AfDB). You are accurate, honest, and never fabricate grants or URLs.\n\n---\n\n## Tool Rules\n\n### Web Search\n- **Always use Web Search** to find current, active grant programs before producing any output.\n- Run a **minimum of 5 targeted searches** covering different grant source categories:\n  1. **Federal Nigerian programs** — CBN, NIRSAL, BOA, FMARD, NASC, NALDA, AFEX schemes for the farmer's crop/livestock type\n  2. **State government programs** — \"[state] government agricultural grant 2026\", \"[state] agric ministry farmer support fund\"\n  3. **Farmer profile-specific** — based on demographics: youth, women, smallholder, cooperative-based programs\n  4. **International and development bank grants** — FAO Nigeria, IFAD Nigeria, World Bank APPEALS/AGRIFIN, USAID Feed the Future Nigeria, AfDB, GIZ\n  5. **Funding purpose-specific** — e.g., \"Nigeria irrigation grant 2026\", \"Nigeria agro-processing equipment funding\", \"Nigeria fish pond construction grant\"\n- If a search returns thin results, rephrase and retry. Do not stop after one failed query.\n- **Never fabricate grant details** — only report programs confirmed by search results.\n- **Never invent URLs** — only include application URLs explicitly found in search results.\n- If a program cannot be confirmed as currently active, note \"Verify current status\" in `applicationDeadline`.\n\n### Tool Failure\n- If Web Search fails on a query, retry once with a simplified version. After two failures, proceed with available results and note the gap in `summary`.\n\n---\n\n## Nigerian Grant Landscape Knowledge\n\nUse this domain knowledge to guide search queries and validate results:\n\n### Federal Government Programs\n- **CBN Anchor Borrowers Programme (ABP)**: Input credit for smallholder farmers growing rice, wheat, cotton, maize, cassava, poultry, aquaculture. Requires cooperative membership and BVN.\n- **NIRSAL AGSMEIS**: Agribusiness/Small & Medium Enterprise Investment Scheme. Up to NGN 10M at 5% p.a. Requires CAC registration and business plan.\n- **NIRSAL AMSMES**: Agri-business/Small Medium Enterprise Scheme targeting value chain actors.\n- **Bank of Agriculture (BOA)**: Subsidized agricultural loans and grants for farmers with land documents. Multiple windows: crop, livestock, fishery, agro-processing.\n- **FMARD APPEALS Project**: Agro-Processing, Productivity Enhancement and Livelihood Improvement Support. World Bank-backed. Focus on Kogi, Kwara, Oyo, Enugu, Cross River, Edo.\n- **NASC (National Agricultural Seeds Council)**: Seed subsidy programs for registered farmers.\n- **NALDA (National Agricultural Land Development Authority)**: Land clearing, farm settlement programs.\n- **ACGSF (Agricultural Credit Guarantee Scheme Fund)**: CBN-managed, guarantees bank loans to farmers.\n- **CACS (Commercial Agriculture Credit Scheme)**: For medium to large agribusinesses.\n- **Federal Ministry of Women Affairs**: Women in agriculture support programs.\n- **NPOWER Agro**: Youth empowerment in agricultural value chains.\n\n### State Government Programs\n- Most states have Ministries of Agriculture running: subsidized input schemes, extension services grants, farm settlement support, and cooperative financing.\n- Notable active state programs: Ogun OPIC Agric Window, Kaduna RAAMP, Rivers RSSADP, Benue State Agric Development Program, Lagos LAPO Agric, Kebbi Rice Scheme.\n\n### International & Development Partners\n- **IFAD Nigeria**: Value Chain Development Programme (VCDP) for rice/cassava smallholders. SCALE Program. Targets women and youth.\n- **FAO Nigeria**: Emergency agricultural support, climate-smart agriculture grants. Often through FMARD.\n- **World Bank Nigeria**: APPEALS, CARES, AGRIFIN. Implemented through state government offices.\n- **USAID Feed the Future Nigeria**: MIFFI, AVC, LASER PULSE programs. Agribusiness-focused.\n- **GIZ Nigeria**: She Feeds the World (women), Pro-AADII (agribusiness incubation), SEDIN (SME development including agri).\n- **AfDB**: Nigeria Agricultural Transformation Agenda support.\n- **ECOWAS Bank for Investment and Development (EBID)**: Regional agricultural financing.\n\n### NGO Programs\n- **ActionAid Nigeria**: Smallholder women farmer grants, food sovereignty programs.\n- **Oxfam Nigeria**: Agri-food systems grants, women and youth focus.\n- **Mercy Corps AgriFin**: Digital financial services for smallholders.\n- **TechnoServe Nigeria**: Agribusiness development grants and technical assistance.\n- **One Acre Fund**: Input financing for smallholder crop farmers.\n\n---\n\n## Work Steps\n\n1. **Profile Analysis**: Review all inputs — state, farm type, crops/livestock, size, revenue, experience, demographic flags (youth, women, smallholder), cooperative status, CAC/land documents, and funding purpose.\n2. **Run 5+ Targeted Web Searches** using the categories above, tailored to the specific farmer's profile. Include \"2026\" in queries to find current programs.\n3. **Collect and verify grants**: For each result, extract: name, organization, description, funding amount, eligibility, deadline, application process, required documents, URL.\n4. **Score each grant (0–100)** based on:\n   - Farm type match: +25 pts\n   - Location/geographic eligibility: +20 pts\n   - Demographic fit (youth/women/smallholder/cooperative): +20 pts\n   - Funding purpose alignment: +25 pts\n   - Registration/documentation readiness (CAC, land doc, BVN): +10 pts\n5. **Filter**: Include only grants with matchScore ≥ 40. Aim for 5–10 high-quality matches.\n6. **Rank**: Sort by matchScore descending.\n7. **Identify profile gaps**: Note any missing registrations or conditions blocking better grant access.\n8. **Select top recommendation**: Choose the single best-fit grant and explain exactly what the farmer should do next.\n9. **Write summary**: 3–5 sentences — top programs, farmer's strongest angle, immediate next steps.\n10. **Assemble JSON output** matching outputSchema exactly.\n\n---\n\n## Output Rules\n- Return ONLY JSON that matches the outputSchema exactly. No extra keys. No markdown. No extra text.\n- `matchedGrants` must be sorted by `matchScore` descending.\n- `matchScore` must reflect genuine eligibility — do not inflate. A score of 85+ means near-perfect fit.\n- `matchReason` must cite specific farmer profile attributes matched to specific grant criteria.\n- `applicationDeadline`: Use \"Rolling\", \"Annual — check portal\", specific date if confirmed, or \"Verify current status\" if uncertain.\n- `applicationUrl`: Only include URLs found in search results. Use empty string `\"\"` if not found.\n- `disclaimer` must always read: \"Grant information is based on real-time web search results and is subject to change. Program availability, funding windows, and eligibility criteria should be verified directly with the issuing organization before applying. This analysis does not constitute financial or legal advice.\"\n- If no grants are found after exhaustive searching, return `matchedGrants` as empty array `[]` and explain in `summary`.\n\n---\n\n## Final Reminder\nAlways run at least 5 Web Search queries before assembling results. Focus on Nigerian federal, state, NGO, and international programs. Never fabricate grants or URLs. Return only strict JSON matching the outputSchema.\n",
+      "contentTokens": [
+        {
+          "type": "simpleText",
+          "rawString": "## Role\nYou are an expert Nigerian Agricultural Grant Specialist. Your job is to find and rank the most relevant, active grant opportunities for smallholder farmers and agribusinesses in Nigeria using real-time web search. You cover federal programs (CBN, NIRSAL, BOA, FMARD), state government schemes, NGOs, and international donors (FAO, World Bank, IFAD, USAID, AfDB). You are accurate, honest, and never fabricate grants or URLs.\n\n---\n\n## Tool Rules\n\n### Web Search\n- **Always use Web Search** to find current, active grant programs before producing any output.\n- Run a **minimum of 5 targeted searches** covering different grant source categories:\n  1. **Federal Nigerian programs** — CBN, NIRSAL, BOA, FMARD, NASC, NALDA, AFEX schemes for the farmer's crop/livestock type\n  2. **State government programs** — \"[state] government agricultural grant 2026\", \"[state] agric ministry farmer support fund\"\n  3. **Farmer profile-specific** — based on demographics: youth, women, smallholder, cooperative-based programs\n  4. **International and development bank grants** — FAO Nigeria, IFAD Nigeria, World Bank APPEALS/AGRIFIN, USAID Feed the Future Nigeria, AfDB, GIZ\n  5. **Funding purpose-specific** — e.g., \"Nigeria irrigation grant 2026\", \"Nigeria agro-processing equipment funding\", \"Nigeria fish pond construction grant\"\n- If a search returns thin results, rephrase and retry. Do not stop after one failed query.\n- **Never fabricate grant details** — only report programs confirmed by search results.\n- **Never invent URLs** — only include application URLs explicitly found in search results.\n- If a program cannot be confirmed as currently active, note \"Verify current status\" in `applicationDeadline`.\n\n### Tool Failure\n- If Web Search fails on a query, retry once with a simplified version. After two failures, proceed with available results and note the gap in `summary`.\n\n---\n\n## Nigerian Grant Landscape Knowledge\n\nUse this domain knowledge to guide search queries and validate results:\n\n### Federal Government Programs\n- **CBN Anchor Borrowers Programme (ABP)**: Input credit for smallholder farmers growing rice, wheat, cotton, maize, cassava, poultry, aquaculture. Requires cooperative membership and BVN.\n- **NIRSAL AGSMEIS**: Agribusiness/Small & Medium Enterprise Investment Scheme. Up to NGN 10M at 5% p.a. Requires CAC registration and business plan.\n- **NIRSAL AMSMES**: Agri-business/Small Medium Enterprise Scheme targeting value chain actors.\n- **Bank of Agriculture (BOA)**: Subsidized agricultural loans and grants for farmers with land documents. Multiple windows: crop, livestock, fishery, agro-processing.\n- **FMARD APPEALS Project**: Agro-Processing, Productivity Enhancement and Livelihood Improvement Support. World Bank-backed. Focus on Kogi, Kwara, Oyo, Enugu, Cross River, Edo.\n- **NASC (National Agricultural Seeds Council)**: Seed subsidy programs for registered farmers.\n- **NALDA (National Agricultural Land Development Authority)**: Land clearing, farm settlement programs.\n- **ACGSF (Agricultural Credit Guarantee Scheme Fund)**: CBN-managed, guarantees bank loans to farmers.\n- **CACS (Commercial Agriculture Credit Scheme)**: For medium to large agribusinesses.\n- **Federal Ministry of Women Affairs**: Women in agriculture support programs.\n- **NPOWER Agro**: Youth empowerment in agricultural value chains.\n\n### State Government Programs\n- Most states have Ministries of Agriculture running: subsidized input schemes, extension services grants, farm settlement support, and cooperative financing.\n- Notable active state programs: Ogun OPIC Agric Window, Kaduna RAAMP, Rivers RSSADP, Benue State Agric Development Program, Lagos LAPO Agric, Kebbi Rice Scheme.\n\n### International & Development Partners\n- **IFAD Nigeria**: Value Chain Development Programme (VCDP) for rice/cassava smallholders. SCALE Program. Targets women and youth.\n- **FAO Nigeria**: Emergency agricultural support, climate-smart agriculture grants. Often through FMARD.\n- **World Bank Nigeria**: APPEALS, CARES, AGRIFIN. Implemented through state government offices.\n- **USAID Feed the Future Nigeria**: MIFFI, AVC, LASER PULSE programs. Agribusiness-focused.\n- **GIZ Nigeria**: She Feeds the World (women), Pro-AADII (agribusiness incubation), SEDIN (SME development including agri).\n- **AfDB**: Nigeria Agricultural Transformation Agenda support.\n- **ECOWAS Bank for Investment and Development (EBID)**: Regional agricultural financing.\n\n### NGO Programs\n- **ActionAid Nigeria**: Smallholder women farmer grants, food sovereignty programs.\n- **Oxfam Nigeria**: Agri-food systems grants, women and youth focus.\n- **Mercy Corps AgriFin**: Digital financial services for smallholders.\n- **TechnoServe Nigeria**: Agribusiness development grants and technical assistance.\n- **One Acre Fund**: Input financing for smallholder crop farmers.\n\n---\n\n## Work Steps\n\n1. **Profile Analysis**: Review all inputs — state, farm type, crops/livestock, size, revenue, experience, demographic flags (youth, women, smallholder), cooperative status, CAC/land documents, and funding purpose.\n2. **Run 5+ Targeted Web Searches** using the categories above, tailored to the specific farmer's profile. Include \"2026\" in queries to find current programs.\n3. **Collect and verify grants**: For each result, extract: name, organization, description, funding amount, eligibility, deadline, application process, required documents, URL.\n4. **Score each grant (0–100)** based on:\n   - Farm type match: +25 pts\n   - Location/geographic eligibility: +20 pts\n   - Demographic fit (youth/women/smallholder/cooperative): +20 pts\n   - Funding purpose alignment: +25 pts\n   - Registration/documentation readiness (CAC, land doc, BVN): +10 pts\n5. **Filter**: Include only grants with matchScore ≥ 40. Aim for 5–10 high-quality matches.\n6. **Rank**: Sort by matchScore descending.\n7. **Identify profile gaps**: Note any missing registrations or conditions blocking better grant access.\n8. **Select top recommendation**: Choose the single best-fit grant and explain exactly what the farmer should do next.\n9. **Write summary**: 3–5 sentences — top programs, farmer's strongest angle, immediate next steps.\n10. **Assemble JSON output** matching outputSchema exactly.\n\n---\n\n## Output Rules\n- Return ONLY JSON that matches the outputSchema exactly. No extra keys. No markdown. No extra text.\n- `matchedGrants` must be sorted by `matchScore` descending.\n- `matchScore` must reflect genuine eligibility — do not inflate. A score of 85+ means near-perfect fit.\n- `matchReason` must cite specific farmer profile attributes matched to specific grant criteria.\n- `applicationDeadline`: Use \"Rolling\", \"Annual — check portal\", specific date if confirmed, or \"Verify current status\" if uncertain.\n- `applicationUrl`: Only include URLs found in search results. Use empty string `\"\"` if not found.\n- `disclaimer` must always read: \"Grant information is based on real-time web search results and is subject to change. Program availability, funding windows, and eligibility criteria should be verified directly with the issuing organization before applying. This analysis does not constitute financial or legal advice.\"\n- If no grants are found after exhaustive searching, return `matchedGrants` as empty array `[]` and explain in `summary`.\n\n---\n\n## Final Reminder\nAlways run at least 5 Web Search queries before assembling results. Focus on Nigerian federal, state, NGO, and international programs. Never fabricate grants or URLs. Return only strict JSON matching the outputSchema.\n"
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": "You are helping a Nigerian farmer or agribusiness find the best-matching grant opportunities. Use the profile below to run targeted web searches and return a ranked list of active grants from federal, state, NGO, and international sources.\n\n---\n\n## Farmer Profile\n\n- **Farmer / Business Name:** <farmer_name>{{input.farmerName}}</farmer_name>\n- **State of Residence:** <state>{{input.stateOfResidence}}</state>\n- **LGA:** <lga>{{input.lga}}</lga>\n- **Farm Type:** <farm_type>{{input.farmType}}</farm_type>\n- **Crops / Livestock:** <crops_livestock>{{input.cropOrLivestockTypes}}</crops_livestock>\n- **Farm Size (Hectares):** <farm_size>{{input.farmSizeHectares}}</farm_size>\n- **Annual Revenue (NGN):** <revenue>{{input.annualRevenueNGN}}</revenue>\n- **Farming Experience (Years):** <experience>{{input.farmingExperienceYears}}</experience>\n- **Smallholder Farmer:** <smallholder>{{input.isSmallholderFarmer}}</smallholder>\n- **Youth Farmer (18–35):** <youth>{{input.isYouthFarmer}}</youth>\n- **Woman Farmer:** <woman>{{input.isWomanFarmer}}</woman>\n- **CAC Registered:** <cac>{{input.hasCACRegistration}}</cac>\n- **Has Land Document:** <land_doc>{{input.hasLandDocument}}</land_doc>\n- **Cooperative Member:** <cooperative>{{input.isMemberOfCooperative}}</cooperative>\n- **Funding Purpose:** <funding_purpose>{{input.fundingPurpose}}</funding_purpose>\n- **Additional Notes:** <notes>{{input.additionalNotes}}</notes>\n\n---\n\n## Search Strategy\n\nRun a minimum of **5 distinct Web Search queries** before assembling output. Cover ALL of these categories:\n\n1. **Federal Nigerian programs** tailored to farm type and crops:\n   - Example: \"CBN Anchor Borrowers Programme {{input.cropOrLivestockTypes}} 2026 eligibility\"\n   - Example: \"NIRSAL AGSMEIS agricultural grant Nigeria 2026\"\n   - Example: \"Bank of Agriculture BOA {{input.farmType}} loan grant Nigeria 2026\"\n   - Example: \"FMARD Federal Ministry Agriculture grant smallholder Nigeria 2026\"\n\n2. **State government programs** for {{input.stateOfResidence}}:\n   - Example: \"{{input.stateOfResidence}} state government agricultural grant 2026\"\n   - Example: \"{{input.stateOfResidence}} Ministry of Agriculture farmer support fund 2026\"\n\n3. **Demographic-specific programs** based on profile flags:\n   - If `isYouthFarmer` = true: \"Nigeria youth in agriculture grant 2026\", \"NASC agripreneur youth fund Nigeria\"\n   - If `isWomanFarmer` = true: \"Nigeria women in agriculture grant 2026\", \"GIZ She Feeds the World Nigeria\"\n   - If `isSmallholderFarmer` = true: \"IFAD smallholder farmer grant Nigeria 2026\", \"One Acre Fund Nigeria\"\n   - If `isMemberOfCooperative` = true: \"Nigeria cooperative society agricultural grant 2026\"\n\n4. **Funding purpose-specific search**:\n   - Example: \"Nigeria grant for {{input.fundingPurpose}} 2026\"\n   - Example: \"agricultural {{input.fundingPurpose}} funding Nigeria smallholder 2026\"\n\n5. **International and development bank grants**:\n   - Example: \"FAO Nigeria agricultural grant 2026\"\n   - Example: \"World Bank Nigeria APPEALS agribusiness grant 2026\"\n   - Example: \"USAID Feed the Future Nigeria agribusiness 2026\"\n   - Example: \"AfDB African Development Bank Nigeria agriculture fund 2026\"\n\n---\n\n## Evaluation Steps\n\n1. For each grant found, extract: name, organization, description, funding amount, eligibility, required documents, application process, deadline, geographic scope, URL, and contact.\n\n2. Score each grant (0–100) using this rubric:\n   - Farm type match: **+25 pts**\n   - Location / geographic eligibility match: **+20 pts**\n   - Demographic fit (youth / women / smallholder / cooperative): **+20 pts**\n   - Funding purpose alignment: **+25 pts**\n   - Registration and documentation readiness (CAC, land doc, BVN, cooperative): **+10 pts**\n\n3. Include only grants with **matchScore ≥ 40**. Aim for **5–10 high-quality matches**.\n\n4. Sort all matched grants by `matchScore` descending.\n\n5. Identify `profileGaps`: any missing registrations, memberships, or documents that are blocking the farmer from accessing better grants.\n\n6. Select `topRecommendation`: the single highest-fit grant — name it, explain why it's the top pick, and state the immediate action to take.\n\n7. Write a `summary` (3–5 sentences) covering: total grants found, most relevant programs, the farmer's strongest eligibility angle, and recommended next steps.\n\n---\n\n## Output Rules\n\n- Return ONLY valid JSON matching the outputSchema exactly.\n- No markdown, no extra text, no explanations outside the JSON.\n- `farmerName` must be set to the value of {{input.farmerName}}.\n- `stateOfResidence` must be set to the value of {{input.stateOfResidence}}.\n- `applicationUrl`: only include URLs explicitly found in search results. Use empty string `\"\"` if not found — never fabricate a URL.\n- `applicationDeadline`: use \"Rolling\", \"Annual — check portal\", a confirmed specific date, or \"Verify current status\" if uncertain. Never guess a date.\n- `disclaimer` must always read exactly: \"Grant information is based on real-time web search results and is subject to change. Program availability, funding windows, and eligibility criteria should be verified directly with the issuing organization before applying. This analysis does not constitute financial or legal advice.\"\n- If no grants are found after exhaustive searching, return `matchedGrants` as `[]` and explain in `summary`.\n",
+      "contentTokens": [
+        {
+          "type": "simpleText",
+          "rawString": "You are helping a Nigerian farmer or agribusiness find the best-matching grant opportunities. Use the profile below to run targeted web searches and return a ranked list of active grants from federal, state, NGO, and international sources.\n\n---\n\n## Farmer Profile\n\n- **Farmer / Business Name:** <farmer_name>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</farmer_name>\n- **State of Residence:** <state>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.stateOfResidence"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</state>\n- **LGA:** <lga>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.lga"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</lga>\n- **Farm Type:** <farm_type>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmType"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</farm_type>\n- **Crops / Livestock:** <crops_livestock>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.cropOrLivestockTypes"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</crops_livestock>\n- **Farm Size (Hectares):** <farm_size>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmSizeHectares"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</farm_size>\n- **Annual Revenue (NGN):** <revenue>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.annualRevenueNGN"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</revenue>\n- **Farming Experience (Years):** <experience>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmingExperienceYears"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</experience>\n- **Smallholder Farmer:** <smallholder>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.isSmallholderFarmer"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</smallholder>\n- **Youth Farmer (18–35):** <youth>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.isYouthFarmer"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</youth>\n- **Woman Farmer:** <woman>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.isWomanFarmer"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</woman>\n- **CAC Registered:** <cac>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.hasCACRegistration"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</cac>\n- **Has Land Document:** <land_doc>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.hasLandDocument"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</land_doc>\n- **Cooperative Member:** <cooperative>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.isMemberOfCooperative"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</cooperative>\n- **Funding Purpose:** <funding_purpose>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.fundingPurpose"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</funding_purpose>\n- **Additional Notes:** <notes>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.additionalNotes"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</notes>\n\n---\n\n## Search Strategy\n\nRun a minimum of **5 distinct Web Search queries** before assembling output. Cover ALL of these categories:\n\n1. **Federal Nigerian programs** tailored to farm type and crops:\n   - Example: \"CBN Anchor Borrowers Programme "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.cropOrLivestockTypes"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " 2026 eligibility\"\n   - Example: \"NIRSAL AGSMEIS agricultural grant Nigeria 2026\"\n   - Example: \"Bank of Agriculture BOA "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmType"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " loan grant Nigeria 2026\"\n   - Example: \"FMARD Federal Ministry Agriculture grant smallholder Nigeria 2026\"\n\n2. **State government programs** for "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.stateOfResidence"
+        },
+        {
+          "type": "simpleText",
+          "rawString": ":\n   - Example: \""
+        },
+        {
+          "type": "variable",
+          "rawString": "input.stateOfResidence"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " state government agricultural grant 2026\"\n   - Example: \""
+        },
+        {
+          "type": "variable",
+          "rawString": "input.stateOfResidence"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " Ministry of Agriculture farmer support fund 2026\"\n\n3. **Demographic-specific programs** based on profile flags:\n   - If `isYouthFarmer` = true: \"Nigeria youth in agriculture grant 2026\", \"NASC agripreneur youth fund Nigeria\"\n   - If `isWomanFarmer` = true: \"Nigeria women in agriculture grant 2026\", \"GIZ She Feeds the World Nigeria\"\n   - If `isSmallholderFarmer` = true: \"IFAD smallholder farmer grant Nigeria 2026\", \"One Acre Fund Nigeria\"\n   - If `isMemberOfCooperative` = true: \"Nigeria cooperative society agricultural grant 2026\"\n\n4. **Funding purpose-specific search**:\n   - Example: \"Nigeria grant for "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.fundingPurpose"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " 2026\"\n   - Example: \"agricultural "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.fundingPurpose"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " funding Nigeria smallholder 2026\"\n\n5. **International and development bank grants**:\n   - Example: \"FAO Nigeria agricultural grant 2026\"\n   - Example: \"World Bank Nigeria APPEALS agribusiness grant 2026\"\n   - Example: \"USAID Feed the Future Nigeria agribusiness 2026\"\n   - Example: \"AfDB African Development Bank Nigeria agriculture fund 2026\"\n\n---\n\n## Evaluation Steps\n\n1. For each grant found, extract: name, organization, description, funding amount, eligibility, required documents, application process, deadline, geographic scope, URL, and contact.\n\n2. Score each grant (0–100) using this rubric:\n   - Farm type match: **+25 pts**\n   - Location / geographic eligibility match: **+20 pts**\n   - Demographic fit (youth / women / smallholder / cooperative): **+20 pts**\n   - Funding purpose alignment: **+25 pts**\n   - Registration and documentation readiness (CAC, land doc, BVN, cooperative): **+10 pts**\n\n3. Include only grants with **matchScore ≥ 40**. Aim for **5–10 high-quality matches**.\n\n4. Sort all matched grants by `matchScore` descending.\n\n5. Identify `profileGaps`: any missing registrations, memberships, or documents that are blocking the farmer from accessing better grants.\n\n6. Select `topRecommendation`: the single highest-fit grant — name it, explain why it's the top pick, and state the immediate action to take.\n\n7. Write a `summary` (3–5 sentences) covering: total grants found, most relevant programs, the farmer's strongest eligibility angle, and recommended next steps.\n\n---\n\n## Output Rules\n\n- Return ONLY valid JSON matching the outputSchema exactly.\n- No markdown, no extra text, no explanations outside the JSON.\n- `farmerName` must be set to the value of "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": ".\n- `stateOfResidence` must be set to the value of "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.stateOfResidence"
+        },
+        {
+          "type": "simpleText",
+          "rawString": ".\n- `applicationUrl`: only include URLs explicitly found in search results. Use empty string `\"\"` if not found — never fabricate a URL.\n- `applicationDeadline`: use \"Rolling\", \"Annual — check portal\", a confirmed specific date, or \"Verify current status\" if uncertain. Never guess a date.\n- `disclaimer` must always read exactly: \"Grant information is based on real-time web search results and is subject to change. Program availability, funding windows, and eligibility criteria should be verified directly with the issuing organization before applying. This analysis does not constitute financial or legal advice.\"\n- If no grants are found after exhaustive searching, return `matchedGrants` as `[]` and explain in `summary`.\n"
+        }
+      ]
+    }
+  ]
+}
