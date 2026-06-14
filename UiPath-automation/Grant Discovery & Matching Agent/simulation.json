@@ -1,0 +1,11 @@
+{
+  "instructions": "",
+  "inputGenerationInstructions": "",
+  "simulateInput": false,
+  "enabled": true,
+  "toolsToSimulate": [
+    {
+      "name": "Web Search"
+    }
+  ]
+}

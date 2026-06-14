@@ -1,0 +1,264 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "/content/agent.json",
+      "type": "agent",
+      "uniqueId": "ed06fe76-834d-4bc5-b7ef-d5c874a3db3b",
+      "input": {
+        "type": "object",
+        "required": [
+          "farmerName",
+          "stateOfResidence",
+          "farmType",
+          "fundingPurpose",
+          "isSmallholderFarmer",
+          "isYouthFarmer",
+          "isWomanFarmer"
+        ],
+        "properties": {
+          "farmerName": {
+            "type": "string",
+            "description": "Full name of the farmer or agribusiness name. Used to personalize results and cross-reference documents."
+          },
+          "stateOfResidence": {
+            "type": "string",
+            "description": "Nigerian state where the farmer operates (e.g., 'Kano', 'Ogun', 'Benue', 'Rivers', 'FCT'). Used to match state-specific and geographically targeted grants."
+          },
+          "lga": {
+            "type": "string",
+            "description": "Optional: Local Government Area within the state. Helps identify hyper-local or LGA-targeted programs. Omit if unknown."
+          },
+          "farmType": {
+            "type": "string",
+            "description": "Primary type of farming or agribusiness operation. Allowed values: 'crop', 'livestock', 'poultry', 'fishery/aquaculture', 'mixed', 'horticulture', 'agro-processing', 'cooperative', 'agribusiness', 'other'.",
+            "enum": [
+              "crop",
+              "livestock",
+              "poultry",
+              "fishery/aquaculture",
+              "mixed",
+              "horticulture",
+              "agro-processing",
+              "cooperative",
+              "agribusiness",
+              "other"
+            ]
+          },
+          "cropOrLivestockTypes": {
+            "type": "array",
+            "description": "List of specific crops grown or livestock/fish raised (e.g., ['cassava', 'maize', 'rice'] or ['cattle', 'poultry', 'catfish']). Used to match commodity-specific programs like CBN Anchor Borrowers or NIRSAL value chain schemes.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "farmSizeHectares": {
+            "type": "number",
+            "description": "Total farm area in hectares. Used to classify as smallholder (under 5 ha) or medium/large scale, which affects eligibility for most Nigerian grant schemes.",
+            "minimum": 0
+          },
+          "annualRevenueNGN": {
+            "type": "number",
+            "description": "Approximate annual farm revenue in Nigerian Naira (NGN). Used for income-based eligibility thresholds in BOA, NIRSAL, and microfinance-linked programs.",
+            "minimum": 0
+          },
+          "farmingExperienceYears": {
+            "type": "integer",
+            "description": "Number of years the farmer has been actively farming. Used to determine eligibility for youth agripreneurship programs (typically under 35 years old and under 5 years farming).",
+            "minimum": 0
+          },
+          "isSmallholderFarmer": {
+            "type": "boolean",
+            "description": "True if the farmer is a smallholder (typically farms under 5 hectares). Enables matching with NIRSAL, CBN Anchor Borrowers, IFAD, and FAO smallholder-specific programs."
+          },
+          "isYouthFarmer": {
+            "type": "boolean",
+            "description": "True if the farmer is aged 18–35. Enables matching with NASC, Youth in Agriculture programs, Agric-YES, and international youth-focused grants."
+          },
+          "isWomanFarmer": {
+            "type": "boolean",
+            "description": "True if the farmer is a woman or the farm is woman-led. Enables matching with IFAD women programs, GIZ She Feeds the World, and state women-in-agric initiatives."
+          },
+          "hasCACRegistration": {
+            "type": "boolean",
+            "description": "True if the farmer has a registered business or cooperative with the Corporate Affairs Commission (CAC). Many federal and international grants require formal registration."
+          },
+          "hasLandDocument": {
+            "type": "boolean",
+            "description": "True if the farmer has a formal land document (C of O, R of O, or Survey Plan). Required for most BOA loan-linked grants and land-improvement programs."
+          },
+          "isMemberOfCooperative": {
+            "type": "boolean",
+            "description": "True if the farmer is a registered member of a cooperative society. Cooperative membership is often required for CBN Anchor Borrowers Programme and group-based schemes."
+          },
+          "fundingPurpose": {
+            "type": "string",
+            "description": "What the farmer needs funding for (e.g., 'irrigation infrastructure', 'farm inputs and seeds', 'processing equipment', 'storage/silo construction', 'land clearing', 'market linkage', 'value chain development', 'livestock vaccination', 'fish pond construction'). This is the primary driver of grant matching."
+          },
+          "additionalNotes": {
+            "type": "string",
+            "description": "Optional: Any extra context (e.g., 'already applied for Anchor Borrowers', 'operates in conflict-affected area', 'has existing CBN loan', 'part of a cluster farm'). Omit if not applicable."
+          }
+        },
+        "title": "Inputs"
+      },
+      "output": {
+        "type": "object",
+        "required": [
+          "farmerName",
+          "stateOfResidence",
+          "totalMatchesFound",
+          "matchedGrants",
+          "profileGaps",
+          "topRecommendation",
+          "summary",
+          "disclaimer"
+        ],
+        "properties": {
+          "farmerName": {
+            "type": "string",
+            "description": "Full name of the farmer or agribusiness as provided in input, echoed for report identification."
+          },
+          "stateOfResidence": {
+            "type": "string",
+            "description": "Nigerian state of the farmer, echoed from input."
+          },
+          "totalMatchesFound": {
+            "type": "integer",
+            "description": "Total number of grant opportunities matched to the farmer's profile with a matchScore of 40 or above."
+          },
+          "matchedGrants": {
+            "type": "array",
+            "description": "Ranked list of matched grant opportunities sorted by matchScore descending. Only include grants with matchScore >= 40.",
+            "items": {
+              "type": "object",
+              "required": [
+                "grantName",
+                "grantingOrganization",
+                "grantCategory",
+                "fundingBody",
+                "description",
+                "matchScore",
+                "matchReason",
+                "eligibilityCriteria",
+                "requiredDocuments",
+                "applicationProcess",
+                "applicationDeadline",
+                "geographicScope",
+                "applicationUrl",
+                "contactInformation"
+              ],
+              "properties": {
+                "grantName": {
+                  "type": "string",
+                  "description": "Official name of the grant, loan scheme, or funding program (e.g., 'CBN Anchor Borrowers Programme', 'NIRSAL AGSMEIS', 'World Bank APPEALS Project')."
+                },
+                "grantingOrganization": {
+                  "type": "string",
+                  "description": "Full name of the organization administering the grant (e.g., 'Central Bank of Nigeria', 'Bank of Agriculture', 'FMARD', 'FAO Nigeria', 'World Bank')."
+                },
+                "grantCategory": {
+                  "type": "string",
+                  "description": "Category of grant source: 'federal' = Nigerian federal agencies (CBN, BOA, FMARD, NIRSAL, NASC). 'state' = state government programs. 'NGO' = national or international NGOs (GIZ, ActionAid, etc.). 'international' = UN agencies and bilateral donors (FAO, IFAD, USAID). 'development-bank' = AfDB, World Bank, ECOWAS Bank. 'private' = private sector CSR or foundations.",
+                  "enum": [
+                    "federal",
+                    "state",
+                    "NGO",
+                    "international",
+                    "development-bank",
+                    "private"
+                  ]
+                },
+                "fundingBody": {
+                  "type": "string",
+                  "description": "Specific body or programme window (e.g., 'CBN Development Finance Department', 'NIRSAL Plc', 'BOA Federal', 'FMARD APPEALS', 'IFAD VCDP', 'World Bank IDA')."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "2 to 3 sentence description of what the grant funds, its objectives, and target beneficiaries in the Nigerian agricultural context."
+                },
+                "fundingAmountRange": {
+                  "type": "string",
+                  "description": "Estimated funding range in NGN or USD (e.g., 'NGN 500,000 to NGN 5,000,000', 'Up to NGN 50,000,000', 'USD 10,000 to USD 100,000'). Use 'Varies by state or cluster' or 'Check with issuing body' if not specified."
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "Primary currency of the grant disbursement.",
+                  "enum": [
+                    "NGN",
+                    "USD",
+                    "EUR",
+                    "GBP",
+                    "Mixed"
+                  ]
+                },
+                "matchScore": {
+                  "type": "integer",
+                  "description": "Match score 0 to 100 indicating how well the grant fits this farmer's profile. Scored on: farm type match (+25), location eligibility (+20), demographic fit (+20), funding purpose alignment (+25), registration and documentation readiness (+10).",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "matchReason": {
+                  "type": "string",
+                  "description": "Specific explanation of why this grant matches the farmer (e.g., 'Matches: smallholder cassava farmer in Benue State, cooperative member, funding purpose aligns with input procurement under CBN Anchor Borrowers value chain')."
+                },
+                "eligibilityCriteria": {
+                  "type": "string",
+                  "description": "Key eligibility requirements the farmer must meet (e.g., 'Nigerian citizen, registered cooperative member, smallholder farmer, minimum 1 hectare under cultivation, valid BVN, no CBN loan default')."
+                },
+                "requiredDocuments": {
+                  "type": "array",
+                  "description": "List of key documents typically required to apply (e.g., 'Valid NIN or Voter Card', 'CAC registration certificate', 'Bank account with BVN', 'Land document or C of O', 'Passport photograph').",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "applicationProcess": {
+                  "type": "string",
+                  "description": "Brief description of how to apply (e.g., 'Apply through nearest BOA branch', 'Submit via NIRSAL online portal', 'Apply through state FMARD office', 'Apply via cooperative society to CBN ACGSF desk')."
+                },
+                "applicationDeadline": {
+                  "type": "string",
+                  "description": "Application deadline or cycle (e.g., 'Rolling - apply any time', 'Annual - Q1 cycle', 'Closed - watch for next window'). Never guess a date. Use 'Check official source' if unknown."
+                },
+                "geographicScope": {
+                  "type": "string",
+                  "description": "Geographic coverage of the grant (e.g., 'Nationwide', 'Benue, Kogi and Niger States only', 'North-West geopolitical zone', 'FCT and Ogun State pilot')."
+                },
+                "applicationUrl": {
+                  "type": "string",
+                  "description": "Official URL for the grant page, portal, or organization homepage. Use empty string if not found. Never fabricate a URL."
+                },
+                "contactInformation": {
+                  "type": "string",
+                  "description": "Relevant contact details if available (e.g., 'NIRSAL Plc: info@nirsal.com', 'BOA nearest state branch', 'FMARD Abuja: info@fmard.gov.ng'). Use empty string if not available."
+                }
+              }
+            }
+          },
+          "profileGaps": {
+            "type": "array",
+            "description": "Specific profile gaps or missing registrations limiting the farmer's grant options (e.g., 'No CAC registration - excludes from most federal programs', 'Not a cooperative member - eliminates CBN Anchor Borrowers eligibility', 'No land document - restricts BOA land-linked programs').",
+            "items": {
+              "type": "string"
+            }
+          },
+          "topRecommendation": {
+            "type": "string",
+            "description": "The single best grant opportunity for this farmer based on their profile. Name the grant, state why it is the top pick, and give the immediate action to take."
+          },
+          "summary": {
+            "type": "string",
+            "description": "3 to 5 sentence professional summary covering: total grants found, the most relevant programs, the farmer's strongest eligibility angle, and recommended immediate next steps."
+          },
+          "disclaimer": {
+            "type": "string",
+            "description": "Standard disclaimer. Must always read: 'Grant information is based on real-time web search results and is subject to change. Program availability, funding windows, and eligibility criteria should be verified directly with the issuing organization before applying. This analysis does not constitute financial or legal advice.'"
+          }
+        },
+        "title": "Outputs"
+      }
+    }
+  ]
+}
