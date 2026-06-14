@@ -55,8 +55,8 @@ export default function HeroSection() {
 
             {/* CTAs */}
             <div className="flex flex-wrap gap-3 pt-2">
-              <Link href="/farmer-portal" className="btn-primary text-base px-7 py-3.5 gap-2">
-                Find My Grants
+              <Link href="/sign-up-login-screen" className="btn-primary text-base px-7 py-3.5 gap-2">
+                Get Started
                 <ArrowRight size={18} />
               </Link>
               <button className="btn-secondary text-base px-7 py-3.5 gap-2">
