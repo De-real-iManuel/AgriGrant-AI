@@ -1,7 +1,8 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
-import { Loader2, ArrowLeft, CheckCircle } from 'lucide-react';
+import { Loader2, ArrowLeft, CheckCircle, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
+import { supabase } from '@/lib/supabaseClient';
 import { useAuth } from '@/context/AuthContext';
 
 interface OTPVerificationProps {
@@ -12,13 +13,21 @@ interface OTPVerificationProps {
   onSuccess: () => void;
 }
 
-export default function OTPVerification({ phone, userName = '', userEmail = '', onBack, onSuccess }: OTPVerificationProps) {
+export default function OTPVerification({
+  phone,
+  userName = '',
+  userEmail = '',
+  onBack,
+  onSuccess,
+}: OTPVerificationProps) {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [isLoading, setIsLoading] = useState(false);
-  const [countdown, setCountdown] = useState(47);
+  const [isResending, setIsResending] = useState(false);
+  const [countdown, setCountdown] = useState(60);
   const [isVerified, setIsVerified] = useState(false);
+  const [verifyError, setVerifyError] = useState<string | null>(null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const { login } = useAuth();
+  const { refreshUser } = useAuth();
 
   useEffect(() => {
     inputRefs.current[0]?.focus();
@@ -58,23 +67,73 @@ export default function OTPVerification({ phone, userName = '', userEmail = '', 
     }
   };
 
-  // Backend integration point: replace with real OTP verification API
+  /**
+   * Verify the 6-digit OTP code with Supabase.
+   * Supabase supports email OTP via: verifyOtp({ email, token, type: 'signup' })
+   */
   const handleVerify = async (otpValue: string[]) => {
+    if (!userEmail) {
+      toast.error('Email address is missing. Please go back and try again.');
+      return;
+    }
     setIsLoading(true);
-    await new Promise((r) => setTimeout(r, 1500));
+    setVerifyError(null);
+
+    const tokenCode = otpValue.join('');
+
+    const { error } = await supabase.auth.verifyOtp({
+      email: userEmail,
+      token: tokenCode,
+      type: 'signup',
+    });
+
     setIsLoading(false);
-    // Log the user in via AuthContext
-    login(userEmail || `user_${Date.now()}@agrigrant.ng`, userName, 'free');
+
+    if (error) {
+      const msg =
+        error.message.includes('expired') || error.message.includes('invalid')
+          ? 'Invalid or expired code. Please try again or request a new code.'
+          : error.message;
+      setVerifyError(msg);
+      toast.error(msg);
+      // Reset inputs for retry
+      setOtp(['', '', '', '', '', '']);
+      inputRefs.current[0]?.focus();
+      return;
+    }
+
+    // OTP verified — refresh the AuthContext session
+    await refreshUser();
     setIsVerified(true);
-    toast.success('Phone number verified! Redirecting to dashboard...');
+    toast.success('Email verified! Welcome to AgriGrant AI!');
     setTimeout(() => onSuccess(), 1200);
   };
 
-  const handleResend = () => {
-    setCountdown(47);
+  /**
+   * Resend a new OTP by triggering signUp again with same email.
+   * Supabase resends a fresh OTP to the existing unconfirmed user.
+   */
+  const handleResend = async () => {
+    if (!userEmail) return;
+    setIsResending(true);
+    setVerifyError(null);
+
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: userEmail,
+    });
+
+    setIsResending(false);
+
+    if (error) {
+      toast.error('Could not resend code: ' + error.message);
+      return;
+    }
+
+    setCountdown(60);
     setOtp(['', '', '', '', '', '']);
     inputRefs.current[0]?.focus();
-    toast.success('New verification code sent to ' + phone);
+    toast.success('New 6-digit code sent to ' + userEmail);
   };
 
   if (isVerified) {
@@ -87,12 +146,17 @@ export default function OTPVerification({ phone, userName = '', userEmail = '', 
           <CheckCircle size={40} style={{ color: 'var(--primary)' }} />
         </div>
         <div className="text-center">
-          <h2 className="text-xl font-bold" style={{ color: 'var(--foreground)' }}>Phone Verified!</h2>
+          <h2 className="text-xl font-bold" style={{ color: 'var(--foreground)' }}>
+            Email Verified!
+          </h2>
           <p className="text-sm mt-2" style={{ color: 'var(--muted-foreground)' }}>
             Redirecting you to your dashboard...
           </p>
         </div>
-        <div className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: 'var(--primary)', borderTopColor: 'transparent' }} />
+        <div
+          className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin"
+          style={{ borderColor: 'var(--primary)', borderTopColor: 'transparent' }}
+        />
       </div>
     );
   }
@@ -110,15 +174,26 @@ export default function OTPVerification({ phone, userName = '', userEmail = '', 
 
       <div>
         <h1 className="text-2xl font-bold" style={{ color: 'var(--foreground)' }}>
-          Verify your phone
+          Verify your email
         </h1>
         <p className="text-sm mt-2 leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
-          We sent a 6-digit code to{' '}
+          We sent a <span className="font-semibold" style={{ color: 'var(--foreground)' }}>6-digit confirmation code</span> to{' '}
           <span className="font-semibold" style={{ color: 'var(--foreground)' }}>
-            +234 {phone}
+            {userEmail}
           </span>
+          . Check your inbox (and spam folder).
         </p>
       </div>
+
+      {/* Error display */}
+      {verifyError && (
+        <div
+          className="rounded-xl px-4 py-3 text-sm font-medium"
+          style={{ backgroundColor: '#FEF2F2', border: '1px solid #FECACA', color: '#DC2626' }}
+        >
+          {verifyError}
+        </div>
+      )}
 
       {/* OTP inputs */}
       <div className="flex gap-2 justify-center" onPaste={handlePaste}>
@@ -159,16 +234,27 @@ export default function OTPVerification({ phone, userName = '', userEmail = '', 
         ) : (
           <button
             onClick={handleResend}
-            className="text-sm font-semibold transition-colors"
+            disabled={isResending}
+            className="text-sm font-semibold flex items-center gap-1.5 mx-auto transition-colors"
             style={{ color: 'var(--primary)' }}
           >
-            Resend verification code
+            {isResending ? (
+              <>
+                <Loader2 size={13} className="animate-spin" />
+                Sending...
+              </>
+            ) : (
+              <>
+                <RefreshCw size={13} />
+                Resend confirmation code
+              </>
+            )}
           </button>
         )}
       </div>
 
       <p className="text-xs text-center" style={{ color: 'var(--muted-foreground)' }}>
-        Didn't receive it? Check your spam folder or try a different number.
+        Didn&apos;t receive it? Check your spam folder or try a different email.
       </p>
     </div>
   );
