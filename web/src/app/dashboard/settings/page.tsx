@@ -3,11 +3,11 @@ import React from 'react';
 import AuthGuard from '@/components/ui/AuthGuard';
 import DashboardShell from '../Components/DashboardShell';
 import { useAuth } from '@/context/AuthContext';
-import { Sparkles, LogOut } from 'lucide-react';
+import { Sparkles, LogOut, ShieldCheck } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function SettingsPage() {
-  const { user, logout, upgradeToPro } = useAuth();
+  const { user, logout } = useAuth();
   const router = useRouter();
 
   const handleLogout = () => {
@@ -42,32 +42,17 @@ export default function SettingsPage() {
           {/* Plan card */}
           <div
             className="rounded-2xl border p-5 flex flex-col gap-3"
-            style={{
-              backgroundColor: user?.plan === 'pro' ? '#F0FDF4' : '#FFFBEB',
-              borderColor: user?.plan === 'pro' ? '#BBF7D0' : '#FDE68A',
-            }}
+            style={{ backgroundColor: '#F0FDF4', borderColor: '#BBF7D0' }}
           >
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold" style={{ color: 'var(--foreground)' }}>
-                  {user?.plan === 'pro' ? '✦ Pro Plan' : 'Free Plan'}
+                <h3 className="text-sm font-bold flex items-center gap-1.5" style={{ color: '#166534' }}>
+                  <ShieldCheck size={16} /> 100% Free
                 </h3>
-                <p className="text-xs mt-0.5" style={{ color: 'var(--muted-foreground)' }}>
-                  {user?.plan === 'pro'
-                    ? 'Unlimited grants, AI proposals, priority support'
-                    : '1 grant match per search — upgrade for full access'}
+                <p className="text-xs mt-0.5" style={{ color: '#15803D' }}>
+                  AgriGrant AI is completely free for farmers. We monetize via success fees directly from grantors.
                 </p>
               </div>
-              {user?.plan === 'free' && (
-                <button
-                  onClick={upgradeToPro}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all active:scale-95"
-                  style={{ backgroundColor: 'var(--accent)', color: '#0F172A' }}
-                >
-                  <Sparkles size={14} />
-                  Upgrade
-                </button>
-              )}
             </div>
           </div>
 
