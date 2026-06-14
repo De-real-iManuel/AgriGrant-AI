@@ -5,9 +5,9 @@ import { ArrowRight, Clock, ChevronRight } from 'lucide-react';
 import { usePortalResults } from '@/context/PortalResultsContext';
 
 const statusBadge = {
-  active: { label: 'Active', bg: '#DCFCE7', color: '#166534' },
-  working: { label: 'AI Working', bg: '#FEF9C3', color: '#92400E' },
-  review: { label: 'Needs Review', bg: '#DBEAFE', color: '#1D4ED8' },
+  active:  { label: 'Active',       tintVar: 'var(--tint-green)',  colorVar: 'var(--primary)' },
+  working: { label: 'AI Working',   tintVar: 'var(--tint-amber)',  colorVar: 'var(--accent)'  },
+  review:  { label: 'Needs Review', tintVar: 'var(--tint-blue)',   colorVar: '#60A5FA'         },
 };
 
 export default function ActiveCasesList() {
@@ -52,10 +52,10 @@ export default function ActiveCasesList() {
           return (
             <div
               key={c.id}
-              className="p-4 rounded-2xl border transition-all duration-200 hover:shadow-card cursor-pointer"
+              className="p-4 rounded-xl border transition-all duration-200 hover:shadow-sm cursor-pointer"
               style={{
-                borderColor: c.status === 'review' ? '#BFDBFE' : c.daysLeft <= 10 ? '#FDE68A' : 'var(--border)',
-                backgroundColor: c.status === 'review' ? '#EFF6FF' : c.daysLeft <= 10 ? '#FFFBEB' : 'var(--muted)',
+                borderColor: c.status === 'review' ? 'var(--tint-blue)' : c.daysLeft <= 10 ? 'rgba(217,119,6,0.3)' : 'var(--border)',
+                backgroundColor: c.status === 'review' ? 'var(--tint-blue)' : c.daysLeft <= 10 ? 'var(--tint-amber)' : 'var(--muted)',
               }}
             >
               {/* Top row */}
@@ -67,14 +67,14 @@ export default function ActiveCasesList() {
                     </span>
                     <span
                       className="px-2 py-0.5 rounded-full text-xs font-semibold"
-                      style={{ backgroundColor: badge.bg, color: badge.color }}
+                      style={{ backgroundColor: badge.tintVar, color: badge.colorVar }}
                     >
                       {badge.label}
                     </span>
                     {c.daysLeft <= 10 && (
                       <span
                         className="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold"
-                        style={{ backgroundColor: '#FEF3C7', color: '#92400E' }}
+                        style={{ backgroundColor: 'var(--tint-amber)', color: 'var(--accent)' }}
                       >
                         <Clock size={10} />
                         {c.daysLeft}d left
@@ -104,12 +104,12 @@ export default function ActiveCasesList() {
                   return (
                     <React.Fragment key={`${c.id}-stage-${idx}`}>
                       <div
-                        className="flex-shrink-0 px-2 py-1 rounded-lg text-xs font-medium whitespace-nowrap"
+                        className="flex-shrink-0 px-2 py-1 rounded-md text-xs font-medium whitespace-nowrap"
                         style={{
-                          backgroundColor: isDone ? '#DCFCE7' : isActive ? '#FEF9C3' : 'var(--background)',
-                          color: isDone ? '#166534' : isActive ? '#92400E' : 'var(--muted-foreground)',
-                          border: `1px solid ${isDone ? '#BBF7D0' : isActive ? '#FDE68A' : 'var(--border)'}`,
-                          fontWeight: isActive ? 700 : 500,
+                          backgroundColor: isDone ? 'var(--tint-green)' : isActive ? 'var(--tint-amber)' : 'var(--background)',
+                          color: isDone ? 'var(--primary)' : isActive ? 'var(--accent)' : 'var(--muted-foreground)',
+                          border: `1px solid ${isDone ? 'rgba(22,163,74,0.2)' : isActive ? 'rgba(217,119,6,0.25)' : 'var(--border)'}`,
+                          fontWeight: isActive ? 600 : 400,
                         }}
                       >
                         {isDone ? '✓' : isActive ? '▶' : ''} {stage}
