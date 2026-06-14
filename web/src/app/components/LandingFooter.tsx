@@ -21,10 +21,11 @@ const footerLinks = {
     { id: 'fl-farmermoni', label: 'FarmerMoni', href: '#grants' },
   ],
   Company: [
-    { id: 'fl-about', label: 'About AgriGrant', href: '#about' },
+    { id: 'fl-about', label: 'About AgriGrant', href: '/about-us' },
     { id: 'fl-contact', label: 'Contact Us', href: '#contact' },
-    { id: 'fl-terms', label: 'Terms of Service', href: '#' },
-    { id: 'fl-privacy', label: 'Privacy Policy', href: '#' },
+    { id: 'fl-terms', label: 'Terms of Service', href: '/terms-of-service' },
+    { id: 'fl-privacy', label: 'Privacy Policy', href: '/privacy-policy' },
+    { id: 'fl-cookies', label: 'Cookie Policy', href: '/cookie-policy' },
   ],
 };
 
@@ -87,7 +88,7 @@ export default function LandingFooter() {
               </div>
               <div className="flex items-center gap-2" style={{ color: '#94A3B8' }}>
                 <MapPin size={14} style={{ color: '#22C55E' }} />
-                Victoria Island, Lagos, Nigeria
+                10b Agip Road, Port Harcourt, Rivers State
               </div>
             </div>
 
