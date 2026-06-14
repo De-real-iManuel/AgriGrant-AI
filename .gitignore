@@ -1,0 +1,183 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# AgriGrant AI — Root .gitignore
+# Covers: /web (Next.js), /backend (FastAPI/Python), /UiPath-automation
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+# ─── Environment & Secrets ───────────────────────────────
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+*.env
+# Keep example/template files
+!.env.example
+!.env.local.example
+!.env.example.*
+
+# ─── Credentials & Keys ───────────────────────────────────────────────────────
+*.pem
+*.key
+*.crt
+*.cert
+*.p12
+*.pfx
+*.jks
+secrets/
+credentials/
+service-account*.json
+*_service_account.json
+firebase*.json
+
+# ─── API keys / tokens (common patterns) ──────────────────────────────────────
+# These should live in .env only, but just in case:
+config/secrets.yaml
+config/secrets.json
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# WEB — Next.js / Node
+# ══════════════════════════════════════════════════════════════════════════════
+
+web/node_modules/
+web/.next/
+web/out/
+web/build/
+web/.vercel/
+web/.netlify/
+web/.turbo/
+web/coverage/
+web/*.tsbuildinfo
+web/.pnp
+web/.pnp.js
+web/.yarn/install-state.gz
+web/yarn.lock
+web/pnpm-lock.yaml
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# BACKEND — Python / FastAPI
+# ══════════════════════════════════════════════════════════════════════════════
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+backend/venv/
+backend/.venv/
+backend/env/
+backend/.env/
+venv/
+.venv/
+env/
+
+# Python distribution / packaging
+*.egg-info/
+*.egg
+dist/
+build/
+*.whl
+.eggs/
+
+# Testing & coverage
+backend/.pytest_cache/
+backend/htmlcov/
+backend/coverage/
+backend/.coverage
+backend/.coverage.*
+.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
+
+# mypy / type checkers
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# uWSGI
+uwsgi_params
+*.sock
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# UIPATH AUTOMATION
+# ══════════════════════════════════════════════════════════════════════════════
+
+# UiPath local state & caches (generated per-machine, not needed in source)
+UiPath-automation/**/.local/
+UiPath-automation/**/project.lock.json
+
+# UiPath compiled packages (publish output)
+UiPath-automation/**/*.nupkg
+
+# UiPath Studio Web local build artifacts
+UiPath-automation/**/.entities/
+UiPath-automation/**/.objects/
+UiPath-automation/**/.settings/
+UiPath-automation/**/.templates/
+UiPath-automation/**/.tmh/
+
+# UiPath execution logs
+UiPath-automation/**/*.log
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SHARED / OS / TOOLS
+# ══════════════════════════════════════════════════════════════════════════════
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# IDE / Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Temp / cache
+.cache/
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+
+# Zip / archives (avoid accidentally committing export dumps)
+*.zip
+*.tar.gz
+*.tar
+*.rar
+*.7z
