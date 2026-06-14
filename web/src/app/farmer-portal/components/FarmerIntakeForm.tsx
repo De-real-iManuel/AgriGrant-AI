@@ -16,6 +16,7 @@ interface Props {
   onChange: (patch: Partial<FarmerFormData>) => void;
   errors: Partial<Record<keyof FarmerFormData, string>>;
   onSubmit: () => void;
+  onFileSelect?: (documentType: string, file: File | null) => void;
 }
 
 function SectionHeader({ label }: { label: string }) {
@@ -40,7 +41,7 @@ function FieldError({ msg }: { msg?: string }) {
   );
 }
 
-export default function FarmerIntakeForm({ data, onChange, errors, onSubmit }: Props) {
+export default function FarmerIntakeForm({ data, onChange, errors, onSubmit, onFileSelect }: Props) {
   const toggleCrop = useCallback(
     (crop: string) => {
       const current = data.cropOrLivestockTypes;
@@ -339,6 +340,20 @@ export default function FarmerIntakeForm({ data, onChange, errors, onSubmit }: P
               label="Cooperative Member"
               description="Active registered cooperative member"
             />
+            <ToggleSwitch
+              id="bvn"
+              checked={data.hasBVN}
+              onChange={(v) => onChange({ hasBVN: v })}
+              label="Has BVN"
+              description="Bank Verification Number enrolled"
+            />
+            <ToggleSwitch
+              id="default"
+              checked={data.hasExistingLoanDefault}
+              onChange={(v) => onChange({ hasExistingLoanDefault: v })}
+              label="Has Loan Default (CRMS)"
+              description="Existing default on Credit Risk database"
+            />
           </div>
         </section>
 
@@ -360,6 +375,108 @@ export default function FarmerIntakeForm({ data, onChange, errors, onSubmit }: P
               value={data.additionalNotes}
               onChange={(e) => onChange({ additionalNotes: e.target.value })}
             />
+          </div>
+        </section>
+
+        {/* ── Section E — Document Uploads ── */}
+        <section
+          className="rounded-2xl p-5 sm:p-6"
+          style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }}
+        >
+          <SectionHeader label="Section E — Supporting Documents" />
+          <p className="text-xs mb-4" style={{ color: 'var(--muted-foreground)' }}>
+            Provide scanned copies or clear photos of your documents (max 5MB per file).
+          </p>
+          <div className="flex flex-col gap-4">
+            {/* NIN Document */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>
+                NIN Slip / NIMC Card <span style={{ color: 'var(--destructive)' }}>*</span>
+              </label>
+              <input
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null;
+                  onChange({ ninDocument: file ? file.name : null });
+                  onFileSelect?.('ninDocument', file);
+                }}
+                className="block w-full text-xs text-slate-500
+                  file:mr-4 file:py-2 file:px-4
+                  file:rounded-full file:border-0
+                  file:text-xs file:font-semibold
+                  file:bg-emerald-50 file:text-emerald-700
+                  hover:file:bg-emerald-100"
+              />
+              <FieldError msg={errors.ninDocument} />
+            </div>
+
+            {/* CAC Document */}
+            <div className="flex flex-col gap-1.5 mt-2">
+              <label className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>
+                CAC Certificate (if applicable)
+              </label>
+              <input
+                type="file"
+                accept=".pdf"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null;
+                  onChange({ cacDocument: file ? file.name : null });
+                  onFileSelect?.('cacDocument', file);
+                }}
+                className="block w-full text-xs text-slate-500
+                  file:mr-4 file:py-2 file:px-4
+                  file:rounded-full file:border-0
+                  file:text-xs file:font-semibold
+                  file:bg-emerald-50 file:text-emerald-700
+                  hover:file:bg-emerald-100"
+              />
+            </div>
+
+            {/* Bank Statement */}
+            <div className="flex flex-col gap-1.5 mt-2">
+              <label className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>
+                Bank Statement (Last 6 Months) <span style={{ color: 'var(--muted-foreground)', fontWeight: 400 }}>(Optional - required later by some grantors)</span>
+              </label>
+              <input
+                type="file"
+                accept=".pdf"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null;
+                  onChange({ bankStatement: file ? file.name : null });
+                  onFileSelect?.('bankStatement', file);
+                }}
+                className="block w-full text-xs text-slate-500
+                  file:mr-4 file:py-2 file:px-4
+                  file:rounded-full file:border-0
+                  file:text-xs file:font-semibold
+                  file:bg-emerald-50 file:text-emerald-700
+                  hover:file:bg-emerald-100"
+              />
+              <FieldError msg={errors.bankStatement} />
+            </div>
+
+            {/* Land Document */}
+            <div className="flex flex-col gap-1.5 mt-2">
+              <label className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>
+                Land Document (C of O / R of O / Survey Plan)
+              </label>
+              <input
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null;
+                  onChange({ landDocument: file ? file.name : null });
+                  onFileSelect?.('landDocument', file);
+                }}
+                className="block w-full text-xs text-slate-500
+                  file:mr-4 file:py-2 file:px-4
+                  file:rounded-full file:border-0
+                  file:text-xs file:font-semibold
+                  file:bg-emerald-50 file:text-emerald-700
+                  hover:file:bg-emerald-100"
+              />
+            </div>
           </div>
         </section>
 
