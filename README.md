@@ -1,53 +1,47 @@
-# 🌾 AgriGrant AI
+# AgriGrant AI
 
-> **AI-Powered Nigerian Agricultural Grant Discovery & Application System**
+**AI-Powered Nigerian Agricultural Grant Discovery & Application System**
 
-[![UiPath Hackathon 2026](https://img.shields.io/badge/UiPath%20Hackathon-2026-orange?style=for-the-badge)](https://uipath.com)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript)](https://typescriptlang.org)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38bdf8?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com)
+[![Built with UiPath](https://img.shields.io/badge/Built%20with-UiPath%20Agentic%20Automation-orange?style=for-the-badge)](https://uipath.com)
 
 ---
 
-## 🏆 Hackathon
+## Overview
 
-**UiPath Agentic Automation Hackathon 2026**
+AgriGrant AI is an end-to-end intelligent platform that helps Nigerian smallholder farmers discover, assess eligibility for, and submit agricultural grant applications — in under 10 minutes.
 
-### Team
-| Name | Role | Contact |
-|------|------|---------|
-| NWAJARI EMMANUEL | Founder & Technical Lead | nwajariemmanuel355@gmail.com |
-| KODU GIOBARI | Operations Lead | giobarikodu@gmail.com |
+The system is built on **UiPath Agentic Automation**, orchestrating five specialized AI agents across a BPMN pipeline. Each agent handles a distinct stage of the grant application process: discovery, eligibility scoring, document validation, proposal writing, and submission packaging.
 
 ---
 
-## 🔴 The Problem
+## The Problem
 
-Nigerian smallholder farmers lose **millions in unclaimed agricultural grants** every year because:
+Nigerian smallholder farmers lose significant agricultural grant funding annually due to:
 
-- 🔍 They don't know which grants exist (CBN, NIRSAL, BOA, FMARD, state programs, international donors)
-- 📋 They can't assess their own eligibility against complex Nigerian compliance requirements (BVN, CAC, cooperative membership, CRMS clean record)
-- ✍️ They can't write formal application letters that meet government standards
-- 🏢 They don't know WHERE or HOW to submit (online portals vs physical offices)
-- 📁 Document preparation is overwhelming (NIN, CAC certificate, bank statements, C of O, cooperative letters)
-
-> **AgriGrant AI reduces the grant application process from 3–4 weeks of confusion to under 10 minutes.**
+- Limited awareness of available programs (CBN, NIRSAL, BOA, FMARD, state and international donors)
+- Inability to self-assess eligibility against complex Nigerian compliance requirements (BVN, CAC, CRMS clean record, cooperative membership)
+- No access to formal application letter writing at government standards
+- Unclear submission channels — online portals vs. physical ministry offices
+- Document preparation barriers (NIN, CAC certificate, bank statements, C of O, cooperative letters)
 
 ---
 
-## ✅ The Solution
+## Solution
 
-AgriGrant AI is a **5-agent AI pipeline** built on UiPath Agentic Automation that:
+AgriGrant AI removes these barriers through a five-agent AI pipeline:
 
-1. **Discovers** matching Nigerian agricultural grants from the web for a farmer's specific profile
-2. **Scores** eligibility (0–100) against Nigerian compliance requirements — honestly, with hard disqualifiers
+1. **Discovers** matching grants from the web based on the farmer's specific profile
+2. **Scores** eligibility (0–100) against Nigerian compliance requirements, with hard disqualifiers enforced
 3. **Validates** uploaded documents (NIN, CAC, bank statements, C of O, cooperative letters)
 4. **Generates** complete, print-ready application letters tailored to each grant body
-5. **Packages** full submission instructions + follow-up schedule + email delivery via SendGrid
+5. **Packages** submission instructions, follow-up schedule, and delivers everything via email
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -65,7 +59,7 @@ AgriGrant AI is a **5-agent AI pipeline** built on UiPath Agentic Automation tha
 │             │                            │                       │
 │             ▼                            ▼                       │
 │  ┌──────────────────────────────────────────────────────┐       │
-│  │         AgriGrant API Workflow (Backend)               │       │
+│  │              AgriGrant API Workflow (Backend)          │       │
 │  │  - Input validation                                    │       │
 │  │  - Draft letter generation                             │       │
 │  │  - SendGrid email confirmation                         │       │
@@ -78,24 +72,24 @@ AgriGrant AI is a **5-agent AI pipeline** built on UiPath Agentic Automation tha
 │  │                                                        │       │
 │  │  ┌─────────┐   ┌─────────┐   ┌─────────┐             │       │
 │  │  │ Agent 1 │──▶│ Agent 2 │──▶│ Agent 3 │             │       │
-│  │  │ Grant   │   │Eligblty │   │Doc Undst│             │       │
-│  │  │Discovery│   │& Risk   │   │(if docs)│             │       │
+│  │  │  Grant  │   │Eligblty │   │  Doc    │             │       │
+│  │  │Discovery│   │& Risk   │   │Underst. │             │       │
 │  │  └─────────┘   └─────────┘   └────┬────┘             │       │
 │  │                                    │                  │       │
 │  │  ┌─────────┐   ┌─────────┐        │                  │       │
 │  │  │ Agent 5 │◀──│ Agent 4 │◀───────┘                  │       │
 │  │  │Submitn  │   │Proposal │                            │       │
-│  │  │&Followup│   │Generatn │                            │       │
+│  │  │&Followup│   │  Gen.   │                            │       │
 │  │  └────┬────┘   └─────────┘                            │       │
 │  │       │                                               │       │
 │  │       ▼                                               │       │
 │  │  ┌──────────────────┐                                │       │
-│  │  │ SendGrid Email    │                                │       │
-│  │  │ (Full Report)     │                                │       │
+│  │  │  SendGrid Email   │                                │       │
+│  │  │  (Full Report)    │                                │       │
 │  │  └──────────────────┘                                │       │
 │  └──────────────────────────────────────────────────────┘       │
 │                                                                  │
-│  PHASE 2 — RPA Robot (Desktop)                                   │
+│  RPA Robot (UiPath Studio Desktop)                               │
 │  ┌──────────────────────────────────────────────────────┐       │
 │  │  Portal Form Filler — Automates government portals    │       │
 │  │  (NIRSAL, CBN, State Ministry websites)               │       │
@@ -105,51 +99,56 @@ AgriGrant AI is a **5-agent AI pipeline** built on UiPath Agentic Automation tha
 
 ---
 
-## 🧠 The 5 AI Agents
+## The Five UiPath Agents
+
+All agents are built on **UiPath Agentic Automation** and orchestrated via **UiPath BPMN Process Orchestration**.
 
 ### Agent 1 — Grant Discovery & Matching
-- **Purpose:** Searches the web for Nigerian agricultural grants matching the farmer's profile
-- **Tools:** UiPath GenAI Web Search
-- **Output:** `matchedGrants[]`, `topRecommendation`, `profileGaps`, `totalMatchesFound`
-- **Knowledge Base:** CBN ABP, NIRSAL AGSMEIS/AMSMES, BOA, FMARD APPEALS, IFAD VCDP, state programs, GIZ, FAO, USAID, World Bank
+Searches the live web for Nigerian agricultural grant programs matching the farmer's profile.
+
+- Tool: UiPath GenAI Web Search
+- Output: `matchedGrants[]`, `topRecommendation`, `profileGaps`, `totalMatchesFound`
+- Coverage: CBN ABP, NIRSAL AGSMEIS/AMSMES, BOA, FMARD APPEALS, IFAD VCDP, all 36 state programs, GIZ, FAO, USAID, World Bank
 
 ### Agent 2 — Eligibility & Risk Assessment
-- **Purpose:** Scores farmer eligibility (0–100) against Nigerian grant requirements
-- **Output:** `overallEligibilityScore`, `eligibilityVerdict`, `nigerianComplianceFlags`, `strengths[]`, `riskFactors[]`, `missingItems[]`, `analystNarrative`
+Scores farmer eligibility (0–100) against Nigerian compliance requirements. Hard disqualifiers are enforced strictly.
 
-**Scoring Breakdown:**
+- Output: `overallEligibilityScore`, `eligibilityVerdict`, `nigerianComplianceFlags`, `strengths[]`, `riskFactors[]`, `missingItems[]`, `analystNarrative`
 
-| Category | Weight |
-|----------|--------|
+| Scoring Category | Weight |
+|------------------|--------|
 | Farm Profile Alignment | 25% |
 | Financial Eligibility | 20% |
 | Project Relevance | 25% |
 | Documentation Readiness | 15% |
 | Compliance & Planning | 15% |
 
-**Hard Disqualifiers:** No BVN → compliance capped at 20 | Loan default → score capped at 0 | No CAC (when required) → capped at 25
+Hard disqualifiers: No BVN → compliance capped at 20 | Loan default → score capped at 0 | No CAC (when required) → capped at 25
 
 ### Agent 3 — Document Understanding
-- **Purpose:** Extracts, validates, and cross-references uploaded Nigerian documents
-- **Tools:** Analyze Files (single-page), DeepRAG (multi-page PDFs)
-- **Supported Docs:** NIN Slip, PVC, Passport, Driver's Licence, C of O, R of O, Survey Plan, CAC Certificate, Bank Statement, NIRSAL/CBN Loan Docs, Cooperative Certificate, NAFDAC Permit
-- **Output:** `documentResults[]`, `consolidatedFarmerProfile`, `crossDocumentInconsistencies[]`, `overallDocumentScore`, `documentVerdict`
+Extracts, validates, and cross-references uploaded Nigerian identity and compliance documents.
+
+- Tools: UiPath Analyze Files (single-page), DeepRAG (multi-page PDFs)
+- Supported documents: NIN Slip, PVC, Passport, Driver's Licence, C of O, R of O, Survey Plan, CAC Certificate, Bank Statement, NIRSAL/CBN Loan Docs, Cooperative Certificate, NAFDAC Permit
+- Output: `documentResults[]`, `consolidatedFarmerProfile`, `crossDocumentInconsistencies[]`, `overallDocumentScore`, `documentVerdict`
 
 ### Agent 4 — Proposal Generation
-- **Purpose:** Writes complete, print-ready application letters tailored to specific Nigerian grant bodies
-- **Tools:** Analyze Files, Batch Transform
-- **Output:** `applicationLetters[]`, `preparationChecklist`, `submissionInstructions`
-- **Formats:** formal_government, state_ministry, microfinance, ngo_eoi, development_bank
+Writes complete, print-ready application letters tailored to specific Nigerian grant bodies.
+
+- Tools: UiPath Analyze Files, Batch Transform
+- Output: `applicationLetters[]`, `preparationChecklist`, `submissionInstructions`
+- Letter formats: formal government, state ministry, microfinance, NGO expression of interest, development bank
 
 ### Agent 5 — Submission & Follow-up
-- **Purpose:** Builds the full submission package — WHERE to submit, HOW, and follow-up schedule
-- **Tools:** UiPath GenAI Web Search
-- **Output:** `submissionInstructions`, `followUpSchedule`, `emailPayload` (always populated, ready for SendGrid)
-- **Languages:** English, Pidgin English, Bilingual
+Builds the complete submission package — where to submit, how, and a follow-up schedule.
+
+- Tool: UiPath GenAI Web Search
+- Output: `submissionInstructions`, `followUpSchedule`, `emailPayload` (ready for SendGrid)
+- Language support: English, Pidgin English, Bilingual
 
 ---
 
-## 🔄 Pipeline Flow (BPMN)
+## Pipeline Flow (BPMN)
 
 ```
 START — Farmer Profile Received
@@ -173,13 +172,13 @@ END — Grant Package Delivered
 
 ---
 
-## ⚙️ AgriGrant API Workflow
+## AgriGrant API Workflow
 
 **Type:** UiPath Studio Web — API Project
 
-**Purpose:** Immediate response — validates input, generates draft letter, sends confirmation email, returns reference number.
+Handles synchronous response on submission: validates input, generates a draft letter, sends a confirmation email, and returns a reference number — before the full pipeline completes in the background.
 
-### API Inputs (19 fields)
+### API Inputs
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -216,40 +215,40 @@ END — Grant Package Delivered
 
 ---
 
-## 📧 Email Integration
+## Email Delivery
 
 | Parameter | Value |
 |-----------|-------|
 | Provider | SendGrid |
 | Endpoint | POST https://api.sendgrid.com/v3/mail/send |
-| From | info@agrigrant.xyz (AgriGrant AI) |
-| Auth | Bearer token |
+| From | info@agrigrant.xyz |
 | Success Code | 202 |
 
-**Two-stage delivery:**
-1. **Immediate** — Confirmation + draft letter + reference number (from API workflow)
-2. **Full Report** — AI-refined report with matched grants, eligibility score, final letter, submission instructions (from Pipeline)
+Two-stage delivery:
+
+1. **Immediate** — Confirmation + draft letter + reference number (from API workflow, synchronous)
+2. **Full Report** — AI-refined report with matched grants, eligibility score, final letter, and submission instructions (from pipeline, asynchronous)
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
 | AI Agents | UiPath Agentic Automation | 5 specialized AI agents |
-| Orchestration | UiPath BPMN Process Orchestration | Pipeline sequencing |
-| Backend API | UiPath Studio Web | Input validation, email, letter generation |
+| Orchestration | UiPath BPMN Process Orchestration | Pipeline sequencing with conditional branching |
+| Backend API | UiPath Studio Web (API Project) | Input validation, email, letter generation |
 | Frontend (A) | UiPath Apps | Low-code farmer form |
 | Frontend (B) | Next.js 14 + TypeScript + Tailwind CSS | Custom web application |
 | Email | SendGrid API | Transactional email delivery |
-| RPA (Phase 2) | UiPath Studio Desktop | Government portal automation |
+| RPA | UiPath Studio Desktop | Government portal automation |
 | LLM | UiPath GenAI (GPT-4o / Claude) | Powers all 5 agents |
-| Document AI | UiPath Analyze Files + DeepRAG | Document extraction & validation |
-| Web Search | UiPath GenAI Web Search | Grant discovery from web |
+| Document AI | UiPath Analyze Files + DeepRAG | Document extraction and validation |
+| Web Search | UiPath GenAI Web Search | Live grant discovery |
 
 ---
 
-## 🇳🇬 Nigerian Grant Programs Supported
+## Nigerian Grant Programs Supported
 
 | Program | Body | Target | Max Amount |
 |---------|------|--------|-----------|
@@ -259,18 +258,18 @@ END — Grant Package Delivered
 | Micro-Agriculture Loan | BOA | Smallholders | ₦50,000–₦500,000 |
 | Small/Medium Loan | BOA | CAC-registered farms | ₦500,000–₦5,000,000 |
 | CACS | CBN | Large agribusiness (₦100M+ turnover) | Varies |
-| APPEALS | FMARD/World Bank | Smallholders in 6 states | Varies |
+| APPEALS | FMARD / World Bank | Smallholders in 6 states | Varies |
 | VCDP | IFAD | Cassava/rice value chains | Varies |
 | State Programs | 36 State Ministries | Varies | Varies |
 | International | GIZ, FAO, USAID, ActionAid | Various | Varies |
 
 ---
 
-## 📜 Nigerian Compliance Framework
+## Nigerian Compliance Framework
 
 | Requirement | Document | Impact |
 |-------------|----------|--------|
-| BVN | 11-digit bank number | Required for ALL CBN/NIRSAL/BOA programs |
+| BVN | 11-digit bank number | Required for all CBN/NIRSAL/BOA programs |
 | NIN | 11-digit NIMC number | Required for all programs |
 | CAC Registration | RC or BN number | Required for NIRSAL AGSMEIS, CBN CACS, FMARD |
 | Cooperative Membership | Membership letter | Required for CBN ABP, IFAD VCDP |
@@ -280,7 +279,7 @@ END — Grant Package Delivered
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 AgriGrant-AI/
@@ -290,7 +289,7 @@ AgriGrant-AI/
 ├── Proposal Generation Agent/             # Agent 4 — UiPath Agentic
 ├── Submission & Follow-up Agent/          # Agent 5 — UiPath Agentic
 ├── Nigerian AgriGrant Pipeline/           # BPMN Process Orchestration
-├── AgriGrant API/                         # API Workflow (backend)
+├── AgriGrant API/                         # UiPath Studio Web API Project
 │   └── Workflow.json
 ├── SimpleApprovalApp/                     # UiPath App (frontend)
 ├── web/                                   # Next.js Custom Web App
@@ -309,25 +308,48 @@ AgriGrant-AI/
 
 ---
 
-## 🚀 How It Works — Demo Flow
+## How It Works
 
-1. Farmer opens the AgriGrant AI app (UiPath App or custom web app)
-2. Fills a multi-step form: personal details → farm profile → compliance checklist → document upload
+1. Farmer opens AgriGrant AI (UiPath App or custom web app)
+2. Completes a multi-step form: personal details → farm profile → compliance checklist → document upload
 3. Clicks **"Submit My Application"**
-4. **Instant response:** App shows reference number + confirmation email sent
-5. **Background:** Nigerian AgriGrant Pipeline runs all 5 AI agents
-6. **Email delivery:** Farmer receives full grant report including:
+4. Immediately receives a reference number and confirmation email
+5. In the background, the Nigerian AgriGrant Pipeline runs all five agents
+6. Farmer receives a full grant report by email:
    - Top 3–5 matched grants with URLs and deadlines
    - Eligibility score (0–100) with detailed breakdown
-   - Nigerian compliance flags (BVN ✅, CAC ✅, Cooperative ✅, etc.)
-   - Ready-to-submit application letter (formatted for the specific grant body)
+   - Nigerian compliance flags (BVN, CAC, Cooperative, etc.)
+   - Ready-to-submit application letter formatted for the specific grant body
    - Exact submission instructions (portal URL or physical office address)
-   - Document checklist (what to bring / upload)
-   - Follow-up schedule (when to call, when to expect a response)
+   - Document checklist
+   - Follow-up schedule
 
 ---
 
-## 🧪 Test Data
+## RPA Robot — Portal Automation
+
+The UiPath Studio Desktop robot automates direct submission to Nigerian government grant portals using the structured farmer data produced by the pipeline.
+
+**Target portals:**
+- NIRSAL Portal (nirsal.com)
+- CBN Anchor Borrowers Platform
+- Bank of Agriculture (BOA) portal
+- State Ministry of Agriculture websites (36 states)
+- FMARD online application system
+
+**Capabilities:** Browser automation (Chrome/Edge), form filling from structured data, document upload, CAPTCHA flagging for human intervention (attended mode), screenshot capture for audit trail, confirmation number extraction.
+
+**Demo flow:**
+1. Robot receives structured farmer data from AgriGrant AI
+2. Opens Chrome → navigates to the NAGAP demo portal (`portal.agrigrant.xyz/apply`)
+3. Fills all form fields, uploads documents, clicks Submit
+4. Reads the `applicationReference` from the success page
+5. Returns the reference number to AgriGrant AI
+6. AgriGrant AI emails the farmer: *"Your application has been submitted — Reference: NAGAP-XXXXXX"*
+
+---
+
+## Test Data
 
 ```json
 {
@@ -355,69 +377,25 @@ AgriGrant-AI/
 
 ---
 
-## 🤖 RPA Robot — Phase 2
-
-**Purpose:** Automates filling grant application forms on Nigerian government portals
-
-**Target Portals:**
-- NIRSAL Portal (nirsal.com)
-- CBN Anchor Borrowers Platform
-- Bank of Agriculture (BOA) portal
-- State Ministry of Agriculture websites (36 states)
-- FMARD online application system
-
-**Capabilities:** Browser automation (Chrome/Edge), form filling from structured data, document upload, CAPTCHA flagging for human intervention (attended mode), screenshot capture for audit trail, confirmation number extraction
-
----
-
-## 🌟 Key Differentiators
-
-1. **Nigeria-specific** — Built entirely around Nigerian grant programs, compliance requirements, and document standards
-2. **End-to-end AI** — 5 specialized agents handle the full pipeline: discovery → eligibility → documents → proposal → submission
-3. **Instant value** — Draft letter in seconds, full report within minutes
-4. **Accessible** — Mobile-first, supports Pidgin English, designed for low-literacy users
-5. **Honest scoring** — Hard disqualifiers (no BVN, loan default) are enforced strictly — no false hope
-6. **Actionable output** — Every result includes specific Nigerian context (e.g., *"Register at cac.gov.ng, costs ₦10,000–₦25,000, takes 5–10 business days"*)
-
----
-
-## 🗺️ Roadmap
+## Roadmap
 
 - [ ] Full RPA portal submission automation (NIRSAL, CBN, BOA)
 - [ ] SMS notifications for farmers without email
 - [ ] WhatsApp bot integration
 - [ ] Offline mode for low-connectivity areas
 - [ ] Batch processing for cooperative group applications
-- [ ] Dashboard for grant success tracking and analytics
+- [ ] Grant success tracking dashboard
 - [ ] Integration with Nigerian agricultural extension services
 
 ---
 
-## 📊 Judges' Evaluation Criteria
+## Team
 
-### Innovation & Use of UiPath Agentic Automation
-- 5 specialized agents built with UiPath Agentic Automation, each with distinct tools (Web Search, Analyze Files, DeepRAG, Batch Transform)
-- BPMN Process Orchestration for agent pipeline sequencing with conditional branching (document upload decision gate)
-- UiPath Studio Web API Project for synchronous backend response
-
-### Real-World Impact
-- Targets 34 million+ Nigerian smallholder farmers
-- Addresses a documented ₦-billion problem of unclaimed agricultural grants
-- Designed for low-literacy, low-connectivity, mobile-first users
-- Supports Pidgin English for accessibility
-
-### Technical Completeness
-- End-to-end working system: frontend → API → pipeline → email delivery
-- 19-field validated API with error handling and reference number generation
-- Two-tier email delivery (immediate confirmation + full AI report)
-- Compliance framework maps directly to real Nigerian grant requirements
-
-### Scalability & Production Readiness
-- Modular agent architecture — each agent can be updated independently
-- Batch processing support (Agent 4 handles CSV uploads for cooperatives)
-- Phase 2 RPA roadmap for full portal automation
-- SendGrid integration for production email at scale
+| Name | Role | Contact |
+|------|------|---------|
+| Nwajari Emmanuel | Founder & Technical Lead | nwajariemmanuel355@gmail.com |
+| Kodu Giobari | Operations Lead | giobarikodu@gmail.com |
 
 ---
 
-*Built with ❤️ for Nigerian farmers by REM Labs | UiPath Agentic Automation Hackathon 2026*
+*Built by REM Labs — Powered by UiPath Agentic Automation*
