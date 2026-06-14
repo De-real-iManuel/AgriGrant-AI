@@ -1,176 +1,97 @@
 'use client';
-import React, { useState } from 'react';
-import { Search, Shield, FileCheck, PenLine, Eye, RefreshCw } from 'lucide-react';
-import { toast } from 'sonner';
-import Icon from '@/components/ui/AppIcon';
+import React from 'react';
+import { Search, Shield, FileCheck, PenLine, Send } from 'lucide-react';
+import { usePortalResults } from '@/context/PortalResultsContext';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
-
-const agents = [
-  {
-    id: 'agent-discovery',
-    icon: Search,
-    name: 'Discovery Agent',
-    status: 'active' as const,
-    activity: 'Found 12 new grants matching your profile',
-    time: '02:41 AM',
-    case: 'All Cases',
-  },
-  {
-    id: 'agent-eligibility',
-    icon: Shield,
-    name: 'Eligibility Agent',
-    status: 'active' as const,
-    activity: 'Calculated 91% match score for CBN Anchor',
-    time: '02:38 AM',
-    case: 'Case #AG-2026-001',
-  },
-  {
-    id: 'agent-document',
-    icon: FileCheck,
-    name: 'Document Agent',
-    status: 'active' as const,
-    activity: 'Validated Farm Certificate & CAC documents',
-    time: '02:35 AM',
-    case: 'Case #AG-2026-001',
-  },
-  {
-    id: 'agent-proposal',
-    icon: PenLine,
-    name: 'Proposal Agent',
-    status: 'working' as const,
-    activity: 'Generating executive narrative for NIRSAL...',
-    time: '02:30 AM',
-    case: 'Case #AG-2026-002',
-  },
-  {
-    id: 'agent-review',
-    icon: Eye,
-    name: 'Human Review',
-    status: 'waiting' as const,
-    activity: 'Awaiting your approval on FAO proposal',
-    time: '02:25 AM',
-    case: 'Case #AG-2026-003',
-  },
+const AGENT_DEFS = [
+  { id: 'agent-discovery', icon: Search, name: 'Grant Discovery' },
+  { id: 'agent-eligibility', icon: Shield, name: 'Eligibility & Risk' },
+  { id: 'agent-document', icon: FileCheck, name: 'Document Review' },
+  { id: 'agent-proposal', icon: PenLine, name: 'Proposal Generation' },
+  { id: 'agent-submission', icon: Send, name: 'Submission & Follow-up' },
 ];
 
-const statusConfig = {
-  active: { dot: 'agent-dot-green', label: 'Complete', labelBg: '#DCFCE7', labelColor: '#166534' },
-  working: { dot: 'agent-dot-yellow', label: 'In Progress', labelBg: '#FEF9C3', labelColor: '#92400E' },
-  waiting: { dot: 'agent-dot-blue', label: 'Needs You', labelBg: '#DBEAFE', labelColor: '#1D4ED8' },
-};
-
 export default function AgentActivityFeed() {
-  const [refreshing, setRefreshing] = useState(false);
+  const { latestResult, activeCases } = usePortalResults();
 
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    setRefreshing(false);
-    toast.success('Agent activity refreshed');
-  };
+  const hasActivity = !!latestResult || activeCases.length > 0;
 
   return (
     <div className="card-elevated flex flex-col gap-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-sm font-bold" style={{ color: 'var(--foreground)' }}>
-            AI Agent Activity
-          </h3>
-          <p className="text-xs mt-0.5" style={{ color: 'var(--muted-foreground)' }}>
-            Live orchestration status
-          </p>
-        </div>
-        <button
-          onClick={handleRefresh}
-          className="p-2 rounded-lg transition-colors hover:bg-muted"
-          style={{ color: 'var(--muted-foreground)' }}
-          aria-label="Refresh agent activity"
-        >
-          <RefreshCw size={14} className={refreshing ? 'animate-spin' : ''} />
-        </button>
+      <div>
+        <h3 className="text-sm font-bold" style={{ color: 'var(--foreground)' }}>
+          AI Agent Activity
+        </h3>
+        <p className="text-xs mt-0.5" style={{ color: 'var(--muted-foreground)' }}>
+          {hasActivity ? 'Pipeline status for your cases' : 'Agents idle — no pipeline running'}
+        </p>
       </div>
 
-      {/* Agent list */}
-      <div className="flex flex-col gap-3">
-        {agents.map((agent) => {
-          const Icon = agent.icon;
-          const config = statusConfig[agent.status];
-          return (
-            <div
-              key={agent.id}
-              className="flex items-start gap-3 p-3 rounded-xl transition-colors hover:bg-muted cursor-default"
-            >
-              {/* Icon + dot */}
-              <div className="relative flex-shrink-0">
-                <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center"
-                  style={{ backgroundColor: 'var(--muted)' }}
-                >
-                  <Icon size={15} style={{ color: 'var(--muted-foreground)' }} />
-                </div>
-                <span
-                  className={`${config.dot} absolute -bottom-0.5 -right-0.5`}
-                  style={{
-                    width: '10px',
-                    height: '10px',
-                    borderRadius: '50%',
-                    border: '2px solid var(--card)',
-                    backgroundColor:
-                      agent.status === 'active' ? '#22C55E' :
-                      agent.status === 'working' ? '#EAB308' : '#3B82F6',
-                  }}
-                />
-              </div>
+      {!hasActivity ? (
+        <div
+          className="p-6 text-center rounded-xl border border-dashed flex flex-col items-center gap-3"
+          style={{ borderColor: 'var(--border)' }}
+        >
+          <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
+            All 5 agents are standing by. Start a grant search to activate the pipeline.
+          </p>
+          <Link href="/dashboard/chat" className="flex items-center gap-1 text-xs font-semibold" style={{ color: 'var(--primary)' }}>
+            Start now <ArrowRight size={12} />
+          </Link>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {AGENT_DEFS.map((agent) => {
+            const Icon = agent.icon;
+            const isComplete = latestResult !== null;
+            const statusLabel = isComplete ? 'Complete' : 'Idle';
+            const dotColor = isComplete ? '#22C55E' : '#94A3B8';
+            const labelBg = isComplete ? '#DCFCE7' : 'var(--muted)';
+            const labelColor = isComplete ? '#166534' : 'var(--muted-foreground)';
 
-              {/* Content */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2 mb-0.5">
+            return (
+              <div key={agent.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted">
+                <div className="relative flex-shrink-0">
+                  <div
+                    className="w-9 h-9 rounded-xl flex items-center justify-center"
+                    style={{ backgroundColor: 'var(--muted)' }}
+                  >
+                    <Icon size={15} style={{ color: 'var(--muted-foreground)' }} />
+                  </div>
+                  <span
+                    className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2"
+                    style={{ backgroundColor: dotColor, borderColor: 'var(--card)' }}
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
                   <p className="text-xs font-bold truncate" style={{ color: 'var(--foreground)' }}>
                     {agent.name}
                   </p>
-                  <span
-                    className="px-1.5 py-0.5 rounded-full text-xs font-semibold flex-shrink-0"
-                    style={{ backgroundColor: config.labelBg, color: config.labelColor }}
-                  >
-                    {config.label}
-                  </span>
                 </div>
-                <p className="text-xs leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
-                  {agent.activity}
-                </p>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="text-xs tabular-nums" style={{ color: 'var(--muted-foreground)' }}>
-                    {agent.time}
-                  </span>
-                  <span className="text-xs" style={{ color: 'var(--border)' }}>·</span>
-                  <span className="text-xs font-medium" style={{ color: 'var(--primary)' }}>
-                    {agent.case}
-                  </span>
-                </div>
+                <span
+                  className="px-1.5 py-0.5 rounded-full text-xs font-semibold flex-shrink-0"
+                  style={{ backgroundColor: labelBg, color: labelColor }}
+                >
+                  {statusLabel}
+                </span>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
-      {/* Footer */}
-      <div
-        className="pt-3 border-t flex items-center justify-between"
-        style={{ borderColor: 'var(--border)' }}
-      >
+      <div className="pt-3 border-t flex items-center justify-between" style={{ borderColor: 'var(--border)' }}>
         <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
-          5 agents · All systems operational
+          5 agents · {hasActivity ? 'Pipeline active' : 'All systems idle'}
         </p>
-        <div
-          className="flex items-center gap-1.5 text-xs font-semibold"
-          style={{ color: 'var(--secondary)' }}
-        >
+        <div className="flex items-center gap-1.5 text-xs font-semibold" style={{ color: hasActivity ? 'var(--secondary)' : 'var(--muted-foreground)' }}>
           <span
-            className="w-1.5 h-1.5 rounded-full agent-pulse"
-            style={{ backgroundColor: 'var(--secondary)' }}
+            className="w-1.5 h-1.5 rounded-full"
+            style={{ backgroundColor: hasActivity ? 'var(--secondary)' : '#94A3B8' }}
           />
-          Live
+          {hasActivity ? 'Live' : 'Idle'}
         </div>
       </div>
     </div>
