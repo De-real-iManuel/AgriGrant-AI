@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 
 const STEPS = [
+  { emoji: '📤', label: 'Uploading your documents...' },
   { emoji: '🔍', label: 'Analysing your profile...' },
   { emoji: '🌐', label: 'Searching federal & state grants (CBN, NIRSAL, BOA, FMARD)...' },
   { emoji: '⚖️', label: 'Running Eligibility & Risk Assessment...' },
