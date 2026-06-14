@@ -1,6 +1,0 @@
-{
-  "ProjectType": "Api",
-  "Name": "AgriGrant API",
-  "Description": null,
-  "MainFile": "Workflow.json"
-}
