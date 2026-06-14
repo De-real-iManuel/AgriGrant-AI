@@ -1,37 +1,94 @@
-# Node modules
+# ─── Dependencies ─────────────────────────────────────────────────────────────
 node_modules/
-package-lock.json
+.pnp
+.pnp.js
+.yarn/install-state.gz
 
-# Next.js build output
+# ─── Next.js ──────────────────────────────────────────────────────────────────
 .next/
 out/
-
-# Production build
 build/
+*.tsbuildinfo
+next-env.d.ts
 
-# Logs
+# ─── Environment & Secrets ────────────────────────────────────────────────────
+# Never commit real credentials
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+# Keep example files so devs know what vars are needed
+!.env.example
+!.env.local.example
+
+# ─── Package manager locks (pick one to commit, ignore the rest) ──────────────
+# Commit package-lock.json OR yarn.lock, not both
+# Uncomment whichever you don't use:
+# package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ─── Logs ─────────────────────────────────────────────────────────────────────
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+lerna-debug.log*
+logs/
 
-# OS-specific files
-.DS_Store
-Thumbs.db
-
-# Vercel deployment
-.vercel/
-
-# Optional: if using TypeScript
-*.tsbuildinfo
-
-# Optional: if using testing tools
+# ─── Test & Coverage ──────────────────────────────────────────────────────────
 coverage/
+.nyc_output/
 jest-test-results.json
+playwright-report/
+test-results/
 
-# Optional: if using IDEs
+# ─── OS-specific ──────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ─── IDE & Editor ─────────────────────────────────────────────────────────────
 .vscode/
 .idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+.settings/
 
-# Optional: if using TurboRepo or monorepo
+# ─── Certificates & Keys ──────────────────────────────────────────────────────
+*.pem
+*.key
+*.crt
+*.cert
+*.p12
+*.pfx
+*.jks
+
+# ─── Deployment ───────────────────────────────────────────────────────────────
+.vercel/
+.netlify/
+
+# ─── Monorepo / Turbo ─────────────────────────────────────────────────────────
+.turbo/
 turbo/
+
+# ─── Misc ─────────────────────────────────────────────────────────────────────
+*.local
+.cache/
+dist/
+tmp/
+temp/
