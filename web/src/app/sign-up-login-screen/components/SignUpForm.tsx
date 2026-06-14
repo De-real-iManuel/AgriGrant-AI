@@ -2,6 +2,10 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Eye, EyeOff, Loader2, ChevronDown } from 'lucide-react';
+import Link from 'next/link';
+import { toast } from 'sonner';
+import { supabase } from '@/lib/supabaseClient';
+import { useAuth } from '@/context/AuthContext';
 
 interface SignUpFormData {
   fullName: string;
@@ -42,6 +46,9 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  const { refreshUser } = useAuth();
 
   const {
     register,
@@ -52,11 +59,46 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
 
   const password = watch('password');
 
-  // Backend integration point: replace with real registration API call
   const onSubmit = async (data: SignUpFormData) => {
     setIsLoading(true);
-    await new Promise((r) => setTimeout(r, 1800));
+    setServerError(null);
+
+    // 1. Register with Supabase — triggers a 6-digit OTP confirmation email
+    const { data: signUpData, error } = await supabase.auth.signUp({
+      email: data.email,
+      password: data.password,
+      options: {
+        // Store profile data in user_metadata (accessible as supabaseUser.user_metadata)
+        data: {
+          full_name: data.fullName,
+          phone: data.phone,
+          state: data.state,
+          lga: data.lga,
+          farm_type: data.farmType,
+          plan: 'free',
+        },
+        // Supabase sends a 6-digit OTP when emailConfirmations uses OTP mode
+        // Configure in Supabase Dashboard → Auth → Email → "Use OTP" = ON
+        emailRedirectTo: undefined,
+      },
+    });
+
     setIsLoading(false);
+
+    if (error) {
+      // Surface meaningful errors
+      if (error.message.toLowerCase().includes('already registered')) {
+        setServerError('This email is already registered. Please log in instead.');
+      } else {
+        setServerError(error.message);
+      }
+      toast.error(error.message);
+      return;
+    }
+
+    // Always go to OTP verification — even if Supabase returns a session,
+    // we require the user to confirm their email before entering the dashboard.
+    toast.success(`A 6-digit confirmation code has been sent to ${data.email}`);
     onSuccess(data.phone, data.fullName, data.email);
   };
 
@@ -70,6 +112,15 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
           Start your AI-powered grant journey today — free to join
         </p>
       </div>
+
+      {serverError && (
+        <div
+          className="rounded-xl px-4 py-3 text-sm font-medium"
+          style={{ backgroundColor: '#FEF2F2', border: '1px solid #FECACA', color: '#DC2626' }}
+        >
+          {serverError}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
         {/* Full Name */}
@@ -98,7 +149,7 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
         <div>
           <label className="label-base" htmlFor="su-phone">Phone Number</label>
           <p className="text-xs mb-1.5" style={{ color: 'var(--muted-foreground)' }}>
-            We'll send an OTP to verify your number
+            We&apos;ll use this to contact you about your grants
           </p>
           <div className="flex gap-2">
             <div
@@ -130,6 +181,9 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
         {/* Email */}
         <div>
           <label className="label-base" htmlFor="su-email">Email Address</label>
+          <p className="text-xs mb-1.5" style={{ color: 'var(--muted-foreground)' }}>
+            A 6-digit confirmation code will be sent here
+          </p>
           <input
             id="su-email"
             type="email"
@@ -297,10 +351,26 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
               {...register('terms', { required: 'You must agree to the terms to continue' })}
             />
             <span className="text-sm" style={{ color: 'var(--foreground)' }}>
-              I agree to AgriGrant AI's{' '}
-              <span className="font-semibold" style={{ color: 'var(--primary)' }}>Terms of Service</span>{' '}
+              I agree to AgriGrant AI&apos;s{' '}
+              <Link
+                href="/terms-of-service"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold underline underline-offset-2"
+                style={{ color: 'var(--primary)' }}
+              >
+                Terms of Service
+              </Link>{' '}
               and{' '}
-              <span className="font-semibold" style={{ color: 'var(--primary)' }}>Privacy Policy</span>
+              <Link
+                href="/privacy-policy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold underline underline-offset-2"
+                style={{ color: 'var(--primary)' }}
+              >
+                Privacy Policy
+              </Link>
             </span>
           </label>
           {errors.terms && (
@@ -314,6 +384,7 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
         <button
           type="submit"
           disabled={isLoading}
+          id="signup-submit-btn"
           className="btn-primary w-full justify-center py-3.5 mt-1"
           style={{ opacity: isLoading ? 0.8 : 1 }}
         >
