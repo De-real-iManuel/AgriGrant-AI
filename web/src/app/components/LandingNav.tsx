@@ -7,10 +7,9 @@ import { Menu, X } from 'lucide-react';
 
 const navLinks = [
   { label: 'Home', href: '/' },
-  { label: 'Farmer Portal', href: '/farmer-portal' },
   { label: 'Grants', href: '#grants' },
   { label: 'Solutions', href: '#features' },
-  { label: 'About', href: '#about' },
+  { label: 'About', href: '/about-us' },
 ];
 
 export default function LandingNav() {
@@ -57,9 +56,7 @@ export default function LandingNav() {
           <Link href="/sign-up-login-screen" className="btn-secondary text-sm px-4 py-2">
             Login
           </Link>
-          <Link href="/farmer-portal" className="btn-primary text-sm px-4 py-2">
-            Find My Grants
-          </Link>
+
         </div>
 
         {/* Mobile controls */}
@@ -95,9 +92,7 @@ export default function LandingNav() {
             <Link href="/sign-up-login-screen" className="btn-secondary justify-center">
               Login
             </Link>
-            <Link href="/farmer-portal" className="btn-primary justify-center">
-              Find My Grants
-            </Link>
+
           </div>
         </div>
       )}
