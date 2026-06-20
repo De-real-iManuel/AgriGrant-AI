@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS farmer_profiles (
     farmer_name VARCHAR(200) NOT NULL,
     state_of_residence VARCHAR(50) NOT NULL,
     lga VARCHAR(100) DEFAULT '',
+    farm_address TEXT DEFAULT '',
     farm_type VARCHAR(50) NOT NULL,
     crop_or_livestock_types JSONB DEFAULT '[]'::jsonb,
     farm_size_hectares NUMERIC,
