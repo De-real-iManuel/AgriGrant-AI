@@ -30,13 +30,13 @@ def test_pipeline_loan_disqualified():
         "stateOfResidence": "Kano",
         "farmType": "Livestock",
         "fundingPurpose": "Buying animal feed and vaccines.",
-        "hasExistingLoanDefault": True
+        "hasNoLoanDefault": False
     }
     response = client.post("/api/pipeline/submit", json=payload)
     assert response.status_code == 202
     json_data = response.json()
     assert json_data["status"] == "DISQUALIFIED"
-    assert "loan default" in json_data["message"]
+    assert "outstanding credit record" in json_data["message"]
 
 def test_pipeline_submit_and_status():
     payload = {
@@ -44,7 +44,7 @@ def test_pipeline_submit_and_status():
         "stateOfResidence": "Kano",
         "farmType": "Livestock",
         "fundingPurpose": "Buying animal feed and vaccines.",
-        "hasExistingLoanDefault": False
+        "hasNoLoanDefault": True
     }
     response = client.post("/api/pipeline/submit", json=payload)
     assert response.status_code == 202
