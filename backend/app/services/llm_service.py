@@ -270,7 +270,7 @@ async def tool_check_eligibility(args: dict, farmer_profile: dict | None) -> dic
             issues.append("Not in a cooperative — required for ABP")
         if farmer_profile.get("isSmallholderFarmer"):
             meets.append("Smallholder farmer ✅")
-        if farmer_profile.get("hasExistingLoanDefault"):
+        if not farmer_profile.get("hasNoLoanDefault", True):
             issues.append("Has existing loan default — disqualifying")
 
     elif "nirsal" in grant_name or "nmfb" in grant_name:
