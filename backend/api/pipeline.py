@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Header
+from fastapi.responses import StreamingResponse
 from typing import Optional
 import httpx
 from api.models import (
@@ -9,6 +10,13 @@ from api.models import (
 from services.pipeline_service import (
     create_pipeline_submission,
     get_pipeline_job_status
+)
+from services.event_broadcaster import subscribe as subscribe_events
+from services.database_service import (
+    get_pipeline_events_db,
+    list_pipeline_jobs_for_user_db,
+    list_chat_sessions_for_user_db,
+    get_messages_db,
 )
 
 router = APIRouter(prefix="/api/pipeline", tags=["Pipeline"])
@@ -33,7 +41,7 @@ async def submit_pipeline(
 ):
     """
     Submits a farmer grant application form.
-    Validates input rules and checks for automatic loan disqualifications.
+    Validates input rules and checks credit-history disqualification.
     """
     # 1. farmerName validation
     name_stripped = submission.farmerName.strip()
@@ -58,14 +66,14 @@ async def submit_pipeline(
             detail={"errors": {"fundingPurpose": "Funding purpose must be at least 3 characters long"}, "status": "VALIDATION_ERROR", "message": "Validation failed"}
         )
 
-    # 4. Check for automatic loan defaults
-    if submission.hasExistingLoanDefault:
+    # 4. Credit-history disqualification check (CRMS clearance required for federal grants)
+    if not submission.hasNoLoanDefault:
         return PipelineSubmitResponse(
-            jobId="disqualified-loan-default",
+            jobId="disqualified-credit-history",
             applicationReference="AGR-000000",
             status="DISQUALIFIED",
             estimatedWaitSeconds=0,
-            message="Existing loan default disqualifies from CBN/NIRSAL/BOA programs. Please resolve outstanding CRMS record first.",
+            message="Federal grant programmes (CBN/NIRSAL/BOA) require CRMS clearance. Please resolve your outstanding credit record before applying.",
             farmerName=submission.farmerName
         )
 
@@ -82,15 +90,82 @@ async def pipeline_status(
     """
     Retrieves the status and result output of a grant matching job.
     """
-    if job_id == "disqualified-loan-default":
+    if job_id in ("disqualified-credit-history", "disqualified-loan-default"):
         return PipelineStatusResponse(
             jobId=job_id,
             state="FAILED",
             progress=100,
             currentStep="Disqualified",
             result=None,
-            error="Existing loan default disqualifies from CBN/NIRSAL/BOA programs. Please resolve outstanding CRMS record first."
+            error="Federal grant programmes (CBN/NIRSAL/BOA) require CRMS clearance. Please resolve your outstanding credit record before applying."
         )
 
     res_dict = await get_pipeline_job_status(job_id, client)
     return PipelineStatusResponse(**res_dict)
+
+
+@router.get("/events/{job_id}")
+async def pipeline_events(job_id: str):
+    """
+    Server-Sent Events stream of live pipeline stage updates for a given job.
+    The chat UI subscribes here to render agent/robot activity in real time.
+    """
+    headers = {
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "X-Accel-Buffering": "no",  # disable proxy buffering
+    }
+    return StreamingResponse(
+        subscribe_events(job_id),
+        media_type="text/event-stream",
+        headers=headers,
+    )
+
+
+# ─────────────────────── HISTORY ENDPOINTS ───────────────────────
+# Used by the chat UI to let a returning farmer review past pipeline runs
+# and pick up the conversation where they left off.
+
+@router.get("/events-history/{job_id}")
+async def pipeline_events_history(job_id: str):
+    """Persisted timeline of every stage event that fired for this job."""
+    events = await get_pipeline_events_db(job_id)
+    return {"jobId": job_id, "events": events, "count": len(events)}
+
+
+@router.get("/history/{user_id}")
+async def pipeline_history_for_user(user_id: str, limit: int = 50):
+    """All past pipeline jobs for a farmer, newest first — drives the history sidebar."""
+    jobs = await list_pipeline_jobs_for_user_db(user_id, limit=limit)
+    return {"userId": user_id, "jobs": jobs, "count": len(jobs)}
+
+
+@router.get("/full-history/{user_id}")
+async def full_history_for_user(user_id: str, limit: int = 25):
+    """
+    One-shot payload for the chat history view: past chat sessions
+    (with their messages) + linked pipeline jobs (with their event timelines).
+    Lets the farmer reopen any conversation and continue from where they left off.
+    """
+    sessions = await list_chat_sessions_for_user_db(user_id, limit=limit)
+    jobs = await list_pipeline_jobs_for_user_db(user_id, limit=limit)
+
+    # Hydrate each session with its messages
+    hydrated_sessions = []
+    for s in sessions:
+        sid = s.get("session_id")
+        msgs = await get_messages_db(sid) if sid else []
+        hydrated_sessions.append({**s, "messages": msgs})
+
+    # Hydrate each job with its event timeline
+    hydrated_jobs = []
+    for j in jobs:
+        jid = j.get("job_id")
+        events = await get_pipeline_events_db(jid) if jid else []
+        hydrated_jobs.append({**j, "events": events})
+
+    return {
+        "userId": user_id,
+        "sessions": hydrated_sessions,
+        "jobs": hydrated_jobs,
+    }
