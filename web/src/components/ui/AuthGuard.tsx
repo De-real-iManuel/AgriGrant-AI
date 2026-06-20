@@ -13,7 +13,10 @@ interface AuthGuardProps {
  * Wraps a page/component and redirects unauthenticated users to /sign-up-login-screen.
  * Shows a minimal loading state while auth is being rehydrated from localStorage.
  */
-export default function AuthGuard({ children, redirectTo = '/sign-up-login-screen' }: AuthGuardProps) {
+export default function AuthGuard({
+  children,
+  redirectTo = '/sign-up-login-screen',
+}: AuthGuardProps) {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
 

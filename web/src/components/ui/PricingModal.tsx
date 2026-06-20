@@ -49,11 +49,11 @@ export default function PricingModal({ open, onClose }: PricingModalProps) {
 
       if (error) throw error;
       setSubmitted(true);
-      toast.success('You\'re on the list! We\'ll notify you when Pro launches.');
+      toast.success("You're on the list! We'll notify you when Pro launches.");
     } catch {
       // Silently succeed for the user — log internally
       setSubmitted(true);
-      toast.success('You\'re on the list! We\'ll notify you when Pro launches.');
+      toast.success("You're on the list! We'll notify you when Pro launches.");
     } finally {
       setSubmitting(false);
     }
@@ -63,7 +63,9 @@ export default function PricingModal({ open, onClose }: PricingModalProps) {
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ backgroundColor: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
       <div
         className="w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl"
@@ -108,19 +110,37 @@ export default function PricingModal({ open, onClose }: PricingModalProps) {
             style={{ backgroundColor: 'var(--muted)', border: '1px solid var(--border)' }}
           >
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--muted-foreground)' }}>
+              <p
+                className="text-xs font-bold uppercase tracking-widest"
+                style={{ color: 'var(--muted-foreground)' }}
+              >
                 Free
               </p>
               <p className="text-3xl font-extrabold mt-1" style={{ color: 'var(--foreground)' }}>
                 ₦0
-                <span className="text-sm font-normal ml-1" style={{ color: 'var(--muted-foreground)' }}>/mo</span>
+                <span
+                  className="text-sm font-normal ml-1"
+                  style={{ color: 'var(--muted-foreground)' }}
+                >
+                  /mo
+                </span>
               </p>
-              <p className="text-xs mt-1" style={{ color: 'var(--muted-foreground)' }}>Current plan — always free</p>
+              <p className="text-xs mt-1" style={{ color: 'var(--muted-foreground)' }}>
+                Current plan — always free
+              </p>
             </div>
             <ul className="flex flex-col gap-2">
               {FREE_FEATURES.map((f) => (
-                <li key={f} className="flex items-start gap-2 text-sm" style={{ color: 'var(--foreground)' }}>
-                  <Check size={14} className="mt-0.5 flex-shrink-0" style={{ color: 'var(--primary)' }} />
+                <li
+                  key={f}
+                  className="flex items-start gap-2 text-sm"
+                  style={{ color: 'var(--foreground)' }}
+                >
+                  <Check
+                    size={14}
+                    className="mt-0.5 flex-shrink-0"
+                    style={{ color: 'var(--primary)' }}
+                  />
                   {f}
                 </li>
               ))}
@@ -142,15 +162,22 @@ export default function PricingModal({ open, onClose }: PricingModalProps) {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <Sparkles size={13} style={{ color: '#EAB308' }} />
-                <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#86EFAC' }}>
+                <p
+                  className="text-xs font-bold uppercase tracking-widest"
+                  style={{ color: '#86EFAC' }}
+                >
                   Pro
                 </p>
               </div>
               <p className="text-3xl font-extrabold mt-1 text-white">
                 ₦2,500
-                <span className="text-sm font-normal ml-1" style={{ color: '#86EFAC' }}>/mo</span>
+                <span className="text-sm font-normal ml-1" style={{ color: '#86EFAC' }}>
+                  /mo
+                </span>
               </p>
-              <p className="text-xs mt-1" style={{ color: '#86EFAC' }}>Billed monthly · Cancel anytime</p>
+              <p className="text-xs mt-1" style={{ color: '#86EFAC' }}>
+                Billed monthly · Cancel anytime
+              </p>
             </div>
             <ul className="flex flex-col gap-2">
               {PRO_FEATURES.map((f) => (
@@ -175,7 +202,9 @@ export default function PricingModal({ open, onClose }: PricingModalProps) {
             >
               <Check size={18} style={{ color: 'var(--primary)' }} />
               <div>
-                <p className="text-sm font-bold" style={{ color: 'var(--primary)' }}>You're on the waitlist!</p>
+                <p className="text-sm font-bold" style={{ color: 'var(--primary)' }}>
+                  You're on the waitlist!
+                </p>
                 <p className="text-xs mt-0.5" style={{ color: '#166534' }}>
                   We'll email you at <strong>{email}</strong> when Pro launches.
                 </p>
