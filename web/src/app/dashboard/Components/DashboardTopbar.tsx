@@ -6,14 +6,17 @@ import { Menu, PanelLeftClose, PanelLeft, Search, Plus, ChevronDown, LogOut } fr
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 
-
 interface TopbarProps {
   onToggleSidebar: () => void;
   onMobileMenuOpen: () => void;
   sidebarCollapsed: boolean;
 }
 
-export default function DashboardTopbar({ onToggleSidebar, onMobileMenuOpen, sidebarCollapsed }: TopbarProps) {
+export default function DashboardTopbar({
+  onToggleSidebar,
+  onMobileMenuOpen,
+  sidebarCollapsed,
+}: TopbarProps) {
   const [searchFocused, setSearchFocused] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { user, logout } = useAuth();
@@ -74,7 +77,10 @@ export default function DashboardTopbar({ onToggleSidebar, onMobileMenuOpen, sid
 
         {/* Right */}
         <div className="flex items-center gap-2">
-          <Link href="/dashboard/chat" className="btn-primary hidden sm:flex text-xs px-4 py-2 gap-1.5">
+          <Link
+            href="/dashboard/chat"
+            className="btn-primary hidden sm:flex text-xs px-4 py-2 gap-1.5"
+          >
             <Plus size={14} />
             Find Grants
           </Link>
@@ -101,7 +107,11 @@ export default function DashboardTopbar({ onToggleSidebar, onMobileMenuOpen, sid
                   {user?.farmType ?? 'Farmer'}
                 </p>
               </div>
-              <ChevronDown size={13} style={{ color: 'var(--muted-foreground)' }} className="hidden xl:block" />
+              <ChevronDown
+                size={13}
+                style={{ color: 'var(--muted-foreground)' }}
+                className="hidden xl:block"
+              />
             </button>
 
             {userMenuOpen && (
@@ -112,7 +122,10 @@ export default function DashboardTopbar({ onToggleSidebar, onMobileMenuOpen, sid
                   style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }}
                 >
                   <div className="px-4 py-3" style={{ borderBottom: '1px solid var(--border)' }}>
-                    <p className="text-sm font-semibold truncate" style={{ color: 'var(--foreground)' }}>
+                    <p
+                      className="text-sm font-semibold truncate"
+                      style={{ color: 'var(--foreground)' }}
+                    >
                       {user?.name ?? 'Farmer'}
                     </p>
                     <p className="text-xs truncate" style={{ color: 'var(--muted-foreground)' }}>
@@ -144,8 +157,6 @@ export default function DashboardTopbar({ onToggleSidebar, onMobileMenuOpen, sid
           </div>
         </div>
       </header>
-
-
     </>
   );
 }

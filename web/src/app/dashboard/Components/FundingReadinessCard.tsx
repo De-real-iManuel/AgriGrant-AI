@@ -47,15 +47,31 @@ export default function FundingReadinessCard() {
   // Derive dynamic premium breakdown dimensions from the overall score
   const dimensions = [
     { id: 'dim-profile', label: 'Farm Profile', score: overall, color: 'var(--primary)' },
-    { id: 'dim-finance', label: 'Financial', score: Math.max(Math.min(overall - 5, 100), 0), color: '#0D9488' },
-    { id: 'dim-project', label: 'Project Relevance', score: Math.max(Math.min(overall + 5, 100), 0), color: '#CA8A04' },
-    { id: 'dim-docs', label: 'Documentation', score: Math.max(Math.min(overall - 10, 100), 0), color: '#2563EB' },
+    {
+      id: 'dim-finance',
+      label: 'Financial',
+      score: Math.max(Math.min(overall - 5, 100), 0),
+      color: '#0D9488',
+    },
+    {
+      id: 'dim-project',
+      label: 'Project Relevance',
+      score: Math.max(Math.min(overall + 5, 100), 0),
+      color: '#CA8A04',
+    },
+    {
+      id: 'dim-docs',
+      label: 'Documentation',
+      score: Math.max(Math.min(overall - 10, 100), 0),
+      color: '#2563EB',
+    },
     { id: 'dim-compliance', label: 'Compliance', score: overall, color: '#7C3AED' },
   ];
 
   const verdictColor = overall >= 70 ? 'var(--primary)' : overall >= 50 ? '#CA8A04' : '#DC2626';
   const verdictBg = overall >= 70 ? '#DCFCE7' : overall >= 50 ? '#FEF9C3' : '#FEF2F2';
-  const verdictText = overall >= 70 ? 'Funding Ready' : overall >= 50 ? 'Needs Improvement' : 'Not Ready';
+  const verdictText =
+    overall >= 70 ? 'Funding Ready' : overall >= 50 ? 'Needs Improvement' : 'Not Ready';
 
   return (
     <div className="card-elevated flex flex-col gap-5">

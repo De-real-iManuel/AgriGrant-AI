@@ -4,8 +4,16 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import AppLogo from '@/components/ui/AppLogo';
 import {
-  LayoutDashboard, FolderOpen, Search, FileText,
-  Settings, LogOut, Sparkles, MessageSquare, ShieldCheck, FileSignature
+  LayoutDashboard,
+  FolderOpen,
+  Search,
+  FileText,
+  Settings,
+  LogOut,
+  Sparkles,
+  MessageSquare,
+  ShieldCheck,
+  FileSignature,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
@@ -14,25 +22,67 @@ const navGroups = [
     id: 'grp-main',
     label: 'Main',
     items: [
-      { id: 'nav-dashboard', icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard', badge: null },
-      { id: 'nav-applications', icon: FolderOpen, label: 'My Applications', href: '/dashboard/applications', badge: null },
-      { id: 'nav-vault', icon: ShieldCheck, label: 'Trust Vault', href: '/dashboard/vault', badge: 'NEW' },
+      {
+        id: 'nav-dashboard',
+        icon: LayoutDashboard,
+        label: 'Dashboard',
+        href: '/dashboard',
+        badge: null,
+      },
+      {
+        id: 'nav-applications',
+        icon: FolderOpen,
+        label: 'My Applications',
+        href: '/dashboard/applications',
+        badge: null,
+      },
+      {
+        id: 'nav-vault',
+        icon: ShieldCheck,
+        label: 'Trust Vault',
+        href: '/dashboard/vault',
+        badge: 'NEW',
+      },
     ],
   },
   {
     id: 'grp-tools',
     label: 'AI Tools',
     items: [
-      { id: 'nav-grants', icon: Search, label: 'Grant Marketplace', href: '/dashboard/grants', badge: null },
-      { id: 'nav-proposals', icon: FileSignature, label: 'Proposal Drafts', href: '/dashboard/proposals', badge: null },
-      { id: 'nav-chat', icon: MessageSquare, label: 'AI Chat Advisor', href: '/dashboard/chat', badge: null },
+      {
+        id: 'nav-grants',
+        icon: Search,
+        label: 'Grant Marketplace',
+        href: '/dashboard/grants',
+        badge: null,
+      },
+      {
+        id: 'nav-proposals',
+        icon: FileSignature,
+        label: 'Proposal Drafts',
+        href: '/dashboard/proposals',
+        badge: null,
+      },
+      {
+        id: 'nav-chat',
+        icon: MessageSquare,
+        label: 'AI Chat Advisor',
+        href: '/dashboard/chat',
+        badge: null,
+      },
     ],
   },
   {
     id: 'grp-account',
     label: 'Account',
     items: [
-      { id: 'nav-settings', icon: Settings, label: 'Settings', href: '/dashboard/settings', badge: null },
+      {
+        id: 'nav-settings',
+        icon: Settings,
+        label: 'Settings',
+        href: '/dashboard/settings',
+        badge: null,
+      },
     ],
   },
 ];
@@ -56,12 +106,13 @@ export default function DashboardSidebar({ collapsed, mobileOpen, onMobileClose 
   return (
     <>
       <aside
-        className="fixed left-0 top-0 h-full z-40 flex flex-col transition-all duration-300 ease-in-out"
+        className={`fixed left-0 top-0 h-full z-40 flex flex-col transition-all duration-300 ease-in-out lg:translate-x-0 ${
+          mobileOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
         style={{
           width: collapsed ? '72px' : '240px',
           backgroundColor: 'var(--card)',
           borderRight: '1px solid var(--border)',
-          transform: mobileOpen ? 'translateX(0)' : undefined,
         }}
       >
         {/* Logo */}
@@ -71,13 +122,14 @@ export default function DashboardSidebar({ collapsed, mobileOpen, onMobileClose 
         >
           <AppLogo size={32} />
           {!collapsed && (
-            <span className="font-bold text-base tracking-tight whitespace-nowrap" style={{ color: 'var(--primary)' }}>
+            <span
+              className="font-bold text-base tracking-tight whitespace-nowrap"
+              style={{ color: 'var(--primary)' }}
+            >
               AgriGrant <span style={{ color: 'var(--accent)' }}>AI</span>
             </span>
           )}
         </div>
-
-
 
         {/* Nav groups */}
         <nav className="flex-1 overflow-y-auto py-4 px-3 flex flex-col gap-5">
@@ -165,8 +217,6 @@ export default function DashboardSidebar({ collapsed, mobileOpen, onMobileClose 
         className="flex-shrink-0 transition-all duration-300 hidden lg:block"
         style={{ width: collapsed ? '72px' : '240px' }}
       />
-
-
     </>
   );
 }

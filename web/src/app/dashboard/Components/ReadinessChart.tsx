@@ -33,7 +33,10 @@ export default function ReadinessChart({ score }: ReadinessChartProps) {
       </ResponsiveContainer>
       {/* Center text */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <p className="text-3xl font-extrabold tabular-nums leading-none" style={{ color: 'var(--primary)' }}>
+        <p
+          className="text-3xl font-extrabold tabular-nums leading-none"
+          style={{ color: 'var(--primary)' }}
+        >
           {score}
         </p>
         <p className="text-xs font-medium mt-0.5" style={{ color: 'var(--muted-foreground)' }}>

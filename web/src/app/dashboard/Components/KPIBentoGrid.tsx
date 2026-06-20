@@ -41,17 +41,18 @@ export default function KPIBentoGrid() {
   const kpis = useMemo(() => {
     // 1. Active Cases
     const activeCount = activeCases.length;
-    const attentionCount = activeCases.filter(c => c.status === 'review').length;
-    const casesSub = activeCases.length === 0
-      ? 'No applications yet'
-      : attentionCount > 0
-      ? `${attentionCount} need${attentionCount !== 1 ? 's' : ''} your attention`
-      : 'All applications running smoothly';
+    const attentionCount = activeCases.filter((c) => c.status === 'review').length;
+    const casesSub =
+      activeCases.length === 0
+        ? 'No applications yet'
+        : attentionCount > 0
+          ? `${attentionCount} need${attentionCount !== 1 ? 's' : ''} your attention`
+          : 'All applications running smoothly';
 
     // 2. Funding Opportunities
     const oppCount = latestResult ? latestResult.totalMatchesFound : 0;
     const highMatchCount = latestResult
-      ? latestResult.matchedGrants.filter(g => g.matchScore >= 90).length
+      ? latestResult.matchedGrants.filter((g) => g.matchScore >= 90).length
       : 0;
 
     // 3. Avg Match Score
@@ -64,7 +65,10 @@ export default function KPIBentoGrid() {
     // 4. Potential Funding
     let totalPotential = 0;
     if (latestResult && latestResult.matchedGrants.length > 0) {
-      totalPotential = latestResult.matchedGrants.reduce((acc, g) => acc + parseFundingMax(g.fundingAmountRange), 0);
+      totalPotential = latestResult.matchedGrants.reduce(
+        (acc, g) => acc + parseFundingMax(g.fundingAmountRange),
+        0
+      );
     } else if (activeCases.length > 0) {
       totalPotential = activeCases.reduce((acc, c) => acc + parseFundingMax(c.funding), 0);
     }
@@ -114,15 +118,15 @@ export default function KPIBentoGrid() {
         icon: AlertTriangle,
         iconTint: 'var(--tint-amber)',
         iconColor: 'var(--accent)',
-        trend: activeCases.some(c => c.daysLeft <= 10) ? 'Deadline soon' : 'No deadlines near',
-        trendPositive: !activeCases.some(c => c.daysLeft <= 10),
-        alert: activeCases.some(c => c.daysLeft <= 10),
+        trend: activeCases.some((c) => c.daysLeft <= 10) ? 'Deadline soon' : 'No deadlines near',
+        trendPositive: !activeCases.some((c) => c.daysLeft <= 10),
+        alert: activeCases.some((c) => c.daysLeft <= 10),
       },
     ];
   }, [latestResult, activeCases]);
 
   return (
-    <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
       {kpis.map((card) => {
         const IconComponent = card.icon;
         return (
@@ -151,13 +155,13 @@ export default function KPIBentoGrid() {
               </span>
             </div>
             <div>
-              <p
-                className="text-2xl font-bold tabular-nums"
-                style={{ color: 'var(--foreground)' }}
-              >
+              <p className="text-2xl font-bold tabular-nums" style={{ color: 'var(--foreground)' }}>
                 {card.value}
               </p>
-              <p className="text-xs font-semibold uppercase tracking-wider mt-1" style={{ color: 'var(--muted-foreground)' }}>
+              <p
+                className="text-xs font-semibold uppercase tracking-wider mt-1"
+                style={{ color: 'var(--muted-foreground)' }}
+              >
                 {card.label}
               </p>
               <p className="text-xs mt-0.5" style={{ color: 'var(--muted-foreground)' }}>
