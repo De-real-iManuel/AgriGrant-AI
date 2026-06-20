@@ -24,7 +24,9 @@ export default function SettingsPage() {
             className="rounded-2xl border p-5 flex flex-col gap-3"
             style={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)' }}
           >
-            <h3 className="text-sm font-bold" style={{ color: 'var(--foreground)' }}>Profile</h3>
+            <h3 className="text-sm font-bold" style={{ color: 'var(--foreground)' }}>
+              Profile
+            </h3>
             <div className="flex items-center gap-3">
               <div
                 className="w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold text-white flex-shrink-0"
@@ -33,8 +35,12 @@ export default function SettingsPage() {
                 {user?.avatarInitial}
               </div>
               <div>
-                <p className="font-semibold text-sm" style={{ color: 'var(--foreground)' }}>{user?.name}</p>
-                <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>{user?.email}</p>
+                <p className="font-semibold text-sm" style={{ color: 'var(--foreground)' }}>
+                  {user?.name}
+                </p>
+                <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
+                  {user?.email}
+                </p>
               </div>
             </div>
           </div>
@@ -46,11 +52,15 @@ export default function SettingsPage() {
           >
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold flex items-center gap-1.5" style={{ color: '#166534' }}>
+                <h3
+                  className="text-sm font-bold flex items-center gap-1.5"
+                  style={{ color: '#166534' }}
+                >
                   <ShieldCheck size={16} /> 100% Free
                 </h3>
                 <p className="text-xs mt-0.5" style={{ color: '#15803D' }}>
-                  AgriGrant AI is completely free for farmers. We monetize via success fees directly from grantors.
+                  AgriGrant AI is completely free for farmers. We monetize via success fees directly
+                  from grantors.
                 </p>
               </div>
             </div>
