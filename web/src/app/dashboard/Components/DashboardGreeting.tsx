@@ -36,7 +36,6 @@ export default function DashboardGreeting() {
         </div>
         <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>
           {time}
-
         </p>
       </div>
 

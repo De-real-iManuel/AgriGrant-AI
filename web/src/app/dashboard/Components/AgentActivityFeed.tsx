@@ -37,7 +37,11 @@ export default function AgentActivityFeed() {
           <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
             All 5 agents are standing by. Start a grant search to activate the pipeline.
           </p>
-          <Link href="/dashboard/chat" className="flex items-center gap-1 text-xs font-semibold" style={{ color: 'var(--primary)' }}>
+          <Link
+            href="/dashboard/chat"
+            className="flex items-center gap-1 text-xs font-semibold"
+            style={{ color: 'var(--primary)' }}
+          >
             Start now <ArrowRight size={12} />
           </Link>
         </div>
@@ -82,11 +86,17 @@ export default function AgentActivityFeed() {
         </div>
       )}
 
-      <div className="pt-3 border-t flex items-center justify-between" style={{ borderColor: 'var(--border)' }}>
+      <div
+        className="pt-3 border-t flex items-center justify-between"
+        style={{ borderColor: 'var(--border)' }}
+      >
         <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
           5 agents · {hasActivity ? 'Pipeline active' : 'All systems idle'}
         </p>
-        <div className="flex items-center gap-1.5 text-xs font-semibold" style={{ color: hasActivity ? 'var(--secondary)' : 'var(--muted-foreground)' }}>
+        <div
+          className="flex items-center gap-1.5 text-xs font-semibold"
+          style={{ color: hasActivity ? 'var(--secondary)' : 'var(--muted-foreground)' }}
+        >
           <span
             className="w-1.5 h-1.5 rounded-full"
             style={{ backgroundColor: hasActivity ? 'var(--secondary)' : '#94A3B8' }}
