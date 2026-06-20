@@ -107,7 +107,7 @@ def build_farmer_context(farmer_profile: dict | None) -> str:
         elif key in farmer_profile:
             flags.append(f"❌ {label}")
 
-    if farmer_profile.get("hasExistingLoanDefault"):
+    if not farmer_profile.get("hasNoLoanDefault", True):
         flags.append("⚠️ Loan Default")
 
     if flags:
