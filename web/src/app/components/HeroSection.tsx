@@ -25,37 +25,54 @@ export default function HeroSection() {
               className="text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight tracking-tight"
               style={{ color: 'var(--foreground)' }}
             >
-              Funding Intelligence{' '}
-              <span style={{ color: 'var(--primary)' }}>for Modern</span>{' '}
+              Funding Intelligence <span style={{ color: 'var(--primary)' }}>for Modern</span>{' '}
               <span style={{ color: 'var(--accent)' }}>Agriculture</span>
             </h1>
 
             {/* Sub-headline */}
-            <p className="text-lg leading-relaxed max-w-xl" style={{ color: 'var(--muted-foreground)' }}>
-              Find grants, assess eligibility, prepare proposals, and submit applications
-              with AI-powered assistance. Built exclusively for Nigerian farmers, cooperatives,
-              and agribusinesses.
+            <p
+              className="text-lg leading-relaxed max-w-xl"
+              style={{ color: 'var(--muted-foreground)' }}
+            >
+              Find grants, assess eligibility, prepare proposals, and submit applications with
+              AI-powered assistance. Built exclusively for Nigerian farmers, cooperatives, and
+              agribusinesses.
             </p>
 
             {/* Trust indicators */}
-            <div className="flex flex-wrap items-center gap-4 text-sm" style={{ color: 'var(--muted-foreground)' }}>
+            <div
+              className="flex flex-wrap items-center gap-4 text-sm"
+              style={{ color: 'var(--muted-foreground)' }}
+            >
               <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--secondary)' }} />
+                <span
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{ backgroundColor: 'var(--secondary)' }}
+                />
                 Trusted by Farmers
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--secondary)' }} />
+                <span
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{ backgroundColor: 'var(--secondary)' }}
+                />
                 Cooperatives
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--secondary)' }} />
+                <span
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{ backgroundColor: 'var(--secondary)' }}
+                />
                 Ministries
               </span>
             </div>
 
             {/* CTAs */}
             <div className="flex flex-wrap gap-3 pt-2">
-              <Link href="/sign-up-login-screen" className="btn-primary text-base px-7 py-3.5 gap-2">
+              <Link
+                href="/sign-up-login-screen"
+                className="btn-primary text-base px-7 py-3.5 gap-2"
+              >
                 Get Started
                 <ArrowRight size={18} />
               </Link>
@@ -87,8 +104,10 @@ export default function HeroSection() {
                 ))}
               </div>
               <div className="text-sm" style={{ color: 'var(--muted-foreground)' }}>
-                <span className="font-semibold" style={{ color: 'var(--foreground)' }}>2,400+</span> farmers
-                already applying
+                <span className="font-semibold" style={{ color: 'var(--foreground)' }}>
+                  2,400+
+                </span>{' '}
+                farmers already applying
               </div>
             </div>
           </div>

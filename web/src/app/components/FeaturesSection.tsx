@@ -2,7 +2,6 @@ import React from 'react';
 import { Search, Shield, FileCheck, PenLine, Eye, Zap, Users, BarChart3 } from 'lucide-react';
 import Icon from '@/components/ui/AppIcon';
 
-
 const agents = [
   {
     id: 'feat-discovery',
@@ -11,7 +10,11 @@ const agents = [
     tagline: 'Find the right grants automatically',
     description:
       'Continuously scans CBN, NIRSAL, FAO, AGSMEIS, and 200+ grant databases. Matches your farm profile against active opportunities in real time.',
-    highlights: ['200+ grant programs monitored', 'Profile-based matching', 'Deadline tracking & alerts'],
+    highlights: [
+      '200+ grant programs monitored',
+      'Profile-based matching',
+      'Deadline tracking & alerts',
+    ],
     color: 'var(--primary)',
     bg: '#F0FDF4',
     border: '#BBF7D0',
@@ -22,7 +25,7 @@ const agents = [
     name: 'Eligibility Agent',
     tagline: 'Know your chances before you apply',
     description:
-      'Analyzes your farm data, revenue, location, and crop types against each grant\'s criteria. Returns a precise eligibility score with gap analysis.',
+      "Analyzes your farm data, revenue, location, and crop types against each grant's criteria. Returns a precise eligibility score with gap analysis.",
     highlights: ['Precise match scoring', 'Gap identification', 'Eligibility improvement tips'],
     color: '#059669',
     bg: '#ECFDF5',
@@ -46,8 +49,12 @@ const agents = [
     name: 'Proposal Agent',
     tagline: 'AI-written proposals tailored to each grant',
     description:
-      'Generates compelling executive summaries, budget breakdowns, and impact narratives. Each proposal is customized to the specific grant\'s evaluation criteria.',
-    highlights: ['Grant-specific narratives', 'Budget breakdown generation', 'Impact statement drafting'],
+      "Generates compelling executive summaries, budget breakdowns, and impact narratives. Each proposal is customized to the specific grant's evaluation criteria.",
+    highlights: [
+      'Grant-specific narratives',
+      'Budget breakdown generation',
+      'Impact statement drafting',
+    ],
     color: '#CA8A04',
     bg: '#FFFBEB',
     border: '#FDE68A',
@@ -79,13 +86,27 @@ const agents = [
 ];
 
 const additionalFeatures = [
-  { id: 'af-coop', icon: Users, label: 'Cooperative Support', desc: 'Manage group applications for farmer cooperatives' },
-  { id: 'af-analytics', icon: BarChart3, label: 'Funding Analytics', desc: 'Track success rates and optimize your strategy' },
+  {
+    id: 'af-coop',
+    icon: Users,
+    label: 'Cooperative Support',
+    desc: 'Manage group applications for farmer cooperatives',
+  },
+  {
+    id: 'af-analytics',
+    icon: BarChart3,
+    label: 'Funding Analytics',
+    desc: 'Track success rates and optimize your strategy',
+  },
 ];
 
 export default function FeaturesSection() {
   return (
-    <section id="features" className="py-20 lg:py-28" style={{ backgroundColor: 'var(--background)' }}>
+    <section
+      id="features"
+      className="py-20 lg:py-28"
+      style={{ backgroundColor: 'var(--background)' }}
+    >
       <div className="max-w-screen-2xl mx-auto px-6 lg:px-10 2xl:px-16">
         {/* Section header */}
         <div className="text-center max-w-2xl mx-auto mb-14">
@@ -141,7 +162,10 @@ export default function FeaturesSection() {
                 <ul className="flex flex-col gap-1.5">
                   {agent?.highlights?.map((h) => (
                     <li key={`${agent?.id}-${h}`} className="flex items-center gap-2 text-sm">
-                      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: agent?.color }} />
+                      <span
+                        className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: agent?.color }}
+                      />
                       <span style={{ color: 'var(--foreground)', fontWeight: 500 }}>{h}</span>
                     </li>
                   ))}
@@ -168,8 +192,12 @@ export default function FeaturesSection() {
                   <Icon size={18} style={{ color: 'var(--primary)' }} />
                 </div>
                 <div>
-                  <p className="text-sm font-bold" style={{ color: 'var(--foreground)' }}>{feat?.label}</p>
-                  <p className="text-xs mt-0.5" style={{ color: 'var(--muted-foreground)' }}>{feat?.desc}</p>
+                  <p className="text-sm font-bold" style={{ color: 'var(--foreground)' }}>
+                    {feat?.label}
+                  </p>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--muted-foreground)' }}>
+                    {feat?.desc}
+                  </p>
                 </div>
               </div>
             );

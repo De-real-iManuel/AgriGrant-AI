@@ -43,7 +43,7 @@ const grants = [
     funding: '₦200K – ₦5M',
     matchScore: 91,
     daysLeft: 7,
-    category: 'Smallholder Loans',
+    category: 'Smallholder Grants',
     color: '#CA8A04',
     bg: '#FFFBEB',
     border: '#FDE68A',
@@ -91,7 +91,7 @@ const grants = [
     funding: 'Up to ₦300K',
     matchScore: 96,
     daysLeft: 12,
-    category: 'Interest-Free Loan',
+    category: 'Interest-Free Funding',
     color: '#0D9488',
     bg: '#F0FDFA',
     border: '#99F6E4',
@@ -161,7 +161,10 @@ export default function GrantsShowcase() {
                 <p className="text-sm font-bold" style={{ color: 'var(--foreground)' }}>
                   {grant?.name}
                 </p>
-                <p className="text-xs mt-0.5 leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
+                <p
+                  className="text-xs mt-0.5 leading-relaxed"
+                  style={{ color: 'var(--muted-foreground)' }}
+                >
                   {grant?.fullName}
                 </p>
                 <p className="text-xs mt-1 font-medium" style={{ color: grant?.color }}>
@@ -172,34 +175,55 @@ export default function GrantsShowcase() {
               {/* Stats row */}
               <div className="grid grid-cols-3 gap-2">
                 {/* Match score */}
-                <div className="flex flex-col items-center p-2 rounded-xl" style={{ backgroundColor: grant?.bg }}>
+                <div
+                  className="flex flex-col items-center p-2 rounded-xl"
+                  style={{ backgroundColor: grant?.bg }}
+                >
                   <Target size={13} style={{ color: grant?.color }} />
-                  <p className="text-base font-bold tabular-nums mt-1" style={{ color: grant?.color }}>
+                  <p
+                    className="text-base font-bold tabular-nums mt-1"
+                    style={{ color: grant?.color }}
+                  >
                     {grant?.matchScore}%
                   </p>
-                  <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>Match</p>
+                  <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
+                    Match
+                  </p>
                 </div>
                 {/* Funding */}
-                <div className="flex flex-col items-center p-2 rounded-xl col-span-1" style={{ backgroundColor: 'var(--muted)' }}>
+                <div
+                  className="flex flex-col items-center p-2 rounded-xl col-span-1"
+                  style={{ backgroundColor: 'var(--muted)' }}
+                >
                   <TrendingUp size={13} style={{ color: 'var(--muted-foreground)' }} />
-                  <p className="text-xs font-bold mt-1 text-center leading-tight tabular-nums" style={{ color: 'var(--foreground)' }}>
+                  <p
+                    className="text-xs font-bold mt-1 text-center leading-tight tabular-nums"
+                    style={{ color: 'var(--foreground)' }}
+                  >
                     {grant?.funding}
                   </p>
-                  <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>Funding</p>
+                  <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
+                    Funding
+                  </p>
                 </div>
                 {/* Deadline */}
                 <div
                   className="flex flex-col items-center p-2 rounded-xl"
                   style={{ backgroundColor: grant?.daysLeft <= 14 ? '#FEF3C7' : 'var(--muted)' }}
                 >
-                  <Calendar size={13} style={{ color: grant?.daysLeft <= 14 ? '#D97706' : 'var(--muted-foreground)' }} />
+                  <Calendar
+                    size={13}
+                    style={{ color: grant?.daysLeft <= 14 ? '#D97706' : 'var(--muted-foreground)' }}
+                  />
                   <p
                     className="text-base font-bold tabular-nums mt-1"
                     style={{ color: grant?.daysLeft <= 14 ? '#D97706' : 'var(--foreground)' }}
                   >
                     {grant?.daysLeft}d
                   </p>
-                  <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>Left</p>
+                  <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
+                    Left
+                  </p>
                 </div>
               </div>
 
@@ -217,7 +241,10 @@ export default function GrantsShowcase() {
                   style={{ color: grant?.color }}
                 >
                   Apply Now
-                  <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
+                  <ArrowRight
+                    size={13}
+                    className="group-hover:translate-x-0.5 transition-transform"
+                  />
                 </Link>
               </div>
             </div>

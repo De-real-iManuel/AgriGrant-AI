@@ -3,12 +3,60 @@ import React, { useState, useEffect } from 'react';
 import { CheckCircle, Loader, FileText, Search, Shield, PenTool, Eye, Send } from 'lucide-react';
 
 const workflowSteps = [
-  { id: 'step-discovery', icon: Search, label: 'Grant Discovery', agent: 'Discovery Agent', description: 'Scanning 200+ grant programs', color: '#166534', bgColor: '#DCFCE7' },
-  { id: 'step-eligibility', icon: Shield, label: 'Eligibility Analysis', agent: 'Eligibility Agent', description: 'Calculating match score: 91%', color: '#059669', bgColor: '#D1FAE5' },
-  { id: 'step-documents', icon: FileText, label: 'Document Validation', agent: 'Document Agent', description: 'Verifying CAC, Farm Certificate', color: '#0D9488', bgColor: '#CCFBF1' },
-  { id: 'step-proposal', icon: PenTool, label: 'Proposal Generation', agent: 'Proposal Agent', description: 'Drafting executive summary...', color: '#CA8A04', bgColor: '#FEF9C3' },
-  { id: 'step-review', icon: Eye, label: 'Human Review', agent: 'Review Stage', description: 'Awaiting your approval', color: '#2563EB', bgColor: '#DBEAFE' },
-  { id: 'step-submission', icon: Send, label: 'Submission', agent: 'Submit Agent', description: 'Filing to CBN portal', color: '#7C3AED', bgColor: '#EDE9FE' },
+  {
+    id: 'step-discovery',
+    icon: Search,
+    label: 'Grant Discovery',
+    agent: 'Discovery Agent',
+    description: 'Scanning 200+ grant programs',
+    color: '#166534',
+    bgColor: '#DCFCE7',
+  },
+  {
+    id: 'step-eligibility',
+    icon: Shield,
+    label: 'Eligibility Analysis',
+    agent: 'Eligibility Agent',
+    description: 'Calculating match score: 91%',
+    color: '#059669',
+    bgColor: '#D1FAE5',
+  },
+  {
+    id: 'step-documents',
+    icon: FileText,
+    label: 'Document Validation',
+    agent: 'Document Agent',
+    description: 'Verifying CAC, Farm Certificate',
+    color: '#0D9488',
+    bgColor: '#CCFBF1',
+  },
+  {
+    id: 'step-proposal',
+    icon: PenTool,
+    label: 'Proposal Generation',
+    agent: 'Proposal Agent',
+    description: 'Drafting executive summary...',
+    color: '#CA8A04',
+    bgColor: '#FEF9C3',
+  },
+  {
+    id: 'step-review',
+    icon: Eye,
+    label: 'Human Review',
+    agent: 'Review Stage',
+    description: 'Awaiting your approval',
+    color: '#2563EB',
+    bgColor: '#DBEAFE',
+  },
+  {
+    id: 'step-submission',
+    icon: Send,
+    label: 'Submission',
+    agent: 'Submit Agent',
+    description: 'Filing to CBN portal',
+    color: '#7C3AED',
+    bgColor: '#EDE9FE',
+  },
 ];
 
 export default function AnimatedWorkflow() {
@@ -38,7 +86,10 @@ export default function AnimatedWorkflow() {
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <div>
-          <p className="text-xs font-semibold tracking-wide uppercase" style={{ color: 'var(--muted-foreground)' }}>
+          <p
+            className="text-xs font-semibold tracking-wide uppercase"
+            style={{ color: 'var(--muted-foreground)' }}
+          >
             AI Case Processing
           </p>
           <p className="text-sm font-bold mt-0.5" style={{ color: 'var(--foreground)' }}>
@@ -49,7 +100,10 @@ export default function AnimatedWorkflow() {
           className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
           style={{ backgroundColor: '#DCFCE7', color: 'var(--primary)' }}
         >
-          <span className="agent-dot-green w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--secondary)' }} />
+          <span
+            className="agent-dot-green w-1.5 h-1.5 rounded-full"
+            style={{ backgroundColor: 'var(--secondary)' }}
+          />
           Live
         </div>
       </div>
@@ -75,7 +129,13 @@ export default function AnimatedWorkflow() {
               {/* Status icon */}
               <div
                 className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300"
-                style={{ backgroundColor: isDone ? '#DCFCE7' : isActive ? step.bgColor : 'var(--background)' }}
+                style={{
+                  backgroundColor: isDone
+                    ? '#DCFCE7'
+                    : isActive
+                      ? step.bgColor
+                      : 'var(--background)',
+                }}
               >
                 {isDone ? (
                   <CheckCircle size={18} style={{ color: 'var(--primary)' }} />
@@ -90,7 +150,9 @@ export default function AnimatedWorkflow() {
               <div className="flex-1 min-w-0">
                 <p
                   className="text-sm font-semibold truncate"
-                  style={{ color: isDone || isActive ? 'var(--foreground)' : 'var(--muted-foreground)' }}
+                  style={{
+                    color: isDone || isActive ? 'var(--foreground)' : 'var(--muted-foreground)',
+                  }}
                 >
                   {step.label}
                 </p>
@@ -100,12 +162,8 @@ export default function AnimatedWorkflow() {
               </div>
 
               {/* Right badge */}
-              {isDone && (
-                <span className="badge-active text-xs">Done</span>
-              )}
-              {isActive && (
-                <span className="badge-pending text-xs">Active</span>
-              )}
+              {isDone && <span className="badge-active text-xs">Done</span>}
+              {isActive && <span className="badge-pending text-xs">Active</span>}
             </div>
           );
         })}
@@ -113,10 +171,13 @@ export default function AnimatedWorkflow() {
 
       {/* Progress bar */}
       <div className="mt-5">
-        <div className="flex justify-between text-xs mb-1.5" style={{ color: 'var(--muted-foreground)' }}>
+        <div
+          className="flex justify-between text-xs mb-1.5"
+          style={{ color: 'var(--muted-foreground)' }}
+        >
           <span className="font-medium">Overall Progress</span>
           <span className="font-bold" style={{ color: 'var(--primary)' }}>
-            {Math.round(((completedSteps.length) / workflowSteps.length) * 100)}%
+            {Math.round((completedSteps.length / workflowSteps.length) * 100)}%
           </span>
         </div>
         <div className="progress-track">
