@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { TrendingUp, Bot, Clock, DollarSign } from 'lucide-react';
 import Icon from '@/components/ui/AppIcon';
 
-
 const stats = [
   {
     id: 'stat-match',
@@ -49,7 +48,9 @@ export default function StatsBar() {
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
+      ([entry]) => {
+        if (entry.isIntersecting) setVisible(true);
+      },
       { threshold: 0.2 }
     );
     if (ref?.current) observer?.observe(ref?.current);
@@ -60,7 +61,11 @@ export default function StatsBar() {
     <section
       ref={ref}
       className="py-14 lg:py-20"
-      style={{ backgroundColor: 'var(--card)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}
+      style={{
+        backgroundColor: 'var(--card)',
+        borderTop: '1px solid var(--border)',
+        borderBottom: '1px solid var(--border)',
+      }}
     >
       <div className="max-w-screen-2xl mx-auto px-6 lg:px-10 2xl:px-16">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
@@ -93,7 +98,10 @@ export default function StatsBar() {
                   <p className="text-sm font-semibold mt-1" style={{ color: 'var(--foreground)' }}>
                     {stat?.label}
                   </p>
-                  <p className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
+                  <p
+                    className="text-xs mt-1 leading-relaxed"
+                    style={{ color: 'var(--muted-foreground)' }}
+                  >
                     {stat?.description}
                   </p>
                 </div>

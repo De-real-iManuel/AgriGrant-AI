@@ -56,7 +56,6 @@ export default function LandingNav() {
           <Link href="/sign-up-login-screen" className="btn-secondary text-sm px-4 py-2">
             Login
           </Link>
-
         </div>
 
         {/* Mobile controls */}
@@ -88,11 +87,13 @@ export default function LandingNav() {
               {link?.label}
             </Link>
           ))}
-          <div className="flex flex-col gap-2 pt-3 border-t" style={{ borderColor: 'var(--border)' }}>
+          <div
+            className="flex flex-col gap-2 pt-3 border-t"
+            style={{ borderColor: 'var(--border)' }}
+          >
             <Link href="/sign-up-login-screen" className="btn-secondary justify-center">
               Login
             </Link>
-
           </div>
         </div>
       )}

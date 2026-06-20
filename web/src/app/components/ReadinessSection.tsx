@@ -28,7 +28,10 @@ export default function ReadinessSection() {
                 className="absolute inset-3 rounded-full flex flex-col items-center justify-center"
                 style={{ backgroundColor: 'var(--card)' }}
               >
-                <p className="text-6xl font-extrabold tabular-nums" style={{ color: 'var(--primary)' }}>
+                <p
+                  className="text-6xl font-extrabold tabular-nums"
+                  style={{ color: 'var(--primary)' }}
+                >
                   91
                 </p>
                 <p className="text-sm font-semibold" style={{ color: 'var(--muted-foreground)' }}>
@@ -74,7 +77,10 @@ export default function ReadinessSection() {
                 { id: 'dim-compliance', label: 'Compliance', score: 92, color: '#2563EB' },
               ]?.map((dim) => (
                 <div key={dim?.id} className="flex items-center gap-3">
-                  <span className="text-sm font-medium w-36 flex-shrink-0" style={{ color: 'var(--foreground)' }}>
+                  <span
+                    className="text-sm font-medium w-36 flex-shrink-0"
+                    style={{ color: 'var(--foreground)' }}
+                  >
                     {dim?.label}
                   </span>
                   <div className="flex-1 progress-track">
@@ -83,7 +89,10 @@ export default function ReadinessSection() {
                       style={{ width: `${dim?.score}%`, backgroundColor: dim?.color }}
                     />
                   </div>
-                  <span className="text-sm font-bold tabular-nums w-10 text-right" style={{ color: dim?.color }}>
+                  <span
+                    className="text-sm font-bold tabular-nums w-10 text-right"
+                    style={{ color: dim?.color }}
+                  >
                     {dim?.score}%
                   </span>
                 </div>
@@ -95,7 +104,9 @@ export default function ReadinessSection() {
               {benefits?.map((b) => (
                 <div key={b?.id} className="flex items-center gap-2">
                   <CheckCircle size={15} style={{ color: 'var(--secondary)', flexShrink: 0 }} />
-                  <span className="text-sm" style={{ color: 'var(--foreground)' }}>{b?.text}</span>
+                  <span className="text-sm" style={{ color: 'var(--foreground)' }}>
+                    {b?.text}
+                  </span>
                 </div>
               ))}
             </div>

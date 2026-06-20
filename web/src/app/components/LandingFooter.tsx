@@ -4,7 +4,6 @@ import AppLogo from '@/components/ui/AppLogo';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import Icon from '@/components/ui/AppIcon';
 
-
 const footerLinks = {
   Platform: [
     { id: 'fl-grants', label: 'Grant Marketplace', href: '#grants' },
@@ -72,19 +71,19 @@ export default function LandingFooter() {
               </span>
             </div>
             <p className="text-sm leading-relaxed max-w-xs" style={{ color: '#94A3B8' }}>
-              Empowering Nigerian farmers with intelligent grant discovery and AI-powered application management.
-              Built for smallholders, cooperatives, and agribusinesses.
+              Empowering Nigerian farmers with intelligent grant discovery and AI-powered
+              application management. Built for smallholders, cooperatives, and agribusinesses.
             </p>
 
             {/* Contact info */}
             <div className="flex flex-col gap-2.5 text-sm">
               <div className="flex items-center gap-2" style={{ color: '#94A3B8' }}>
                 <Mail size={14} style={{ color: '#22C55E' }} />
-                hello@agrigrant.ng
+                info@agrigrant.xyz
               </div>
               <div className="flex items-center gap-2" style={{ color: '#94A3B8' }}>
                 <Phone size={14} style={{ color: '#22C55E' }} />
-                +234 800 AGRIGRANT
+                +234 705 525 0587
               </div>
               <div className="flex items-center gap-2" style={{ color: '#94A3B8' }}>
                 <MapPin size={14} style={{ color: '#22C55E' }} />
@@ -114,7 +113,9 @@ export default function LandingFooter() {
           {/* Link columns */}
           {Object.entries(footerLinks)?.map(([section, links]) => (
             <div key={`footer-section-${section}`} className="flex flex-col gap-4">
-              <p className="text-xs font-semibold uppercase tracking-widest text-white">{section}</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-white">
+                {section}
+              </p>
               <ul className="flex flex-col gap-2.5">
                 {links?.map((link) => (
                   <li key={link?.id}>
@@ -135,7 +136,8 @@ export default function LandingFooter() {
         {/* Bottom bar */}
         <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm" style={{ color: '#64748B' }}>
-            © 2026 AgriGrant AI. All rights reserved. Built for Nigerian Agriculture.
+            © 2026 AgriGrant AI. All rights reserved. <b>Built By REM Labs</b> for Nigerian
+            Agriculture.
           </p>
           <div className="flex items-center gap-2">
             <span
