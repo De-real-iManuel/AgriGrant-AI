@@ -61,7 +61,8 @@ export default function RecommendedGrants() {
                 No grant matches yet
               </p>
               <p className="text-xs max-w-xs" style={{ color: 'var(--muted-foreground)' }}>
-                Chat with the AI Advisor — describe your farm and get matched to real Nigerian grant programs.
+                Chat with the AI Advisor — describe your farm and get matched to real Nigerian grant
+                programs.
               </p>
               <Link href="/dashboard/chat" className="btn-primary text-xs px-4 py-2 gap-1.5 mt-1">
                 Chat with AI Advisor
@@ -71,9 +72,24 @@ export default function RecommendedGrants() {
           ) : (
             <>
               {displayedGrants.map((grant, idx) => {
-                const scoreColor = grant.matchScore >= 90 ? 'var(--primary)' : grant.matchScore >= 80 ? '#7C3AED' : '#CA8A04';
-                const bg = grant.matchScore >= 90 ? '#F0FDF4' : grant.matchScore >= 80 ? '#F5F3FF' : '#FFFBEB';
-                const border = grant.matchScore >= 90 ? '#BBF7D0' : grant.matchScore >= 80 ? '#DDD6FE' : '#FDE68A';
+                const scoreColor =
+                  grant.matchScore >= 90
+                    ? 'var(--primary)'
+                    : grant.matchScore >= 80
+                      ? '#7C3AED'
+                      : '#CA8A04';
+                const bg =
+                  grant.matchScore >= 90
+                    ? '#F0FDF4'
+                    : grant.matchScore >= 80
+                      ? '#F5F3FF'
+                      : '#FFFBEB';
+                const border =
+                  grant.matchScore >= 90
+                    ? '#BBF7D0'
+                    : grant.matchScore >= 80
+                      ? '#DDD6FE'
+                      : '#FDE68A';
 
                 return (
                   <div
@@ -85,29 +101,46 @@ export default function RecommendedGrants() {
                       className="w-12 h-12 rounded-xl flex flex-col items-center justify-center flex-shrink-0"
                       style={{ backgroundColor: 'var(--card)' }}
                     >
-                      <p className="text-sm font-extrabold tabular-nums leading-none" style={{ color: scoreColor }}>
+                      <p
+                        className="text-sm font-extrabold tabular-nums leading-none"
+                        style={{ color: scoreColor }}
+                      >
                         {grant.matchScore}%
                       </p>
-                      <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>match</p>
+                      <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
+                        match
+                      </p>
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold truncate" style={{ color: 'var(--foreground)' }}>
+                      <p
+                        className="text-sm font-bold truncate"
+                        style={{ color: 'var(--foreground)' }}
+                      >
                         {grant.grantName}
                       </p>
                       <p className="text-xs truncate" style={{ color: 'var(--muted-foreground)' }}>
                         {grant.grantingOrganization}
                       </p>
                       <div className="flex items-center gap-3 mt-1">
-                        <span className="flex items-center gap-1 text-xs font-medium" style={{ color: 'var(--foreground)' }}>
+                        <span
+                          className="flex items-center gap-1 text-xs font-medium"
+                          style={{ color: 'var(--foreground)' }}
+                        >
                           <Target size={10} style={{ color: scoreColor }} />
                           {grant.fundingAmountRange}
                         </span>
-                        <span className="flex items-center gap-1 text-xs font-medium" style={{ color: 'var(--muted-foreground)' }}>
+                        <span
+                          className="flex items-center gap-1 text-xs font-medium"
+                          style={{ color: 'var(--muted-foreground)' }}
+                        >
                           <Calendar size={10} />
                           {grant.applicationDeadline}
                         </span>
-                        <span className="hidden sm:flex items-center gap-1 text-xs font-medium" style={{ color: scoreColor }}>
+                        <span
+                          className="hidden sm:flex items-center gap-1 text-xs font-medium"
+                          style={{ color: scoreColor }}
+                        >
                           <Zap size={10} />
                           {grant.matchReason}
                         </span>
@@ -121,7 +154,11 @@ export default function RecommendedGrants() {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center gap-1 text-xs font-semibold px-2.5 py-2 rounded-xl border transition-all active:scale-95"
-                          style={{ borderColor: border, color: scoreColor, backgroundColor: 'var(--card)' }}
+                          style={{
+                            borderColor: border,
+                            color: scoreColor,
+                            backgroundColor: 'var(--card)',
+                          }}
                         >
                           <ExternalLink size={11} />
                           Details
@@ -139,7 +176,6 @@ export default function RecommendedGrants() {
                   </div>
                 );
               })}
-
             </>
           )}
         </div>

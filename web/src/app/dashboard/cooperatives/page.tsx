@@ -2,7 +2,6 @@ import React from 'react';
 import AuthGuard from '@/components/ui/AuthGuard';
 import DashboardShell from '../Components/DashboardShell';
 
-
 export default function CooperativesPage() {
   return (
     <AuthGuard>

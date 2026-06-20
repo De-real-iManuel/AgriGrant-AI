@@ -3,10 +3,30 @@ import AuthGuard from '@/components/ui/AuthGuard';
 import DashboardShell from '../Components/DashboardShell';
 
 const notifications = [
-  { id: 'n1', title: 'CBN Anchor Borrowers — deadline in 7 days', time: 'Today, 2:41 AM', type: 'warning' },
-  { id: 'n2', title: 'NIRSAL proposal generation complete', time: 'Today, 2:30 AM', type: 'success' },
-  { id: 'n3', title: 'New grant match: GEEP TraderMoni Agri (78%)', time: 'Yesterday', type: 'info' },
-  { id: 'n4', title: 'Document validated: Farm Registration Certificate', time: 'Yesterday', type: 'success' },
+  {
+    id: 'n1',
+    title: 'CBN Anchor Borrowers — deadline in 7 days',
+    time: 'Today, 2:41 AM',
+    type: 'warning',
+  },
+  {
+    id: 'n2',
+    title: 'NIRSAL proposal generation complete',
+    time: 'Today, 2:30 AM',
+    type: 'success',
+  },
+  {
+    id: 'n3',
+    title: 'New grant match: GEEP TraderMoni Agri (78%)',
+    time: 'Yesterday',
+    type: 'info',
+  },
+  {
+    id: 'n4',
+    title: 'Document validated: Farm Registration Certificate',
+    time: 'Yesterday',
+    type: 'success',
+  },
   { id: 'n5', title: 'FAO proposal awaiting your review', time: '2 days ago', type: 'review' },
 ];
 
@@ -35,8 +55,12 @@ export default function NotificationsPage() {
                   style={{ backgroundColor: s.dot }}
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>{n.title}</p>
-                  <p className="text-xs mt-0.5" style={{ color: 'var(--muted-foreground)' }}>{n.time}</p>
+                  <p className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>
+                    {n.title}
+                  </p>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--muted-foreground)' }}>
+                    {n.time}
+                  </p>
                 </div>
                 <span
                   className="px-2 py-0.5 rounded-full text-xs font-semibold flex-shrink-0"
