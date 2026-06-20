@@ -25,12 +25,10 @@ export async function uploadDocument(
     const timestamp = Date.now();
     const storagePath = `${userId}/${documentType}_${timestamp}.${ext}`;
 
-    const { error } = await supabase.storage
-      .from(BUCKET_NAME)
-      .upload(storagePath, file, {
-        cacheControl: '3600',
-        upsert: false,
-      });
+    const { error } = await supabase.storage.from(BUCKET_NAME).upload(storagePath, file, {
+      cacheControl: '3600',
+      upsert: false,
+    });
 
     if (error) {
       console.error(`Upload error for ${documentType}:`, error);

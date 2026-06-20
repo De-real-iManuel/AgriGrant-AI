@@ -82,46 +82,52 @@ export function PortalResultsProvider({ children }: { children: ReactNode }) {
     setLatestResult(null);
   }, []);
 
-  const submitGrantCase = useCallback((grant: MatchedGrant) => {
-    // Check if already applied to this grant
-    const alreadyExists = activeCases.some(
-      (c) => c.grantName.toLowerCase() === grant.grantName.toLowerCase()
-    );
-    if (alreadyExists) {
-      return { success: false, error: 'You have already submitted an application for this grant.' };
-    }
+  const submitGrantCase = useCallback(
+    (grant: MatchedGrant) => {
+      // Check if already applied to this grant
+      const alreadyExists = activeCases.some(
+        (c) => c.grantName.toLowerCase() === grant.grantName.toLowerCase()
+      );
+      if (alreadyExists) {
+        return {
+          success: false,
+          error: 'You have already submitted an application for this grant.',
+        };
+      }
 
-    // Add new case
-    const caseNum = `AG-2026-${String(activeCases.length + 1).padStart(3, '0')}`;
-    const newCase: ActiveCase = {
-      id: `case-${caseNum}`,
-      caseNumber: caseNum,
-      grantName: grant.grantName,
-      body: grant.grantingOrganization,
-      stage: 1,
-      totalStages: 7,
-      stageName: 'Intake Completed',
-      progress: 14,
-      status: 'working',
-      matchScore: grant.matchScore,
-      funding: grant.fundingAmountRange,
-      deadline: grant.applicationDeadline,
-      daysLeft: 30, // Default simulation days left
-      stages: ['Intake', 'Discovery', 'Eligibility', 'Documents', 'Proposal', 'Review', 'Submit'],
-      completedStages: [0],
-      activeStage: 1,
-    };
+      // Add new case
+      const caseNum = `AG-2026-${String(activeCases.length + 1).padStart(3, '0')}`;
+      const newCase: ActiveCase = {
+        id: `case-${caseNum}`,
+        caseNumber: caseNum,
+        grantName: grant.grantName,
+        body: grant.grantingOrganization,
+        stage: 1,
+        totalStages: 7,
+        stageName: 'Intake Completed',
+        progress: 14,
+        status: 'working',
+        matchScore: grant.matchScore,
+        funding: grant.fundingAmountRange,
+        deadline: grant.applicationDeadline,
+        daysLeft: 30, // Default simulation days left
+        stages: ['Intake', 'Discovery', 'Eligibility', 'Documents', 'Proposal', 'Review', 'Submit'],
+        completedStages: [0],
+        activeStage: 1,
+      };
 
-    const updated = [newCase, ...activeCases];
-    setActiveCases(updated);
-    try {
-      localStorage.setItem(CASES_KEY, JSON.stringify(updated));
-    } catch {
-      // ignore
-    }
+      const updated = [newCase, ...activeCases];
+      setActiveCases(updated);
+      try {
+        localStorage.setItem(CASES_KEY, JSON.stringify(updated));
+      } catch {
+        // ignore
+      }
 
-    return { success: true };
-  }, [activeCases]);
+      return { success: true };
+    },
+    [activeCases]
+  );
 
   return (
     <PortalResultsContext.Provider
@@ -143,4 +149,3 @@ export function usePortalResults(): PortalResultsContextValue {
   if (!ctx) throw new Error('usePortalResults must be used inside PortalResultsProvider');
   return ctx;
 }
-
