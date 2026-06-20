@@ -21,6 +21,7 @@ class FarmerProfileRequest(BaseModel):
     farmerName: str = Field(..., max_length=200)
     stateOfResidence: str
     lga: str = ""
+    farmAddress: str = ""
     farmType: str
     cropOrLivestockTypes: List[str] = []
     farmSizeHectares: Optional[float] = None
@@ -34,7 +35,7 @@ class FarmerProfileRequest(BaseModel):
     hasLandDocument: bool = False
     isMemberOfCooperative: bool = False
     hasBVN: bool = False
-    hasExistingLoanDefault: bool = False
+    hasNoLoanDefault: bool = True
     additionalNotes: str = ""
     # Document storage paths (set by frontend after Supabase Storage upload)
     ninDocumentPath: Optional[str] = None
