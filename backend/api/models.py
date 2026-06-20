@@ -13,9 +13,11 @@ class FarmTypeEnum(str, Enum):
     OTHERS = "Others"
 
 class FarmerSubmission(BaseModel):
+    userId: Optional[str] = None
     farmerName: str = Field(..., max_length=100)
     stateOfResidence: str
     lga: str = ""
+    farmAddress: str = ""
     farmType: FarmTypeEnum
     cropOrLivestockTypes: List[str] = []
     farmSizeHectares: Optional[float] = None
@@ -29,7 +31,7 @@ class FarmerSubmission(BaseModel):
     hasLandDocument: bool = False
     isMemberOfCooperative: bool = False
     hasBVN: bool = False
-    hasExistingLoanDefault: bool = False
+    hasNoLoanDefault: bool = True
     additionalNotes: str = ""
     ninDocument: Optional[str] = None
     cacDocument: Optional[str] = None
