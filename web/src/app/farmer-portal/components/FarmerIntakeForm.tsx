@@ -41,7 +41,13 @@ function FieldError({ msg }: { msg?: string }) {
   );
 }
 
-export default function FarmerIntakeForm({ data, onChange, errors, onSubmit, onFileSelect }: Props) {
+export default function FarmerIntakeForm({
+  data,
+  onChange,
+  errors,
+  onSubmit,
+  onFileSelect,
+}: Props) {
   const toggleCrop = useCallback(
     (crop: string) => {
       const current = data.cropOrLivestockTypes;
@@ -51,7 +57,7 @@ export default function FarmerIntakeForm({ data, onChange, errors, onSubmit, onF
           : [...current, crop],
       });
     },
-    [data.cropOrLivestockTypes, onChange],
+    [data.cropOrLivestockTypes, onChange]
   );
 
   const highlightedCrops =
@@ -71,7 +77,10 @@ export default function FarmerIntakeForm({ data, onChange, errors, onSubmit, onF
     <div className="w-full max-w-2xl mx-auto">
       {/* Title */}
       <div className="mb-8 text-center">
-        <h1 className="text-2xl font-extrabold tracking-tight" style={{ color: 'var(--foreground)' }}>
+        <h1
+          className="text-2xl font-extrabold tracking-tight"
+          style={{ color: 'var(--foreground)' }}
+        >
           Farmer Profile Intake Form
         </h1>
         <p className="mt-1.5 text-sm" style={{ color: 'var(--muted-foreground)' }}>
@@ -143,6 +152,24 @@ export default function FarmerIntakeForm({ data, onChange, errors, onSubmit, onF
               />
             </div>
 
+            {/* Farm Address */}
+            <div>
+              <label className="label-base" htmlFor="farmAddress">
+                Farm / Business Address <span style={{ color: 'var(--destructive)' }}>*</span>
+              </label>
+              <input
+                id="farmAddress"
+                type="text"
+                className="input-base"
+                placeholder="e.g. Km 12, Ikorodu Road, Lagos"
+                value={data.farmAddress}
+                onChange={(e) => onChange({ farmAddress: e.target.value })}
+                aria-required="true"
+                style={errors.farmAddress ? { borderColor: 'var(--destructive)' } : {}}
+              />
+              <FieldError msg={errors.farmAddress} />
+            </div>
+
             {/* Farm Type */}
             <div>
               <label className="label-base" htmlFor="farmType">
@@ -185,7 +212,11 @@ export default function FarmerIntakeForm({ data, onChange, errors, onSubmit, onF
                           : highlighted
                             ? '#DCFCE7'
                             : 'var(--muted)',
-                        color: selected ? '#fff' : highlighted ? 'var(--primary)' : 'var(--muted-foreground)',
+                        color: selected
+                          ? '#fff'
+                          : highlighted
+                            ? 'var(--primary)'
+                            : 'var(--muted-foreground)',
                         borderColor: selected
                           ? 'var(--primary)'
                           : highlighted
@@ -241,7 +272,9 @@ export default function FarmerIntakeForm({ data, onChange, errors, onSubmit, onF
                   placeholder="e.g. 1500000"
                   value={data.annualRevenueNGN}
                   onChange={(e) =>
-                    onChange({ annualRevenueNGN: e.target.value === '' ? '' : parseFloat(e.target.value) })
+                    onChange({
+                      annualRevenueNGN: e.target.value === '' ? '' : parseFloat(e.target.value),
+                    })
                   }
                 />
               </div>
@@ -261,7 +294,10 @@ export default function FarmerIntakeForm({ data, onChange, errors, onSubmit, onF
                 placeholder="e.g. 5"
                 value={data.farmingExperienceYears}
                 onChange={(e) =>
-                  onChange({ farmingExperienceYears: e.target.value === '' ? '' : parseInt(e.target.value, 10) })
+                  onChange({
+                    farmingExperienceYears:
+                      e.target.value === '' ? '' : parseInt(e.target.value, 10),
+                  })
                 }
               />
             </div>
@@ -349,9 +385,9 @@ export default function FarmerIntakeForm({ data, onChange, errors, onSubmit, onF
             />
             <ToggleSwitch
               id="default"
-              checked={data.hasExistingLoanDefault}
-              onChange={(v) => onChange({ hasExistingLoanDefault: v })}
-              label="Has Loan Default (CRMS)"
+              checked={data.hasNoLoanDefault}
+              onChange={(v) => onChange({ hasNoLoanDefault: v })}
+              label="CRMS Credit History Issue"
               description="Existing default on Credit Risk database"
             />
           </div>
@@ -365,13 +401,14 @@ export default function FarmerIntakeForm({ data, onChange, errors, onSubmit, onF
           <SectionHeader label="Section D — Additional Notes" />
           <div>
             <label className="label-base" htmlFor="additionalNotes">
-              Additional Notes <span style={{ color: 'var(--muted-foreground)', fontWeight: 400 }}>(Optional)</span>
+              Additional Notes{' '}
+              <span style={{ color: 'var(--muted-foreground)', fontWeight: 400 }}>(Optional)</span>
             </label>
             <textarea
               id="additionalNotes"
               rows={4}
               className="input-base resize-none"
-              placeholder="Any other relevant information, e.g. previous grant history, existing loans, farm certifications..."
+              placeholder="Any other relevant information, e.g. previous grant history, prior funding commitments, farm certifications..."
               value={data.additionalNotes}
               onChange={(e) => onChange({ additionalNotes: e.target.value })}
             />
@@ -436,7 +473,10 @@ export default function FarmerIntakeForm({ data, onChange, errors, onSubmit, onF
             {/* Bank Statement */}
             <div className="flex flex-col gap-1.5 mt-2">
               <label className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>
-                Bank Statement (Last 6 Months) <span style={{ color: 'var(--muted-foreground)', fontWeight: 400 }}>(Optional - required later by some grantors)</span>
+                Bank Statement (Last 6 Months){' '}
+                <span style={{ color: 'var(--muted-foreground)', fontWeight: 400 }}>
+                  (Optional - required later by some grantors)
+                </span>
               </label>
               <input
                 type="file"

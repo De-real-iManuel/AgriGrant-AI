@@ -34,7 +34,7 @@ export default function ProcessingScreen({ farmerName }: Props) {
     return () => clearInterval(interval);
   }, []);
 
-  const progress = Math.round(((completedSteps.length) / STEPS.length) * 100);
+  const progress = Math.round((completedSteps.length / STEPS.length) * 100);
 
   return (
     <div className="w-full max-w-md mx-auto flex flex-col items-center gap-8 py-10">
@@ -43,14 +43,7 @@ export default function ProcessingScreen({ farmerName }: Props) {
         {/* Spinner */}
         <div className="relative w-20 h-20">
           <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
-            <circle
-              cx="40"
-              cy="40"
-              r="34"
-              stroke="var(--border)"
-              strokeWidth="6"
-              fill="none"
-            />
+            <circle cx="40" cy="40" r="34" stroke="var(--border)" strokeWidth="6" fill="none" />
             <circle
               cx="40"
               cy="40"
@@ -73,7 +66,9 @@ export default function ProcessingScreen({ farmerName }: Props) {
         </div>
 
         <h2 className="text-xl font-bold" style={{ color: 'var(--foreground)' }}>
-          {farmerName ? `Finding the best grants for ${farmerName}...` : 'Finding your best grants...'}
+          {farmerName
+            ? `Finding the best grants for ${farmerName}...`
+            : 'Finding your best grants...'}
         </h2>
         <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>
           Our AI agents are working — this takes about 8 seconds

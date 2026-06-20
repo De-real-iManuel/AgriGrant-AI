@@ -1,9 +1,18 @@
 'use client';
 import React from 'react';
 import {
-  Download, Share2, RefreshCw, AlertTriangle,
-  Trophy, TrendingUp, Lock, Sparkles, ArrowRight,
-  LayoutDashboard, CheckCircle2, ShieldCheck
+  Download,
+  Share2,
+  RefreshCw,
+  AlertTriangle,
+  Trophy,
+  TrendingUp,
+  Lock,
+  Sparkles,
+  ArrowRight,
+  LayoutDashboard,
+  CheckCircle2,
+  ShieldCheck,
 } from 'lucide-react';
 import { PipelineOutput } from './portalTypes';
 import GrantCard from './GrantCard';
@@ -14,8 +23,6 @@ interface Props {
   onStartNew: () => void;
   onGoToDashboard: () => void;
 }
-
-
 
 export default function ResultsDashboard({ output, onStartNew, onGoToDashboard }: Props) {
   const { user } = useAuth();
@@ -38,7 +45,6 @@ export default function ResultsDashboard({ output, onStartNew, onGoToDashboard }
 
   return (
     <div className="w-full max-w-3xl mx-auto flex flex-col gap-8 pb-12">
-
       {/* ── Top Recommendation Banner ── */}
       <section
         className="rounded-2xl p-5 sm:p-6"
@@ -51,8 +57,7 @@ export default function ResultsDashboard({ output, onStartNew, onGoToDashboard }
         <div className="flex items-start justify-between gap-3 mb-3">
           <div>
             <p className="text-sm font-semibold" style={{ color: '#BBF7D0' }}>
-              Results for{' '}
-              <span style={{ color: '#fff' }}>{farmerName || 'Your Farm'}</span>
+              Results for <span style={{ color: '#fff' }}>{farmerName || 'Your Farm'}</span>
               {stateOfResidence ? ` — ${stateOfResidence}` : ''}
             </p>
             <div className="flex items-center gap-2 mt-1.5">
@@ -84,8 +89,14 @@ export default function ResultsDashboard({ output, onStartNew, onGoToDashboard }
           </p>
         ) : (
           topRecommendation && (
-            <div className="mt-2 rounded-xl p-3" style={{ backgroundColor: 'rgba(255,255,255,0.12)' }}>
-              <p className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: 'var(--accent)' }}>
+            <div
+              className="mt-2 rounded-xl p-3"
+              style={{ backgroundColor: 'rgba(255,255,255,0.12)' }}
+            >
+              <p
+                className="text-xs font-semibold uppercase tracking-wide mb-1"
+                style={{ color: 'var(--accent)' }}
+              >
                 🥇 Top Recommendation
               </p>
               <p className="text-sm font-medium text-white">{topRecommendation}</p>
@@ -100,8 +111,6 @@ export default function ResultsDashboard({ output, onStartNew, onGoToDashboard }
         )}
       </section>
 
-
-
       {/* ── Trust Score Section ── */}
       {trustScore !== undefined && (
         <section
@@ -109,7 +118,10 @@ export default function ResultsDashboard({ output, onStartNew, onGoToDashboard }
           style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }}
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 rounded-xl" style={{ backgroundColor: '#DBEAFE', color: '#1D4ED8' }}>
+            <div
+              className="p-2 rounded-xl"
+              style={{ backgroundColor: '#DBEAFE', color: '#1D4ED8' }}
+            >
               <ShieldCheck size={24} />
             </div>
             <div>
@@ -121,17 +133,32 @@ export default function ResultsDashboard({ output, onStartNew, onGoToDashboard }
               </p>
             </div>
           </div>
-          
+
           <div className="flex flex-col gap-2">
             {trustScoreBreakdown?.map((item, idx) => (
-              <div key={idx} className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: 'var(--muted)' }}>
+              <div
+                key={idx}
+                className="flex items-center justify-between p-3 rounded-lg"
+                style={{ backgroundColor: 'var(--muted)' }}
+              >
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium" style={{ color: 'var(--foreground)' }}>{item.item}</span>
-                  <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: item.points > 0 ? '#DCFCE7' : '#FEE2E2', color: item.points > 0 ? '#166534' : '#991B1B' }}>
+                  <span className="text-sm font-medium" style={{ color: 'var(--foreground)' }}>
+                    {item.item}
+                  </span>
+                  <span
+                    className="text-xs px-2 py-0.5 rounded-full"
+                    style={{
+                      backgroundColor: item.points > 0 ? '#DCFCE7' : '#FEE2E2',
+                      color: item.points > 0 ? '#166534' : '#991B1B',
+                    }}
+                  >
                     {item.status}
                   </span>
                 </div>
-                <span className="text-sm font-bold" style={{ color: item.points > 0 ? '#166534' : 'var(--muted-foreground)' }}>
+                <span
+                  className="text-sm font-bold"
+                  style={{ color: item.points > 0 ? '#166534' : 'var(--muted-foreground)' }}
+                >
                   +{item.points} pts
                 </span>
               </div>
@@ -151,7 +178,8 @@ export default function ResultsDashboard({ output, onStartNew, onGoToDashboard }
             style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }}
           >
             <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>
-              No matching grants found for your current profile. Review the improvement tips below to unlock more opportunities.
+              No matching grants found for your current profile. Review the improvement tips below
+              to unlock more opportunities.
             </p>
           </div>
         ) : (
@@ -179,8 +207,14 @@ export default function ResultsDashboard({ output, onStartNew, onGoToDashboard }
           <ul className="flex flex-col gap-2.5">
             {profileGaps.map((gap, i) => (
               <li key={`gap-${i}`} className="flex items-start gap-2.5">
-                <AlertTriangle size={16} className="flex-shrink-0 mt-0.5" style={{ color: '#D97706' }} />
-                <span className="text-sm" style={{ color: '#92400E' }}>{gap}</span>
+                <AlertTriangle
+                  size={16}
+                  className="flex-shrink-0 mt-0.5"
+                  style={{ color: '#D97706' }}
+                />
+                <span className="text-sm" style={{ color: '#92400E' }}>
+                  {gap}
+                </span>
               </li>
             ))}
           </ul>
@@ -196,8 +230,6 @@ export default function ResultsDashboard({ output, onStartNew, onGoToDashboard }
         )}
       </section>
 
-
-
       {/* ── Action Buttons ── */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
         {/* Go to Dashboard */}
@@ -205,8 +237,12 @@ export default function ResultsDashboard({ output, onStartNew, onGoToDashboard }
           onClick={onGoToDashboard}
           className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm text-white transition-all active:scale-95"
           style={{ backgroundColor: 'var(--primary)' }}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#14532D'; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--primary)'; }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#14532D';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--primary)';
+          }}
         >
           <LayoutDashboard size={16} />
           View in Dashboard
@@ -215,9 +251,17 @@ export default function ResultsDashboard({ output, onStartNew, onGoToDashboard }
         {/* Download — coming soon */}
         <button
           className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm border-2 transition-all active:scale-95 relative group"
-          style={{ backgroundColor: 'transparent', borderColor: 'var(--primary)', color: 'var(--primary)' }}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#F0FDF4'; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'; }}
+          style={{
+            backgroundColor: 'transparent',
+            borderColor: 'var(--primary)',
+            color: 'var(--primary)',
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#F0FDF4';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
+          }}
         >
           <Download size={16} />
           📥 Download Report
@@ -232,7 +276,11 @@ export default function ResultsDashboard({ output, onStartNew, onGoToDashboard }
         {/* Share — coming soon */}
         <button
           className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm border-2 transition-all active:scale-95 relative group"
-          style={{ backgroundColor: 'transparent', borderColor: 'var(--border)', color: 'var(--muted-foreground)' }}
+          style={{
+            backgroundColor: 'transparent',
+            borderColor: 'var(--border)',
+            color: 'var(--muted-foreground)',
+          }}
         >
           <Share2 size={16} />
           🔗 Share Results

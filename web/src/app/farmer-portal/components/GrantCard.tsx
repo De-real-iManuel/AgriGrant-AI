@@ -62,8 +62,7 @@ export default function GrantCard({ grant }: Props) {
         (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)';
       }}
       onMouseLeave={(e) => {
-        (e.currentTarget as HTMLDivElement).style.boxShadow =
-          '0 1px 3px rgba(0,0,0,0.06)';
+        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)';
         (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)';
       }}
     >
@@ -71,10 +70,7 @@ export default function GrantCard({ grant }: Props) {
       <div className="flex items-start gap-3">
         <ScoreBadge score={grant.matchScore} />
         <div className="flex flex-col gap-1 min-w-0">
-          <h3
-            className="font-bold text-sm leading-snug"
-            style={{ color: 'var(--foreground)' }}
-          >
+          <h3 className="font-bold text-sm leading-snug" style={{ color: 'var(--foreground)' }}>
             {grant.grantName}
           </h3>
           <span className="text-xs font-medium" style={{ color: 'var(--muted-foreground)' }}>
