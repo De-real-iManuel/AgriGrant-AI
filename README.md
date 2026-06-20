@@ -43,59 +43,212 @@ AgriGrant AI removes these barriers through a five-agent AI pipeline:
 
 ## System Architecture
 
+### High-Level Phase Overview
+
+```mermaid
+flowchart LR
+    A((🌱 Farmer<br/>Submits)) --> P1[/"Phase 1<br/>Intake &amp; Validation"/]
+    P1 --> P2[/"Phase 2<br/>Grant Discovery"/]
+    P2 --> P3[/"Phase 3<br/>Eligibility &amp; Risk"/]
+    P3 --> P4[/"Phase 4<br/>Document Verification"/]
+    P4 --> P5[/"Phase 5<br/>Proposal Generation"/]
+    P5 --> P6[/"Phase 6<br/>Human Approval"/]
+    P6 --> P7[/"Phase 7<br/>RPA Submission"/]
+    P7 --> P8[/"Phase 8<br/>Monitoring &amp; Appeal"/]
+    P8 --> Z(((🎉 Grant<br/>Awarded)))
+
+    classDef phase fill:#1D4ED8,stroke:#1E3A8A,color:#fff,stroke-width:2px
+    classDef startNode fill:#22C55E,stroke:#166534,color:#fff,stroke-width:3px
+    classDef endNode fill:#16A34A,stroke:#14532D,color:#fff,stroke-width:3px
+    class P1,P2,P3,P4,P5,P6,P7,P8 phase
+    class A startNode
+    class Z endNode
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    AgriGrant AI — System Architecture            │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  FRONTEND LAYER                                                  │
-│  ┌──────────────────────┐    ┌────────────────────────┐         │
-│  │  UiPath App          │    │  Custom Web App         │         │
-│  │  (SimpleApprovalApp) │    │  (Next.js/React)        │         │
-│  │  - Farmer form       │    │  - Multi-step form      │         │
-│  │  - Results display   │    │  - Real-time status     │         │
-│  │  - Letter download   │    │  - Mobile responsive    │         │
-│  └──────────┬───────────┘    └──────────┬─────────────┘         │
-│             │                            │                       │
-│             ▼                            ▼                       │
-│  ┌──────────────────────────────────────────────────────┐       │
-│  │              AgriGrant API Workflow (Backend)          │       │
-│  │  - Input validation                                    │       │
-│  │  - Draft letter generation                             │       │
-│  │  - SendGrid email confirmation                         │       │
-│  │  - Application reference generation (AGR-XXXXXX)       │       │
-│  └──────────────────────────┬───────────────────────────┘       │
-│                             │                                    │
-│                             ▼                                    │
-│  ┌──────────────────────────────────────────────────────┐       │
-│  │     Nigerian AgriGrant Pipeline (BPMN Orchestration)  │       │
-│  │                                                        │       │
-│  │  ┌─────────┐   ┌─────────┐   ┌─────────┐             │       │
-│  │  │ Agent 1 │──▶│ Agent 2 │──▶│ Agent 3 │             │       │
-│  │  │  Grant  │   │Eligblty │   │  Doc    │             │       │
-│  │  │Discovery│   │& Risk   │   │Underst. │             │       │
-│  │  └─────────┘   └─────────┘   └────┬────┘             │       │
-│  │                                    │                  │       │
-│  │  ┌─────────┐   ┌─────────┐        │                  │       │
-│  │  │ Agent 5 │◀──│ Agent 4 │◀───────┘                  │       │
-│  │  │Submitn  │   │Proposal │                            │       │
-│  │  │&Followup│   │  Gen.   │                            │       │
-│  │  └────┬────┘   └─────────┘                            │       │
-│  │       │                                               │       │
-│  │       ▼                                               │       │
-│  │  ┌──────────────────┐                                │       │
-│  │  │  SendGrid Email   │                                │       │
-│  │  │  (Full Report)    │                                │       │
-│  │  └──────────────────┘                                │       │
-│  └──────────────────────────────────────────────────────┘       │
-│                                                                  │
-│  RPA Robot (UiPath Studio Desktop)                               │
-│  ┌──────────────────────────────────────────────────────┐       │
-│  │  Portal Form Filler — Automates government portals    │       │
-│  │  (NIRSAL, CBN, State Ministry websites)               │       │
-│  └──────────────────────────────────────────────────────┘       │
-└─────────────────────────────────────────────────────────────────┘
+
+### Detailed BPMN Process Flow
+
+> **Legend:** 🟢 Start · 🔵 AI Agent · 🟡 RPA Robot · 🟣 Human Task · ⏱️ Timer · ◇ Gateway · 🔴 Failure End · 🟢 Success End
+
+```mermaid
+flowchart TD
+    %% ============== PHASE 1: INTAKE & VALIDATION ==============
+    Start((🌱 Farmer Submits<br/>Grant Application))
+    T1["⚙️ API<br/>Receive &amp; Validate<br/>Farm Application"]
+    G1{"Is Application<br/>Data Complete?"}
+    T2["⚙️ Submission &amp; Follow-up Agent<br/>Request Missing Information"]
+    Tm1(["⏱️ Await Farmer<br/>Response 48hrs"])
+
+    Start --> T1
+    T1 --> G1
+    G1 -->|No| T2
+    T2 --> Tm1
+    Tm1 --> T1
+
+    %% ============== PHASE 2: GRANT DISCOVERY ==============
+    T3["⚙️ Grant Discovery Agent<br/>Search &amp; Match Eligible Grants"]
+    G2{"Were Matching<br/>Grants Found?"}
+    T4["⚙️ Submission &amp; Follow-up Agent<br/>Notify No Matches"]
+    End1((("❌ No Matching<br/>Grants Found")))
+
+    G1 -->|Yes| T3
+    T3 --> G2
+    G2 -->|No| T4
+    T4 --> End1
+
+    %% ============== PHASE 3: ELIGIBILITY & RISK ==============
+    T5["⚙️ Submission &amp; Follow-up Agent<br/>Present Matched Grants"]
+    T6["👤 Farmer Selects Which<br/>Grant to Apply For"]
+    T7["⚙️ Eligibility &amp; Risk Agent<br/>Deep-Dive Analysis"]
+    G3{"Does Farmer Meet<br/>All Grant Criteria?"}
+    T8["⚙️ Eligibility &amp; Risk Agent<br/>Analyze Other Options"]
+    G4{"Are There Other<br/>Grants to Check?"}
+    T9["⚙️ Submission &amp; Follow-up Agent<br/>Notify Requirements Gap"]
+    End2((("❌ Process Ended<br/>Requirements Not Met")))
+
+    G2 -->|Yes| T5
+    T5 --> T6
+    T6 --> T7
+    T7 --> G3
+    G3 -->|No| T8
+    T8 --> G4
+    G4 -->|Yes| T7
+    G4 -->|No| T9
+    T9 --> End2
+
+    %% ============== PHASE 4: DOCUMENT VERIFICATION ==============
+    T10["⚙️ Document Understanding Agent<br/>Check Required Docs"]
+    G5{"Are Documents<br/>Required for Grant?"}
+    T11["⚙️ Document Understanding Agent<br/>Identify Missing Docs"]
+    T12["👤 Farmer Uploads Required<br/>Documents via Web App"]
+    T13["⚙️ Document Understanding Agent<br/>Analyze Uploads"]
+    T14["⚙️ Document Understanding Agent<br/>Prepare Document Package"]
+    Err1((("⚠️ Document<br/>Analysis Failed")))
+    Err2((("⚠️ Unclear Grant<br/>Requirement")))
+
+    G3 -->|Yes| T10
+    T10 --> G5
+    G5 -->|Yes| T11
+    T11 --> T12
+    T12 --> T13
+    T13 --> T14
+    T13 -.->|error| Err1
+    G5 -.->|unclear| Err2
+
+    %% ============== PHASE 5: PROPOSAL GENERATION ==============
+    T15["⚙️ Proposal Agent<br/>Collect Grant Details from KB"]
+    T16["⚙️ Proposal Agent<br/>Query Eligibility &amp; Document Data"]
+    T17["⚙️ Proposal Agent<br/>Compose Tailored Application"]
+    T18["👤 Farmer Reviews Proposal<br/>in Web App"]
+    G6{"Did Farmer Approve<br/>the Proposal?"}
+    T19["⚙️ Proposal Agent<br/>Regenerate Based on Feedback"]
+    T20["⚙️ Proposal Agent<br/>Package All Data &amp; Send to RPA"]
+    G7{"Data<br/>Validated?"}
+    T21["⚙️ Proposal Agent<br/>Request Correction Tier 1"]
+    End3((("⏸️ Awaiting<br/>Farmer Input")))
+
+    T14 --> T15
+    G5 -->|No| T15
+    T15 --> T16
+    T16 --> T17
+    T17 --> T18
+    T18 --> G6
+    G6 -->|No| T19
+    T19 --> T18
+    G6 -->|Yes| T20
+    T20 --> G7
+    G7 -->|NOT READY| T21
+    T21 --> End3
+
+    %% ============== PHASE 6: RPA SUBMISSION ==============
+    T22["🤖 RPA Portal Submission Robot<br/>Query Portal"]
+    T23["🤖 RPA Portal Submission Robot<br/>Fill &amp; Submit Form"]
+    G8{"Submission<br/>Successful?"}
+    T24["⚙️ Submission &amp; Follow-up Agent<br/>Technical Alert &amp; Retry Tier 2"]
+    T25["⚙️ Submission &amp; Follow-up Agent<br/>Notify Submission Success"]
+
+    G7 -->|READY| T22
+    T22 --> T23
+    T23 --> G8
+    G8 -->|FAILED| T24
+    T24 --> T22
+    G8 -->|SUCCESS| T25
+
+    %% ============== PHASE 7: STATUS MONITORING ==============
+    Tm2(["⏱️ Monitor Application<br/>Status Every 24h"])
+    T26["🤖 RPA Portal Submission Robot<br/>Check Status"]
+    G9{"What is the Current<br/>Application Status?"}
+    T27["⚙️ Submission &amp; Follow-up Agent<br/>Send Approval Notice"]
+    End4((("✅ Grant Application<br/>APPROVED")))
+    T28["⚙️ Submission &amp; Follow-up Agent<br/>Update Farmer Pending"]
+
+    T25 --> Tm2
+    Tm2 --> T26
+    T26 --> G9
+    G9 -->|Approved| T27
+    T27 --> End4
+    G9 -->|Pending| T28
+    T28 --> Tm2
+
+    %% ============== PHASE 8: REJECTION & APPEAL ==============
+    T29["🤖 RPA Portal Submission Robot<br/>Retrieve Rejection Details"]
+    T30["👤 Grant Specialist Reviews<br/>Rejection &amp; Recommends"]
+    G10{"Is an Appeal<br/>Worth Filing?"}
+    T31["⚙️ Submission &amp; Follow-up Agent<br/>Send Rejection Notice"]
+    End5((("❌ Application Rejected<br/>Recommendations Sent")))
+    T32["⚙️ Proposal Agent<br/>Prepare Appeal Documentation"]
+    T33["🤖 RPA Portal Submission Robot<br/>File Appeal"]
+    T34["⚙️ Submission &amp; Follow-up Agent<br/>Notify Appeal Filed"]
+    Tm3(["⏱️ Await Appeal<br/>Decision"])
+    T35["🤖 RPA Robot<br/>Check Appeal Status"]
+    G11{"Appeal<br/>Decision?"}
+    T36["⚙️ Submission &amp; Follow-up Agent<br/>Notify Appeal Approved"]
+    End6((("🎉 Appeal APPROVED<br/>Grant Awarded")))
+    T37["⚙️ Submission &amp; Follow-up Agent<br/>Send Final Rejection"]
+    End7((("❌ Final Rejection<br/>Case Closed")))
+
+    G9 -->|Rejected| T29
+    T29 --> T30
+    T30 --> G10
+    G10 -->|No| T31
+    T31 --> End5
+    G10 -->|Yes| T32
+    T32 --> T33
+    T33 --> T34
+    T34 --> Tm3
+    Tm3 --> T35
+    T35 --> G11
+    G11 -->|Approved| T36
+    T36 --> End6
+    G11 -->|Rejected| T37
+    T37 --> End7
+
+    %% ============== STYLING ==============
+    classDef agent fill:#1D4ED8,stroke:#1E3A8A,color:#fff,stroke-width:2px
+    classDef robot fill:#CA8A04,stroke:#854D0E,color:#fff,stroke-width:2px
+    classDef user fill:#7C3AED,stroke:#5B21B6,color:#fff,stroke-width:2px
+    classDef api fill:#475569,stroke:#1E293B,color:#fff,stroke-width:2px
+    classDef gateway fill:#0F172A,stroke:#94A3B8,color:#fff,stroke-width:2px
+    classDef timer fill:#F59E0B,stroke:#92400E,color:#fff,stroke-width:2px
+    classDef startEvent fill:#22C55E,stroke:#166534,color:#fff,stroke-width:3px
+    classDef endSuccess fill:#16A34A,stroke:#14532D,color:#fff,stroke-width:3px
+    classDef endFail fill:#DC2626,stroke:#7F1D1D,color:#fff,stroke-width:3px
+    classDef endNeutral fill:#64748B,stroke:#334155,color:#fff,stroke-width:3px
+    classDef error fill:#991B1B,stroke:#450A0A,color:#fff,stroke-width:2px
+
+    class T1 api
+    class T2,T3,T4,T5,T7,T8,T9,T10,T11,T13,T14,T15,T16,T17,T19,T20,T21,T24,T25,T27,T28,T31,T32,T34,T36,T37 agent
+    class T6,T12,T18,T30 user
+    class T22,T23,T26,T29,T33,T35 robot
+    class G1,G2,G3,G4,G5,G6,G7,G8,G9,G10,G11 gateway
+    class Tm1,Tm2,Tm3 timer
+    class Start startEvent
+    class End4,End6 endSuccess
+    class End1,End2,End5,End7 endFail
+    class End3 endNeutral
+    class Err1,Err2 error
 ```
+
+> 📐 Standalone diagram source lives at [`docs/process-flow.md`](./docs/process-flow.md) — also includes export instructions for crisp PNG/SVG output for slides.
 
 ---
 
@@ -150,25 +303,7 @@ Builds the complete submission package — where to submit, how, and a follow-up
 
 ## Pipeline Flow (BPMN)
 
-```
-START — Farmer Profile Received
-    ↓
-1. Discover Matching Grants         [Agent 1]
-    ↓
-2. Assess Eligibility & Risk        [Agent 2]
-    ↓
-3. ◆ Documents Uploaded?
-   ├── YES → Verify Documents       [Agent 3]
-   └── NO  → skip
-    ↓
-4. Generate Application Letters     [Agent 4]
-    ↓
-5. Prepare Submission Package       [Agent 5]
-    ↓
-6. Send Email via SendGrid          [HTTP POST]
-    ↓
-END — Grant Package Delivered
-```
+The full BPMN process flow — including all gateways, retries, timer events, and end-states — is rendered in the **Detailed BPMN Process Flow** diagram in the [System Architecture](#system-architecture) section above. It maps every step from initial farmer submission through grant approval (or appeal) end-to-end.
 
 ---
 
@@ -199,7 +334,7 @@ Handles synchronous response on submission: validates input, generates a draft l
 | isSmallholderFarmer | boolean | ✅ | Under 5 hectares |
 | isYouthFarmer | boolean | ✅ | Aged 18–35 |
 | isWomanFarmer | boolean | ✅ | Woman/woman-led farm |
-| hasExistingLoanDefault | boolean | ✅ | Existing CRMS loan default |
+| hasNoLoanDefault | boolean | ✅ | True if farmer has a clean CRMS record (no active default) |
 | additionalNotes | string | ❌ | Any extra context |
 
 ### API Outputs
@@ -370,7 +505,7 @@ The UiPath Studio Desktop robot automates direct submission to Nigerian governme
   "isSmallholderFarmer": true,
   "isYouthFarmer": true,
   "isWomanFarmer": false,
-  "hasExistingLoanDefault": false,
+  "hasNoLoanDefault": true,
   "additionalNotes": "Farm has consistent sales records for the past 2 years and a standing off-taker agreement with a local hotel."
 }
 ```
@@ -393,7 +528,7 @@ The UiPath Studio Desktop robot automates direct submission to Nigerian governme
 
 | Name | Role | Contact |
 |------|------|---------|
-| Nwajari Emmanuel | Founder & Technical Lead | nwajariemmanuel355@gmail.com |
+| Nwajari Emmanuel | Founder & Technical Lead | De-real-iManuel@hotmail.com |
 | Kodu Giobari | Operations Lead | giobarikodu@gmail.com |
 
 ---
