@@ -207,6 +207,7 @@ async def save_farmer_profile_db(
             "farmer_name": profile_data.get("farmerName", ""),
             "state_of_residence": profile_data.get("stateOfResidence", ""),
             "lga": profile_data.get("lga", ""),
+            "farm_address": profile_data.get("farmAddress", ""),
             "farm_type": profile_data.get("farmType", ""),
             "crop_or_livestock_types": profile_data.get("cropOrLivestockTypes", []),
             "farm_size_hectares": profile_data.get("farmSizeHectares") or None,
@@ -220,7 +221,7 @@ async def save_farmer_profile_db(
             "has_land_document": profile_data.get("hasLandDocument", False),
             "is_member_of_cooperative": profile_data.get("isMemberOfCooperative", False),
             "has_bvn": profile_data.get("hasBVN", False),
-            "has_existing_loan_default": profile_data.get("hasExistingLoanDefault", False),
+            "has_existing_loan_default": not profile_data.get("hasNoLoanDefault", True),
             "additional_notes": profile_data.get("additionalNotes", ""),
         }
         if document_paths:
@@ -273,3 +274,121 @@ def get_document_signed_url(file_path: str, expires_in: int = 3600) -> Optional[
         logger.error(f"Error creating signed URL for {file_path}: {e}")
         return None
 
+
+
+
+# ---------------------------------------------------------------------------
+# Pipeline Events + History (NEW)
+# ---------------------------------------------------------------------------
+async def save_pipeline_event_db(
+    job_id: str,
+    stage: str,
+    icon: str = "",
+    label: str = "",
+    detail: str = "",
+    data: Optional[dict] = None,
+) -> bool:
+    """Persist a single pipeline stage event so the timeline survives restarts."""
+    if not supabase_client:
+        return False
+    try:
+        row = {
+            "job_id": job_id,
+            "stage": stage,
+            "icon": icon or "",
+            "label": label or "",
+            "detail": detail or "",
+            "data": data or {},
+        }
+        res = supabase_client.table("pipeline_events").insert(row).execute()
+        return bool(res.data)
+    except Exception as e:
+        logger.error(f"Database error in save_pipeline_event_db: {e}")
+        return False
+
+
+async def get_pipeline_events_db(job_id: str) -> list:
+    """Return the full event timeline for a single pipeline job, oldest first."""
+    if not supabase_client:
+        return []
+    try:
+        res = (
+            supabase_client.table("pipeline_events")
+            .select("*")
+            .eq("job_id", job_id)
+            .order("created_at")
+            .execute()
+        )
+        return res.data or []
+    except Exception as e:
+        logger.error(f"Database error in get_pipeline_events_db: {e}")
+        return []
+
+
+async def list_pipeline_jobs_for_user_db(user_id: str, limit: int = 50) -> list:
+    """All past pipeline jobs for a farmer, newest first — drives the chat history view."""
+    if not supabase_client:
+        return []
+    try:
+        res = (
+            supabase_client.table("pipeline_jobs")
+            .select("*")
+            .eq("user_id", user_id)
+            .order("created_at", desc=True)
+            .limit(limit)
+            .execute()
+        )
+        return res.data or []
+    except Exception as e:
+        logger.error(f"Database error in list_pipeline_jobs_for_user_db: {e}")
+        return []
+
+
+async def list_chat_sessions_for_user_db(user_id: str, limit: int = 50) -> list:
+    """List chat sessions whose farmer_profile.userId matches — past conversations."""
+    if not supabase_client:
+        return []
+    try:
+        res = (
+            supabase_client.table("chat_sessions")
+            .select("*")
+            .filter("farmer_profile->>userId", "eq", user_id)
+            .order("last_active", desc=True)
+            .limit(limit)
+            .execute()
+        )
+        return res.data or []
+    except Exception as e:
+        logger.error(f"Database error in list_chat_sessions_for_user_db: {e}")
+        return []
+
+
+async def save_pipeline_job_with_user_db(
+    job_id: str,
+    app_ref: str,
+    user_id: Optional[str],
+    session_id: Optional[str],
+    farmer_name: str,
+    state: str,
+    status: str,
+    profile: dict,
+) -> bool:
+    """Insert a fresh pipeline_jobs row at submit-time linked to user + chat session."""
+    if not supabase_client:
+        return False
+    try:
+        data = {
+            "job_id": job_id,
+            "application_reference": app_ref,
+            "user_id": user_id,
+            "session_id": session_id,
+            "farmer_name": farmer_name,
+            "state_of_residence": state,
+            "status": status,
+            "farmer_profile": profile,
+        }
+        res = supabase_client.table("pipeline_jobs").upsert(data).execute()
+        return bool(res.data)
+    except Exception as e:
+        logger.error(f"Database error in save_pipeline_job_with_user_db: {e}")
+        return False
