@@ -134,6 +134,22 @@ UiPath-automation/**/.tmh/
 # UiPath execution logs
 UiPath-automation/**/*.log
 
+# Ignore additional UiPath generated artifacts and embedded project repos
+UiPath-automation/**/.project/
+UiPath-automation/**/.project
+UiPath-automation/**/.app/
+UiPath-automation/**/.entities/
+UiPath-automation/**/.entities
+UiPath-automation/**/.templates/
+UiPath-automation/**/.git/
+UiPath-automation/**/.git
+UiPath-automation/**/*.zip
+UiPath-automation/**/*.nupkg
+UiPath-automation/**/._* 
+# Ignore specific large or machine-generated project folders (embedded repo)
+UiPath-automation/Grant Form Filler Robot/
+UiPath-automation/Grant Form Filler Robot/**
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 # SHARED / OS / TOOLS
