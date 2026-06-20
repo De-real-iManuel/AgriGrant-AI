@@ -17,7 +17,11 @@ interface SignupPayload {
 
 export default function AuthScreen() {
   const [step, setStep] = useState<AuthStep>('login');
-  const [signupPayload, setSignupPayload] = useState<SignupPayload>({ phone: '', name: '', email: '' });
+  const [signupPayload, setSignupPayload] = useState<SignupPayload>({
+    phone: '',
+    name: '',
+    email: '',
+  });
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
 
@@ -64,16 +68,20 @@ export default function AuthScreen() {
               Funding Intelligence for Modern Agriculture
             </h2>
             <p className="mt-4 text-base leading-relaxed" style={{ color: '#BBF7D0' }}>
-              Join 2,400+ Nigerian farmers using AI to discover grants, build proposals, and secure funding.
+              Join 2,400+ Nigerian farmers using AI to discover grants, build proposals, and secure
+              funding.
             </p>
           </div>
 
           <div
             className="p-5 rounded-2xl"
-            style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}
+            style={{
+              backgroundColor: 'rgba(255,255,255,0.1)',
+              border: '1px solid rgba(255,255,255,0.15)',
+            }}
           >
             <p className="text-sm leading-relaxed text-white italic">
-              "AgriGrant AI helped me secure the CBN Anchor Borrowers loan in 3 days. The AI wrote my
+              "AgriGrant AI helped me secure CBN Anchor Borrowers funding in 3 days. The AI wrote my
               proposal and the agents handled everything — I just reviewed and approved."
             </p>
             <div className="flex items-center gap-3 mt-4">
@@ -85,12 +93,12 @@ export default function AuthScreen() {
               </div>
               <div>
                 <p className="text-sm font-semibold text-white">Emmanuel Okafor</p>
-                <p className="text-xs" style={{ color: '#86EFAC' }}>Cassava Farmer, Delta State</p>
+                <p className="text-xs" style={{ color: '#86EFAC' }}>
+                  Cassava Farmer, Delta State
+                </p>
               </div>
             </div>
           </div>
-
-
 
           <div className="grid grid-cols-3 gap-3">
             {[
@@ -104,7 +112,9 @@ export default function AuthScreen() {
                 style={{ backgroundColor: 'rgba(255,255,255,0.08)' }}
               >
                 <p className="text-xl font-extrabold text-white tabular-nums">{s.value}</p>
-                <p className="text-xs mt-0.5" style={{ color: '#86EFAC' }}>{s.label}</p>
+                <p className="text-xs mt-0.5" style={{ color: '#86EFAC' }}>
+                  {s.label}
+                </p>
               </div>
             ))}
           </div>
@@ -135,10 +145,7 @@ export default function AuthScreen() {
             />
           ) : (
             <>
-              <div
-                className="flex p-1 rounded-xl mb-8"
-                style={{ backgroundColor: 'var(--muted)' }}
-              >
+              <div className="flex p-1 rounded-xl mb-8" style={{ backgroundColor: 'var(--muted)' }}>
                 {(['login', 'signup'] as const).map((tab) => (
                   <button
                     key={`tab-${tab}`}
@@ -155,11 +162,7 @@ export default function AuthScreen() {
                 ))}
               </div>
 
-              {step === 'login' ? (
-                <LoginForm />
-              ) : (
-                <SignUpForm onSuccess={handleSignupSuccess} />
-              )}
+              {step === 'login' ? <LoginForm /> : <SignUpForm onSuccess={handleSignupSuccess} />}
             </>
           )}
         </div>

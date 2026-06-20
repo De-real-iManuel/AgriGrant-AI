@@ -20,11 +20,43 @@ interface SignUpFormData {
 }
 
 const nigerianStates = [
-  'Abia', 'Adamawa', 'Akwa Ibom', 'Anambra', 'Bauchi', 'Bayelsa', 'Benue',
-  'Borno', 'Cross River', 'Delta', 'Ebonyi', 'Edo', 'Ekiti', 'Enugu',
-  'FCT Abuja', 'Gombe', 'Imo', 'Jigawa', 'Kaduna', 'Kano', 'Katsina',
-  'Kebbi', 'Kogi', 'Kwara', 'Lagos', 'Nasarawa', 'Niger', 'Ogun', 'Ondo',
-  'Osun', 'Oyo', 'Plateau', 'Rivers', 'Sokoto', 'Taraba', 'Yobe', 'Zamfara',
+  'Abia',
+  'Adamawa',
+  'Akwa Ibom',
+  'Anambra',
+  'Bauchi',
+  'Bayelsa',
+  'Benue',
+  'Borno',
+  'Cross River',
+  'Delta',
+  'Ebonyi',
+  'Edo',
+  'Ekiti',
+  'Enugu',
+  'FCT Abuja',
+  'Gombe',
+  'Imo',
+  'Jigawa',
+  'Kaduna',
+  'Kano',
+  'Katsina',
+  'Kebbi',
+  'Kogi',
+  'Kwara',
+  'Lagos',
+  'Nasarawa',
+  'Niger',
+  'Ogun',
+  'Ondo',
+  'Osun',
+  'Oyo',
+  'Plateau',
+  'Rivers',
+  'Sokoto',
+  'Taraba',
+  'Yobe',
+  'Zamfara',
 ];
 
 const farmTypes = [
@@ -125,7 +157,9 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
         {/* Full Name */}
         <div>
-          <label className="label-base" htmlFor="su-fullname">Full Name</label>
+          <label className="label-base" htmlFor="su-fullname">
+            Full Name
+          </label>
           <input
             id="su-fullname"
             type="text"
@@ -147,14 +181,20 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
 
         {/* Phone */}
         <div>
-          <label className="label-base" htmlFor="su-phone">Phone Number</label>
+          <label className="label-base" htmlFor="su-phone">
+            Phone Number
+          </label>
           <p className="text-xs mb-1.5" style={{ color: 'var(--muted-foreground)' }}>
             We&apos;ll use this to contact you about your grants
           </p>
           <div className="flex gap-2">
             <div
               className="flex items-center gap-1.5 px-3 rounded-xl border text-sm font-semibold flex-shrink-0"
-              style={{ backgroundColor: 'var(--muted)', borderColor: 'var(--border)', color: 'var(--foreground)' }}
+              style={{
+                backgroundColor: 'var(--muted)',
+                borderColor: 'var(--border)',
+                color: 'var(--foreground)',
+              }}
             >
               🇳🇬 +234
             </div>
@@ -166,7 +206,10 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
               autoComplete="tel"
               {...register('phone', {
                 required: 'Phone number is required',
-                pattern: { value: /^[0-9]{10,11}$/, message: 'Enter a valid Nigerian phone number' },
+                pattern: {
+                  value: /^[0-9]{10,11}$/,
+                  message: 'Enter a valid Nigerian phone number',
+                },
               })}
               style={{ borderColor: errors.phone ? 'var(--destructive)' : undefined }}
             />
@@ -180,7 +223,9 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
 
         {/* Email */}
         <div>
-          <label className="label-base" htmlFor="su-email">Email Address</label>
+          <label className="label-base" htmlFor="su-email">
+            Email Address
+          </label>
           <p className="text-xs mb-1.5" style={{ color: 'var(--muted-foreground)' }}>
             A 6-digit confirmation code will be sent here
           </p>
@@ -192,7 +237,10 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
             autoComplete="email"
             {...register('email', {
               required: 'Email address is required',
-              pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Enter a valid email address' },
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: 'Enter a valid email address',
+              },
             })}
             style={{ borderColor: errors.email ? 'var(--destructive)' : undefined }}
           />
@@ -206,7 +254,9 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
         {/* State + LGA */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="label-base" htmlFor="su-state">Farm State</label>
+            <label className="label-base" htmlFor="su-state">
+              Farm State
+            </label>
             <div className="relative">
               <select
                 id="su-state"
@@ -216,10 +266,16 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
               >
                 <option value="">Select State</option>
                 {nigerianStates.map((s) => (
-                  <option key={`state-${s}`} value={s}>{s}</option>
+                  <option key={`state-${s}`} value={s}>
+                    {s}
+                  </option>
                 ))}
               </select>
-              <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--muted-foreground)' }} />
+              <ChevronDown
+                size={14}
+                className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                style={{ color: 'var(--muted-foreground)' }}
+              />
             </div>
             {errors.state && (
               <p className="text-xs mt-1.5 font-medium" style={{ color: 'var(--destructive)' }}>
@@ -228,7 +284,9 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
             )}
           </div>
           <div>
-            <label className="label-base" htmlFor="su-lga">LGA</label>
+            <label className="label-base" htmlFor="su-lga">
+              LGA
+            </label>
             <input
               id="su-lga"
               type="text"
@@ -247,7 +305,9 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
 
         {/* Farm Type */}
         <div>
-          <label className="label-base" htmlFor="su-farmtype">Farm Type</label>
+          <label className="label-base" htmlFor="su-farmtype">
+            Farm Type
+          </label>
           <p className="text-xs mb-1.5" style={{ color: 'var(--muted-foreground)' }}>
             This helps us match you with the most relevant grants
           </p>
@@ -260,10 +320,16 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
             >
               <option value="">Select Farm Type</option>
               {farmTypes.map((t) => (
-                <option key={`farmtype-${t}`} value={t}>{t}</option>
+                <option key={`farmtype-${t}`} value={t}>
+                  {t}
+                </option>
               ))}
             </select>
-            <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--muted-foreground)' }} />
+            <ChevronDown
+              size={14}
+              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+              style={{ color: 'var(--muted-foreground)' }}
+            />
           </div>
           {errors.farmType && (
             <p className="text-xs mt-1.5 font-medium" style={{ color: 'var(--destructive)' }}>
@@ -274,7 +340,9 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
 
         {/* Password */}
         <div>
-          <label className="label-base" htmlFor="su-password">Password</label>
+          <label className="label-base" htmlFor="su-password">
+            Password
+          </label>
           <div className="relative">
             <input
               id="su-password"
@@ -311,7 +379,9 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
 
         {/* Confirm Password */}
         <div>
-          <label className="label-base" htmlFor="su-confirm">Confirm Password</label>
+          <label className="label-base" htmlFor="su-confirm">
+            Confirm Password
+          </label>
           <div className="relative">
             <input
               id="su-confirm"

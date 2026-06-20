@@ -177,7 +177,11 @@ export default function OTPVerification({
           Verify your email
         </h1>
         <p className="text-sm mt-2 leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
-          We sent a <span className="font-semibold" style={{ color: 'var(--foreground)' }}>6-digit confirmation code</span> to{' '}
+          We sent a{' '}
+          <span className="font-semibold" style={{ color: 'var(--foreground)' }}>
+            6-digit confirmation code
+          </span>{' '}
+          to{' '}
           <span className="font-semibold" style={{ color: 'var(--foreground)' }}>
             {userEmail}
           </span>
@@ -200,7 +204,9 @@ export default function OTPVerification({
         {otp.map((digit, idx) => (
           <input
             key={`otp-${idx}`}
-            ref={(el) => { inputRefs.current[idx] = el; }}
+            ref={(el) => {
+              inputRefs.current[idx] = el;
+            }}
             type="text"
             inputMode="numeric"
             maxLength={1}

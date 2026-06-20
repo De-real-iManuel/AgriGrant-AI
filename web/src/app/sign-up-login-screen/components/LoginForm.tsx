@@ -43,8 +43,8 @@ export default function LoginForm() {
         error.toLowerCase().includes('email not confirmed')
           ? 'Incorrect email or password. Please check your credentials.'
           : error.toLowerCase().includes('email not confirmed')
-          ? 'Please verify your email before logging in.'
-          : error;
+            ? 'Please verify your email before logging in.'
+            : error;
       setServerError(userMsg);
       toast.error(userMsg);
       return;
@@ -92,7 +92,9 @@ export default function LoginForm() {
           </p>
         </div>
         <div>
-          <label className="label-base" htmlFor="reset-email">Email Address</label>
+          <label className="label-base" htmlFor="reset-email">
+            Email Address
+          </label>
           <input
             id="reset-email"
             type="email"
@@ -144,7 +146,9 @@ export default function LoginForm() {
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
         {/* Email */}
         <div>
-          <label className="label-base" htmlFor="login-email">Email Address</label>
+          <label className="label-base" htmlFor="login-email">
+            Email Address
+          </label>
           <input
             id="login-email"
             type="email"
@@ -153,7 +157,10 @@ export default function LoginForm() {
             autoComplete="email"
             {...register('email', {
               required: 'Email address is required',
-              pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Enter a valid email address' },
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: 'Enter a valid email address',
+              },
             })}
             style={{ borderColor: errors.email ? 'var(--destructive)' : undefined }}
           />
@@ -167,7 +174,9 @@ export default function LoginForm() {
         {/* Password */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <label className="label-base mb-0" htmlFor="login-password">Password</label>
+            <label className="label-base mb-0" htmlFor="login-password">
+              Password
+            </label>
             <button
               type="button"
               onClick={() => {
@@ -246,12 +255,15 @@ export default function LoginForm() {
         className="rounded-2xl p-4"
         style={{ backgroundColor: '#F0FDF4', border: '1px solid #BBF7D0' }}
       >
-        <p className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: 'var(--primary)' }}>
+        <p
+          className="text-xs font-semibold uppercase tracking-wide mb-1"
+          style={{ color: 'var(--primary)' }}
+        >
           First time here?
         </p>
         <p className="text-sm" style={{ color: '#166534' }}>
-          Switch to <strong>Create Account</strong> above to register. After sign-up, you&apos;ll receive a{' '}
-          <strong>6-digit code</strong> in your email to verify your account.
+          Switch to <strong>Create Account</strong> above to register. After sign-up, you&apos;ll
+          receive a <strong>6-digit code</strong> in your email to verify your account.
         </p>
       </div>
     </div>
