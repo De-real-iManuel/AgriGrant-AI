@@ -28,7 +28,7 @@ class FarmerProfileRequest(BaseModel):
     isSmallholderFarmer: bool = False
     isYouthFarmer: bool = False
     isWomanFarmer: bool = False
-    hasExistingLoanDefault: bool = False
+    hasNoLoanDefault: bool = True
 
 
 @router.post("/profile")
