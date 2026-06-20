@@ -1,7 +1,24 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, CheckCircle2, AlertCircle, Clock, ChevronRight, FileText, Users, Banknote, Building2, Globe, Zap, Shield, TrendingUp, BookOpen, Download,  } from 'lucide-react';
+import {
+  ArrowLeft,
+  Calendar,
+  CheckCircle2,
+  AlertCircle,
+  Clock,
+  ChevronRight,
+  FileText,
+  Users,
+  Banknote,
+  Building2,
+  Globe,
+  Zap,
+  Shield,
+  TrendingUp,
+  BookOpen,
+  Download,
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 // ─── Grant data store ────────────────────────────────────────────────────────
@@ -10,7 +27,7 @@ const grantsData: Record<string, GrantDetail> = {
     id: 'rec-farmermoni',
     name: 'FarmerMoni Scheme',
     body: 'Federal Government of Nigeria',
-    category: 'Interest-Free Loan',
+    category: 'Interest-Free Funding',
     matchScore: 96,
     funding: 'Up to ₦300,000',
     minFunding: '₦10,000',
@@ -23,26 +40,90 @@ const grantsData: Record<string, GrantDetail> = {
     border: '#99F6E4',
     status: 'Open',
     overview:
-      'FarmerMoni is a Federal Government of Nigeria initiative under the Government Enterprise and Empowerment Programme (GEEP). It provides interest-free loans to smallholder farmers, enabling them to purchase inputs, expand operations, and improve productivity without the burden of interest payments.',
+      'FarmerMoni is a Federal Government of Nigeria initiative under the Government Enterprise and Empowerment Programme (GEEP). It provides interest-free funding to smallholder farmers, enabling them to purchase inputs, expand operations, and improve productivity without the burden of interest payments.',
     eligibilityCriteria: [
-      { met: true, label: 'Nigerian citizen with valid NIN', description: 'Must provide National Identification Number' },
-      { met: true, label: 'Active smallholder farmer', description: 'Farming on 0.5 – 5 hectares of land' },
-      { met: true, label: 'BVN-linked bank account', description: 'Bank Verification Number required for disbursement' },
-      { met: true, label: 'Farm registration certificate', description: 'State Ministry of Agriculture registration' },
-      { met: false, label: 'Cooperative membership', description: 'Must belong to a registered farmers cooperative' },
-      { met: true, label: 'No existing government loan default', description: 'Clean credit record with government schemes' },
+      {
+        met: true,
+        label: 'Nigerian citizen with valid NIN',
+        description: 'Must provide National Identification Number',
+      },
+      {
+        met: true,
+        label: 'Active smallholder farmer',
+        description: 'Farming on 0.5 – 5 hectares of land',
+      },
+      {
+        met: true,
+        label: 'BVN-linked bank account',
+        description: 'Bank Verification Number required for disbursement',
+      },
+      {
+        met: true,
+        label: 'Farm registration certificate',
+        description: 'State Ministry of Agriculture registration',
+      },
+      {
+        met: false,
+        label: 'Cooperative membership',
+        description: 'Must belong to a registered farmers cooperative',
+      },
+      {
+        met: true,
+        label: 'Clean federal credit history',
+        description: 'No outstanding default on government schemes',
+      },
     ],
     fundingTiers: [
-      { tier: 'Tier 1 – Starter', amount: '₦10,000 – ₦50,000', description: 'First-time applicants, basic input purchase', color: '#0D9488' },
-      { tier: 'Tier 2 – Growth', amount: '₦50,000 – ₦150,000', description: 'Returning beneficiaries with good repayment history', color: '#059669' },
-      { tier: 'Tier 3 – Scale', amount: '₦150,000 – ₦300,000', description: 'Established farmers with cooperative backing', color: '#166534' },
+      {
+        tier: 'Tier 1 – Starter',
+        amount: '₦10,000 – ₦50,000',
+        description: 'First-time applicants, basic input purchase',
+        color: '#0D9488',
+      },
+      {
+        tier: 'Tier 2 – Growth',
+        amount: '₦50,000 – ₦150,000',
+        description: 'Returning beneficiaries with strong performance history',
+        color: '#059669',
+      },
+      {
+        tier: 'Tier 3 – Scale',
+        amount: '₦150,000 – ₦300,000',
+        description: 'Established farmers with cooperative backing',
+        color: '#166534',
+      },
     ],
     timeline: [
-      { phase: 'Application Window', date: '01 Apr – 11 Jun 2026', status: 'active', description: 'Submit application via GEEP portal or agent' },
-      { phase: 'Verification & Screening', date: '12 Jun – 30 Jun 2026', status: 'upcoming', description: 'BVN verification and farm visit by field agents' },
-      { phase: 'Approval & Notification', date: '01 Jul – 15 Jul 2026', status: 'upcoming', description: 'Successful applicants notified via SMS' },
-      { phase: 'Disbursement', date: '20 Jul 2026', status: 'upcoming', description: 'Funds credited directly to linked bank account' },
-      { phase: 'Repayment Begins', date: '20 Jan 2027', status: 'upcoming', description: '6-month grace period, then 12-month repayment' },
+      {
+        phase: 'Application Window',
+        date: '01 Apr – 11 Jun 2026',
+        status: 'active',
+        description: 'Submit application via GEEP portal or agent',
+      },
+      {
+        phase: 'Verification & Screening',
+        date: '12 Jun – 30 Jun 2026',
+        status: 'upcoming',
+        description: 'BVN verification and farm visit by field agents',
+      },
+      {
+        phase: 'Approval & Notification',
+        date: '01 Jul – 15 Jul 2026',
+        status: 'upcoming',
+        description: 'Successful applicants notified via SMS',
+      },
+      {
+        phase: 'Disbursement',
+        date: '20 Jul 2026',
+        status: 'upcoming',
+        description: 'Funds credited directly to linked bank account',
+      },
+      {
+        phase: 'Repayment Begins',
+        date: '20 Jan 2027',
+        status: 'upcoming',
+        description: '6-month grace period, then 12-month structured payback',
+      },
     ],
     requirements: [
       { icon: 'id', label: 'National ID / NIN Slip', required: true },
@@ -53,7 +134,12 @@ const grantsData: Record<string, GrantDetail> = {
       { icon: 'bvn', label: 'BVN Verification', required: true },
       { icon: 'land', label: 'Land Use Agreement / Title', required: false },
     ],
-    stats: { totalApplicants: '2.4M+', successRate: '78%', avgDisbursement: '₦85,000', repaymentRate: '91%' },
+    stats: {
+      totalApplicants: '2.4M+',
+      successRate: '78%',
+      avgDisbursement: '₦85,000',
+      repaymentRate: '91%',
+    },
     contactBody: 'GEEP Secretariat, Abuja',
     website: 'geep.gov.ng',
   },
@@ -74,37 +160,111 @@ const grantsData: Record<string, GrantDetail> = {
     border: '#DDD6FE',
     status: 'Open',
     overview:
-      'The Agri-Business/Small and Medium Enterprise Investment Scheme (AGSMEIS) is a CBN initiative to support agricultural businesses and SMEs. It provides single-digit interest rate loans through participating banks to stimulate agricultural value chain development and job creation.',
+      'The Agri-Business/Small and Medium Enterprise Investment Scheme (AGSMEIS) is a CBN initiative to support agricultural businesses and SMEs. It provides single-digit interest-rate funding through participating banks to stimulate agricultural value chain development and job creation.',
     eligibilityCriteria: [
-      { met: true, label: 'Registered Nigerian business (CAC)', description: 'Certificate of Incorporation required' },
-      { met: true, label: 'Annual revenue ₦500K – ₦5B', description: 'Audited financial statements for 2 years' },
-      { met: true, label: 'Agriculture or agro-processing sector', description: 'Primary or value-chain agricultural activity' },
-      { met: false, label: 'Minimum 3 years in operation', description: 'Business must have been active since 2023' },
-      { met: true, label: 'No CBN loan default history', description: 'Clean record across all CBN schemes' },
-      { met: false, label: 'NIRSAL credit guarantee', description: 'Pre-qualification through NIRSAL required for large amounts' },
+      {
+        met: true,
+        label: 'Registered Nigerian business (CAC)',
+        description: 'Certificate of Incorporation required',
+      },
+      {
+        met: true,
+        label: 'Annual revenue ₦500K – ₦5B',
+        description: 'Audited financial statements for 2 years',
+      },
+      {
+        met: true,
+        label: 'Agriculture or agro-processing sector',
+        description: 'Primary or value-chain agricultural activity',
+      },
+      {
+        met: false,
+        label: 'Minimum 3 years in operation',
+        description: 'Business must have been active since 2023',
+      },
+      {
+        met: true,
+        label: 'Clean CBN credit history',
+        description: 'No outstanding default across CBN schemes',
+      },
+      {
+        met: false,
+        label: 'NIRSAL credit guarantee',
+        description: 'Pre-qualification through NIRSAL required for large amounts',
+      },
     ],
     fundingTiers: [
-      { tier: 'Micro', amount: '₦3M – ₦10M', description: 'Smallholder farmers and micro agri-businesses', color: '#7C3AED' },
-      { tier: 'Small', amount: '₦10M – ₦100M', description: 'Small agro-processing and input supply businesses', color: '#6D28D9' },
-      { tier: 'Medium', amount: '₦100M – ₦500M', description: 'Medium-scale agri-enterprises with collateral', color: '#5B21B6' },
-      { tier: 'Large', amount: '₦500M – ₦2B', description: 'Large agri-businesses with NIRSAL guarantee', color: '#4C1D95' },
+      {
+        tier: 'Micro',
+        amount: '₦3M – ₦10M',
+        description: 'Smallholder farmers and micro agri-businesses',
+        color: '#7C3AED',
+      },
+      {
+        tier: 'Small',
+        amount: '₦10M – ₦100M',
+        description: 'Small agro-processing and input supply businesses',
+        color: '#6D28D9',
+      },
+      {
+        tier: 'Medium',
+        amount: '₦100M – ₦500M',
+        description: 'Medium-scale agri-enterprises with collateral',
+        color: '#5B21B6',
+      },
+      {
+        tier: 'Large',
+        amount: '₦500M – ₦2B',
+        description: 'Large agri-businesses with NIRSAL guarantee',
+        color: '#4C1D95',
+      },
     ],
     timeline: [
-      { phase: 'Application Window', date: '01 May – 14 Jul 2026', status: 'active', description: 'Apply through any CBN-participating bank' },
-      { phase: 'Bank Assessment', date: '15 Jul – 31 Jul 2026', status: 'upcoming', description: 'Bank conducts due diligence and credit assessment' },
-      { phase: 'CBN Approval', date: '01 Aug – 20 Aug 2026', status: 'upcoming', description: 'CBN reviews and approves qualifying applications' },
-      { phase: 'Loan Agreement', date: '25 Aug 2026', status: 'upcoming', description: 'Sign loan agreement with participating bank' },
-      { phase: 'Disbursement', date: '01 Sep 2026', status: 'upcoming', description: 'Funds disbursed at 5% interest rate per annum' },
+      {
+        phase: 'Application Window',
+        date: '01 May – 14 Jul 2026',
+        status: 'active',
+        description: 'Apply through any CBN-participating bank',
+      },
+      {
+        phase: 'Bank Assessment',
+        date: '15 Jul – 31 Jul 2026',
+        status: 'upcoming',
+        description: 'Bank conducts due diligence and credit assessment',
+      },
+      {
+        phase: 'CBN Approval',
+        date: '01 Aug – 20 Aug 2026',
+        status: 'upcoming',
+        description: 'CBN reviews and approves qualifying applications',
+      },
+      {
+        phase: 'Funding Agreement',
+        date: '25 Aug 2026',
+        status: 'upcoming',
+        description: 'Sign funding agreement with participating bank',
+      },
+      {
+        phase: 'Disbursement',
+        date: '01 Sep 2026',
+        status: 'upcoming',
+        description: 'Funds disbursed at 5% interest rate per annum',
+      },
     ],
     requirements: [
       { icon: 'cac', label: 'CAC Certificate of Incorporation', required: true },
       { icon: 'bank', label: 'Audited Financial Statements (2 yrs)', required: true },
-      { icon: 'id', label: 'Directors\' ID & BVN', required: true },
+      { icon: 'id', label: "Directors' ID & BVN", required: true },
       { icon: 'plan', label: 'Business Plan / Feasibility Study', required: true },
       { icon: 'tax', label: 'Tax Clearance Certificate', required: true },
       { icon: 'land', label: 'Collateral Documentation', required: false },
     ],
-    stats: { totalApplicants: '180K+', successRate: '62%', avgDisbursement: '₦45M', repaymentRate: '84%' },
+    stats: {
+      totalApplicants: '180K+',
+      successRate: '62%',
+      avgDisbursement: '₦45M',
+      repaymentRate: '84%',
+    },
     contactBody: 'CBN Development Finance Department',
     website: 'cbn.gov.ng/agsmeis',
   },
@@ -125,25 +285,84 @@ const grantsData: Record<string, GrantDetail> = {
     border: '#A7F3D0',
     status: 'Open',
     overview:
-      'The BOA Renewed Hope Fund is a targeted credit facility under President Tinubu\'s Renewed Hope Agenda, administered by the Bank of Agriculture. It prioritizes cassava, rice, and maize farmers with subsidized interest rates and flexible repayment terms aligned with harvest cycles.',
+      "The BOA Renewed Hope Fund is a targeted credit facility under President Tinubu's Renewed Hope Agenda, administered by the Bank of Agriculture. It prioritizes cassava, rice, and maize farmers with subsidized interest rates and flexible payback terms aligned with harvest cycles.",
     eligibilityCriteria: [
-      { met: true, label: 'Smallholder farmer (0.5 – 10 ha)', description: 'Farm size verified by BOA field officer' },
-      { met: true, label: 'Cassava, rice, or maize cultivation', description: 'Priority crops under the Renewed Hope Agenda' },
-      { met: true, label: 'Valid NIN and BVN', description: 'Both required for identity verification' },
-      { met: true, label: 'State-level farm registration', description: 'Registered with State ADP or Ministry of Agriculture' },
-      { met: true, label: 'No existing BOA loan default', description: 'Clean BOA credit history required' },
-      { met: false, label: 'Irrigation or water access documentation', description: 'Preferred for dry-season farming applications' },
+      {
+        met: true,
+        label: 'Smallholder farmer (0.5 – 10 ha)',
+        description: 'Farm size verified by BOA field officer',
+      },
+      {
+        met: true,
+        label: 'Cassava, rice, or maize cultivation',
+        description: 'Priority crops under the Renewed Hope Agenda',
+      },
+      {
+        met: true,
+        label: 'Valid NIN and BVN',
+        description: 'Both required for identity verification',
+      },
+      {
+        met: true,
+        label: 'State-level farm registration',
+        description: 'Registered with State ADP or Ministry of Agriculture',
+      },
+      {
+        met: true,
+        label: 'Clean BOA credit history',
+        description: 'No outstanding default with Bank of Agriculture',
+      },
+      {
+        met: false,
+        label: 'Irrigation or water access documentation',
+        description: 'Preferred for dry-season farming applications',
+      },
     ],
     fundingTiers: [
-      { tier: 'Input Support', amount: '₦500K – ₦1.5M', description: 'Seeds, fertilizers, and basic farm inputs', color: '#059669' },
-      { tier: 'Equipment', amount: '₦1.5M – ₦3M', description: 'Small machinery and irrigation equipment', color: '#047857' },
-      { tier: 'Expansion', amount: '₦3M – ₦5M', description: 'Land expansion and post-harvest infrastructure', color: '#065F46' },
+      {
+        tier: 'Input Support',
+        amount: '₦500K – ₦1.5M',
+        description: 'Seeds, fertilizers, and basic farm inputs',
+        color: '#059669',
+      },
+      {
+        tier: 'Equipment',
+        amount: '₦1.5M – ₦3M',
+        description: 'Small machinery and irrigation equipment',
+        color: '#047857',
+      },
+      {
+        tier: 'Expansion',
+        amount: '₦3M – ₦5M',
+        description: 'Land expansion and post-harvest infrastructure',
+        color: '#065F46',
+      },
     ],
     timeline: [
-      { phase: 'Application Window', date: '15 Apr – 07 Jul 2026', status: 'active', description: 'Apply at any BOA branch or online portal' },
-      { phase: 'Field Verification', date: '08 Jul – 25 Jul 2026', status: 'upcoming', description: 'BOA field officer visits farm for verification' },
-      { phase: 'Credit Committee Review', date: '26 Jul – 10 Aug 2026', status: 'upcoming', description: 'BOA credit committee approves applications' },
-      { phase: 'Disbursement', date: '15 Aug 2026', status: 'upcoming', description: 'Funds disbursed at 9% interest per annum' },
+      {
+        phase: 'Application Window',
+        date: '15 Apr – 07 Jul 2026',
+        status: 'active',
+        description: 'Apply at any BOA branch or online portal',
+      },
+      {
+        phase: 'Field Verification',
+        date: '08 Jul – 25 Jul 2026',
+        status: 'upcoming',
+        description: 'BOA field officer visits farm for verification',
+      },
+      {
+        phase: 'Credit Committee Review',
+        date: '26 Jul – 10 Aug 2026',
+        status: 'upcoming',
+        description: 'BOA credit committee approves applications',
+      },
+      {
+        phase: 'Disbursement',
+        date: '15 Aug 2026',
+        status: 'upcoming',
+        description: 'Funds disbursed at 9% interest per annum',
+      },
     ],
     requirements: [
       { icon: 'id', label: 'National ID / NIN Slip', required: true },
@@ -153,7 +372,12 @@ const grantsData: Record<string, GrantDetail> = {
       { icon: 'land', label: 'Land Title / Tenancy Agreement', required: true },
       { icon: 'crop', label: 'Crop Production Plan', required: false },
     ],
-    stats: { totalApplicants: '520K+', successRate: '71%', avgDisbursement: '₦1.8M', repaymentRate: '88%' },
+    stats: {
+      totalApplicants: '520K+',
+      successRate: '71%',
+      avgDisbursement: '₦1.8M',
+      repaymentRate: '88%',
+    },
     contactBody: 'Bank of Agriculture, Head Office Abuja',
     website: 'boanig.com',
   },
@@ -174,33 +398,93 @@ const grantsData: Record<string, GrantDetail> = {
     border: '#FDE68A',
     status: 'Open',
     overview:
-      'GEEP TraderMoni Agri is a micro-financing arm of the Government Enterprise and Empowerment Programme specifically targeting rural agricultural traders and small-scale farmers. It offers quick-disbursement interest-free loans with a streamlined digital application process.',
+      'GEEP TraderMoni Agri is a micro-financing arm of the Government Enterprise and Empowerment Programme specifically targeting rural agricultural traders and small-scale farmers. It offers quick-disbursement, interest-free funding with a streamlined digital application process.',
     eligibilityCriteria: [
-      { met: true, label: 'Nigerian citizen with BVN', description: 'Bank Verification Number mandatory' },
-      { met: true, label: 'Rural or peri-urban farmer/trader', description: 'Must operate in rural or semi-urban area' },
-      { met: true, label: 'Annual income below ₦500,000', description: 'Targeted at low-income agricultural households' },
-      { met: false, label: 'Market association membership', description: 'Membership in recognized traders/farmers association' },
-      { met: true, label: 'No previous GEEP default', description: 'Clean record across all GEEP schemes' },
+      {
+        met: true,
+        label: 'Nigerian citizen with BVN',
+        description: 'Bank Verification Number mandatory',
+      },
+      {
+        met: true,
+        label: 'Rural or peri-urban farmer/trader',
+        description: 'Must operate in rural or semi-urban area',
+      },
+      {
+        met: true,
+        label: 'Annual income below ₦500,000',
+        description: 'Targeted at low-income agricultural households',
+      },
+      {
+        met: false,
+        label: 'Market association membership',
+        description: 'Membership in recognized traders/farmers association',
+      },
+      {
+        met: true,
+        label: 'No previous GEEP default',
+        description: 'Clean record across all GEEP schemes',
+      },
     ],
     fundingTiers: [
-      { tier: 'Starter', amount: '₦10,000 – ₦30,000', description: 'First-time beneficiaries', color: '#CA8A04' },
-      { tier: 'Growth', amount: '₦30,000 – ₦80,000', description: 'Returning beneficiaries with good repayment', color: '#B45309' },
-      { tier: 'Advanced', amount: '₦80,000 – ₦150,000', description: 'Established micro-farmers with 2+ cycles', color: '#92400E' },
+      {
+        tier: 'Starter',
+        amount: '₦10,000 – ₦30,000',
+        description: 'First-time beneficiaries',
+        color: '#CA8A04',
+      },
+      {
+        tier: 'Growth',
+        amount: '₦30,000 – ₦80,000',
+        description: 'Returning beneficiaries with strong performance',
+        color: '#B45309',
+      },
+      {
+        tier: 'Advanced',
+        amount: '₦80,000 – ₦150,000',
+        description: 'Established micro-farmers with 2+ cycles',
+        color: '#92400E',
+      },
     ],
     timeline: [
-      { phase: 'Application Window', date: '01 May – 18 Jun 2026', status: 'active', description: 'Apply via USSD *737*50# or GEEP app' },
-      { phase: 'BVN Verification', date: '19 Jun – 25 Jun 2026', status: 'upcoming', description: 'Automated BVN and eligibility check' },
-      { phase: 'Approval', date: '26 Jun – 30 Jun 2026', status: 'upcoming', description: 'Instant approval for qualifying applicants' },
-      { phase: 'Disbursement', date: '05 Jul 2026', status: 'upcoming', description: 'Funds sent to linked bank account within 48 hours' },
+      {
+        phase: 'Application Window',
+        date: '01 May – 18 Jun 2026',
+        status: 'active',
+        description: 'Apply via USSD *737*50# or GEEP app',
+      },
+      {
+        phase: 'BVN Verification',
+        date: '19 Jun – 25 Jun 2026',
+        status: 'upcoming',
+        description: 'Automated BVN and eligibility check',
+      },
+      {
+        phase: 'Approval',
+        date: '26 Jun – 30 Jun 2026',
+        status: 'upcoming',
+        description: 'Instant approval for qualifying applicants',
+      },
+      {
+        phase: 'Disbursement',
+        date: '05 Jul 2026',
+        status: 'upcoming',
+        description: 'Funds sent to linked bank account within 48 hours',
+      },
     ],
     requirements: [
-      { icon: 'id', label: 'National ID / Voter\'s Card', required: true },
+      { icon: 'id', label: "National ID / Voter's Card", required: true },
       { icon: 'bvn', label: 'BVN Verification', required: true },
       { icon: 'photo', label: 'Passport Photograph', required: true },
       { icon: 'coop', label: 'Association Membership Letter', required: true },
       { icon: 'bank', label: 'Bank Account Details', required: true },
     ],
-    stats: { totalApplicants: '5.2M+', successRate: '85%', avgDisbursement: '₦42,000', repaymentRate: '79%' },
+    stats: {
+      totalApplicants: '5.2M+',
+      successRate: '85%',
+      avgDisbursement: '₦42,000',
+      repaymentRate: '79%',
+    },
     contactBody: 'GEEP Secretariat / BOI',
     website: 'geep.gov.ng',
   },
@@ -223,24 +507,88 @@ const grantsData: Record<string, GrantDetail> = {
     overview:
       'The Agricultural Credit Guarantee Scheme Fund (ACGSF) is a CBN initiative that provides guarantees to banks lending to agricultural sector operators. The Collateral-Free variant removes the traditional collateral requirement, making it accessible to smallholder farmers who lack formal land titles.',
     eligibilityCriteria: [
-      { met: true, label: 'Nigerian citizen engaged in agriculture', description: 'Primary agricultural production or processing' },
-      { met: true, label: 'Valid NIN and BVN', description: 'Both required for identity and credit verification' },
-      { met: true, label: 'Farm registration certificate', description: 'State or LGA-level farm registration' },
-      { met: true, label: 'No existing loan default', description: 'Clean credit bureau record' },
-      { met: true, label: 'Viable agricultural project plan', description: 'Simple project description with expected output' },
-      { met: true, label: 'Bank account with participating bank', description: 'Account with any CBN-approved participating bank' },
+      {
+        met: true,
+        label: 'Nigerian citizen engaged in agriculture',
+        description: 'Primary agricultural production or processing',
+      },
+      {
+        met: true,
+        label: 'Valid NIN and BVN',
+        description: 'Both required for identity and credit verification',
+      },
+      {
+        met: true,
+        label: 'Farm registration certificate',
+        description: 'State or LGA-level farm registration',
+      },
+      {
+        met: true,
+        label: 'Clean credit bureau record',
+        description: 'No outstanding default on CRMS',
+      },
+      {
+        met: true,
+        label: 'Viable agricultural project plan',
+        description: 'Simple project description with expected output',
+      },
+      {
+        met: true,
+        label: 'Bank account with participating bank',
+        description: 'Account with any CBN-approved participating bank',
+      },
     ],
     fundingTiers: [
-      { tier: 'Micro Guarantee', amount: '₦10,000 – ₦30,000', description: 'Basic input and seed purchase', color: '#166534' },
-      { tier: 'Small Guarantee', amount: '₦30,000 – ₦70,000', description: 'Equipment and expanded planting', color: '#15803D' },
-      { tier: 'Standard Guarantee', amount: '₦70,000 – ₦100,000', description: 'Full-season production financing', color: '#16A34A' },
+      {
+        tier: 'Micro Guarantee',
+        amount: '₦10,000 – ₦30,000',
+        description: 'Basic input and seed purchase',
+        color: '#166534',
+      },
+      {
+        tier: 'Small Guarantee',
+        amount: '₦30,000 – ₦70,000',
+        description: 'Equipment and expanded planting',
+        color: '#15803D',
+      },
+      {
+        tier: 'Standard Guarantee',
+        amount: '₦70,000 – ₦100,000',
+        description: 'Full-season production financing',
+        color: '#16A34A',
+      },
     ],
     timeline: [
-      { phase: 'Application Window', date: '01 Apr – 24 Jul 2026', status: 'active', description: 'Apply at any participating bank branch' },
-      { phase: 'Bank Processing', date: 'Within 5 business days', status: 'upcoming', description: 'Bank reviews application and forwards to CBN' },
-      { phase: 'CBN Guarantee Issuance', date: 'Within 10 business days', status: 'upcoming', description: 'CBN issues guarantee certificate to bank' },
-      { phase: 'Loan Disbursement', date: 'Within 3 days of guarantee', status: 'upcoming', description: 'Bank disburses loan to farmer\'s account' },
-      { phase: 'Repayment', date: 'Harvest-cycle aligned', status: 'upcoming', description: 'Repayment schedule aligned with crop harvest' },
+      {
+        phase: 'Application Window',
+        date: '01 Apr – 24 Jul 2026',
+        status: 'active',
+        description: 'Apply at any participating bank branch',
+      },
+      {
+        phase: 'Bank Processing',
+        date: 'Within 5 business days',
+        status: 'upcoming',
+        description: 'Bank reviews application and forwards to CBN',
+      },
+      {
+        phase: 'CBN Guarantee Issuance',
+        date: 'Within 10 business days',
+        status: 'upcoming',
+        description: 'CBN issues guarantee certificate to bank',
+      },
+      {
+        phase: 'Funding Disbursement',
+        date: 'Within 3 days of guarantee',
+        status: 'upcoming',
+        description: "Bank disburses funds to farmer's account",
+      },
+      {
+        phase: 'Repayment',
+        date: 'Harvest-cycle aligned',
+        status: 'upcoming',
+        description: 'Repayment schedule aligned with crop harvest',
+      },
     ],
     requirements: [
       { icon: 'id', label: 'National ID / NIN Slip', required: true },
@@ -250,7 +598,12 @@ const grantsData: Record<string, GrantDetail> = {
       { icon: 'photo', label: 'Passport Photograph', required: true },
       { icon: 'bank', label: 'Bank Statement (3 months)', required: false },
     ],
-    stats: { totalApplicants: '3.1M+', successRate: '82%', avgDisbursement: '₦58,000', repaymentRate: '93%' },
+    stats: {
+      totalApplicants: '3.1M+',
+      successRate: '82%',
+      avgDisbursement: '₦58,000',
+      repaymentRate: '93%',
+    },
     contactBody: 'CBN Agricultural Credit Department',
     website: 'cbn.gov.ng/acgsf',
   },
@@ -304,7 +657,12 @@ interface GrantDetail {
   fundingTiers: FundingTier[];
   timeline: TimelinePhase[];
   requirements: Requirement[];
-  stats: { totalApplicants: string; successRate: string; avgDisbursement: string; repaymentRate: string };
+  stats: {
+    totalApplicants: string;
+    successRate: string;
+    avgDisbursement: string;
+    repaymentRate: string;
+  };
   contactBody: string;
   website: string;
 }
@@ -348,7 +706,9 @@ function StatCard({ label, value, icon }: { label: string; value: string; icon: 
 // ─── Main Page ───────────────────────────────────────────────────────────────
 export default function GrantDetailPage({ params }: { params: { id: string } }) {
   const grant = grantsData[params.id];
-  const [activeTab, setActiveTab] = useState<'overview' | 'eligibility' | 'funding' | 'timeline' | 'requirements'>('overview');
+  const [activeTab, setActiveTab] = useState<
+    'overview' | 'eligibility' | 'funding' | 'timeline' | 'requirements'
+  >('overview');
 
   const tabs = [
     { id: 'overview', label: 'Overview' },
@@ -417,10 +777,16 @@ export default function GrantDetailPage({ params }: { params: { id: string } }) 
               className="w-20 h-20 rounded-2xl flex flex-col items-center justify-center flex-shrink-0 shadow-sm"
               style={{ backgroundColor: 'var(--card)' }}
             >
-              <p className="text-2xl font-extrabold tabular-nums leading-none" style={{ color: grant.color }}>
+              <p
+                className="text-2xl font-extrabold tabular-nums leading-none"
+                style={{ color: grant.color }}
+              >
                 {grant.matchScore}%
               </p>
-              <p className="text-xs font-medium mt-0.5" style={{ color: 'var(--muted-foreground)' }}>
+              <p
+                className="text-xs font-medium mt-0.5"
+                style={{ color: 'var(--muted-foreground)' }}
+              >
                 match
               </p>
             </div>
@@ -450,23 +816,38 @@ export default function GrantDetailPage({ params }: { params: { id: string } }) 
                   </span>
                 )}
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold mb-1" style={{ color: 'var(--foreground)' }}>
+              <h1
+                className="text-2xl sm:text-3xl font-extrabold mb-1"
+                style={{ color: 'var(--foreground)' }}
+              >
                 {grant.name}
               </h1>
               <div className="flex flex-wrap items-center gap-4 mt-2">
-                <span className="flex items-center gap-1.5 text-sm font-medium" style={{ color: 'var(--muted-foreground)' }}>
+                <span
+                  className="flex items-center gap-1.5 text-sm font-medium"
+                  style={{ color: 'var(--muted-foreground)' }}
+                >
                   <Building2 size={14} />
                   {grant.body}
                 </span>
-                <span className="flex items-center gap-1.5 text-sm font-semibold" style={{ color: grant.color }}>
+                <span
+                  className="flex items-center gap-1.5 text-sm font-semibold"
+                  style={{ color: grant.color }}
+                >
                   <Banknote size={14} />
                   {grant.funding}
                 </span>
-                <span className="flex items-center gap-1.5 text-sm font-medium" style={{ color: 'var(--muted-foreground)' }}>
+                <span
+                  className="flex items-center gap-1.5 text-sm font-medium"
+                  style={{ color: 'var(--muted-foreground)' }}
+                >
                   <Calendar size={14} />
                   Deadline: {grant.deadline}
                 </span>
-                <span className="flex items-center gap-1.5 text-sm font-medium" style={{ color: 'var(--muted-foreground)' }}>
+                <span
+                  className="flex items-center gap-1.5 text-sm font-medium"
+                  style={{ color: 'var(--muted-foreground)' }}
+                >
                   <Globe size={14} />
                   {grant.website}
                 </span>
@@ -490,7 +871,11 @@ export default function GrantDetailPage({ params }: { params: { id: string } }) 
               <button
                 onClick={() => toast.info('Downloading grant brief…')}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold border transition-all active:scale-95"
-                style={{ borderColor: grant.border, color: grant.color, backgroundColor: 'var(--card)' }}
+                style={{
+                  borderColor: grant.border,
+                  color: grant.color,
+                  backgroundColor: 'var(--card)',
+                }}
               >
                 <Download size={14} />
                 Download Brief
@@ -501,10 +886,26 @@ export default function GrantDetailPage({ params }: { params: { id: string } }) 
 
         {/* Stats row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <StatCard label="Total Applicants" value={grant.stats.totalApplicants} icon={<Users size={14} style={{ color: grant.color }} />} />
-          <StatCard label="Success Rate" value={grant.stats.successRate} icon={<TrendingUp size={14} style={{ color: '#059669' }} />} />
-          <StatCard label="Avg. Disbursement" value={grant.stats.avgDisbursement} icon={<Banknote size={14} style={{ color: '#CA8A04' }} />} />
-          <StatCard label="Repayment Rate" value={grant.stats.repaymentRate} icon={<Shield size={14} style={{ color: '#7C3AED' }} />} />
+          <StatCard
+            label="Total Applicants"
+            value={grant.stats.totalApplicants}
+            icon={<Users size={14} style={{ color: grant.color }} />}
+          />
+          <StatCard
+            label="Success Rate"
+            value={grant.stats.successRate}
+            icon={<TrendingUp size={14} style={{ color: '#059669' }} />}
+          />
+          <StatCard
+            label="Avg. Disbursement"
+            value={grant.stats.avgDisbursement}
+            icon={<Banknote size={14} style={{ color: '#CA8A04' }} />}
+          />
+          <StatCard
+            label="Performance Rate"
+            value={grant.stats.repaymentRate}
+            icon={<Shield size={14} style={{ color: '#7C3AED' }} />}
+          />
         </div>
 
         {/* Tabs */}
@@ -519,7 +920,11 @@ export default function GrantDetailPage({ params }: { params: { id: string } }) 
               className="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-150"
               style={
                 activeTab === tab.id
-                  ? { backgroundColor: 'var(--card)', color: 'var(--foreground)', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }
+                  ? {
+                      backgroundColor: 'var(--card)',
+                      color: 'var(--foreground)',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+                    }
                   : { color: 'var(--muted-foreground)' }
               }
             >
@@ -536,7 +941,10 @@ export default function GrantDetailPage({ params }: { params: { id: string } }) 
           {/* Overview */}
           {activeTab === 'overview' && (
             <div className="flex flex-col gap-5">
-              <SectionHeader icon={<BookOpen size={16} style={{ color: 'var(--primary)' }} />} title="Grant Overview" />
+              <SectionHeader
+                icon={<BookOpen size={16} style={{ color: 'var(--primary)' }} />}
+                title="Grant Overview"
+              />
               <p className="text-sm leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
                 {grant.overview}
               </p>
@@ -546,7 +954,10 @@ export default function GrantDetailPage({ params }: { params: { id: string } }) 
                 style={{ borderColor: 'var(--border)', backgroundColor: 'var(--muted)' }}
               >
                 <div className="flex flex-col items-center gap-1">
-                  <p className="text-2xl font-extrabold tabular-nums" style={{ color: eligibilityPct >= 80 ? '#166534' : '#D97706' }}>
+                  <p
+                    className="text-2xl font-extrabold tabular-nums"
+                    style={{ color: eligibilityPct >= 80 ? '#166534' : '#D97706' }}
+                  >
                     {eligibilityPct}%
                   </p>
                   <p className="text-xs font-medium" style={{ color: 'var(--muted-foreground)' }}>
@@ -557,11 +968,15 @@ export default function GrantDetailPage({ params }: { params: { id: string } }) 
                   <div className="progress-track mb-1.5">
                     <div
                       className="h-full rounded-full transition-all duration-500"
-                      style={{ width: `${eligibilityPct}%`, backgroundColor: eligibilityPct >= 80 ? '#166534' : '#D97706' }}
+                      style={{
+                        width: `${eligibilityPct}%`,
+                        backgroundColor: eligibilityPct >= 80 ? '#166534' : '#D97706',
+                      }}
                     />
                   </div>
                   <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
-                    You meet <strong>{metCount}</strong> of <strong>{totalCount}</strong> eligibility criteria
+                    You meet <strong>{metCount}</strong> of <strong>{totalCount}</strong>{' '}
+                    eligibility criteria
                   </p>
                 </div>
                 <button
@@ -578,7 +993,10 @@ export default function GrantDetailPage({ params }: { params: { id: string } }) 
           {/* Eligibility */}
           {activeTab === 'eligibility' && (
             <div className="flex flex-col gap-4">
-              <SectionHeader icon={<CheckCircle2 size={16} style={{ color: 'var(--primary)' }} />} title="Eligibility Criteria" />
+              <SectionHeader
+                icon={<CheckCircle2 size={16} style={{ color: 'var(--primary)' }} />}
+                title="Eligibility Criteria"
+              />
               <div className="flex flex-col gap-3">
                 {grant.eligibilityCriteria.map((item, idx) => (
                   <div
@@ -623,7 +1041,10 @@ export default function GrantDetailPage({ params }: { params: { id: string } }) 
           {/* Funding Tiers */}
           {activeTab === 'funding' && (
             <div className="flex flex-col gap-4">
-              <SectionHeader icon={<Banknote size={16} style={{ color: 'var(--primary)' }} />} title="Funding Tiers" />
+              <SectionHeader
+                icon={<Banknote size={16} style={{ color: 'var(--primary)' }} />}
+                title="Funding Tiers"
+              />
               <div className="flex flex-col gap-4">
                 {grant.fundingTiers.map((tier, idx) => (
                   <div
@@ -638,7 +1059,10 @@ export default function GrantDetailPage({ params }: { params: { id: string } }) 
                       {idx + 1}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold mb-0.5" style={{ color: 'var(--foreground)' }}>
+                      <p
+                        className="text-sm font-bold mb-0.5"
+                        style={{ color: 'var(--foreground)' }}
+                      >
                         {tier.tier}
                       </p>
                       <p className="text-xs mb-2" style={{ color: 'var(--muted-foreground)' }}>
@@ -646,7 +1070,10 @@ export default function GrantDetailPage({ params }: { params: { id: string } }) 
                       </p>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <p className="text-base font-extrabold tabular-nums" style={{ color: tier.color }}>
+                      <p
+                        className="text-base font-extrabold tabular-nums"
+                        style={{ color: tier.color }}
+                      >
                         {tier.amount}
                       </p>
                     </div>
@@ -659,7 +1086,10 @@ export default function GrantDetailPage({ params }: { params: { id: string } }) 
           {/* Timeline */}
           {activeTab === 'timeline' && (
             <div className="flex flex-col gap-4">
-              <SectionHeader icon={<Calendar size={16} style={{ color: 'var(--primary)' }} />} title="Application Timeline" />
+              <SectionHeader
+                icon={<Calendar size={16} style={{ color: 'var(--primary)' }} />}
+                title="Application Timeline"
+              />
               <div className="flex flex-col gap-0">
                 {grant.timeline.map((phase, idx) => (
                   <div key={idx} className="flex gap-4">
@@ -669,16 +1099,31 @@ export default function GrantDetailPage({ params }: { params: { id: string } }) 
                         className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 border-2 text-xs font-bold"
                         style={
                           phase.status === 'active'
-                            ? { backgroundColor: grant.color, borderColor: grant.color, color: 'white' }
+                            ? {
+                                backgroundColor: grant.color,
+                                borderColor: grant.color,
+                                color: 'white',
+                              }
                             : phase.status === 'completed'
-                            ? { backgroundColor: '#DCFCE7', borderColor: '#BBF7D0', color: '#166534' }
-                            : { backgroundColor: 'var(--muted)', borderColor: 'var(--border)', color: 'var(--muted-foreground)' }
+                              ? {
+                                  backgroundColor: '#DCFCE7',
+                                  borderColor: '#BBF7D0',
+                                  color: '#166534',
+                                }
+                              : {
+                                  backgroundColor: 'var(--muted)',
+                                  borderColor: 'var(--border)',
+                                  color: 'var(--muted-foreground)',
+                                }
                         }
                       >
                         {phase.status === 'completed' ? '✓' : idx + 1}
                       </div>
                       {idx < grant.timeline.length - 1 && (
-                        <div className="w-0.5 flex-1 my-1" style={{ backgroundColor: 'var(--border)', minHeight: '24px' }} />
+                        <div
+                          className="w-0.5 flex-1 my-1"
+                          style={{ backgroundColor: 'var(--border)', minHeight: '24px' }}
+                        />
                       )}
                     </div>
                     {/* Content */}
@@ -712,7 +1157,10 @@ export default function GrantDetailPage({ params }: { params: { id: string } }) 
           {/* Requirements */}
           {activeTab === 'requirements' && (
             <div className="flex flex-col gap-4">
-              <SectionHeader icon={<FileText size={16} style={{ color: 'var(--primary)' }} />} title="Application Requirements" />
+              <SectionHeader
+                icon={<FileText size={16} style={{ color: 'var(--primary)' }} />}
+                title="Application Requirements"
+              />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {grant.requirements.map((req, idx) => (
                   <div
@@ -725,12 +1173,18 @@ export default function GrantDetailPage({ params }: { params: { id: string } }) 
                   >
                     <div
                       className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: req.required ? grant.color : '#818CF8', color: 'white' }}
+                      style={{
+                        backgroundColor: req.required ? grant.color : '#818CF8',
+                        color: 'white',
+                      }}
                     >
                       <FileText size={14} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold truncate" style={{ color: 'var(--foreground)' }}>
+                      <p
+                        className="text-sm font-semibold truncate"
+                        style={{ color: 'var(--foreground)' }}
+                      >
                         {req.label}
                       </p>
                       <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
@@ -740,7 +1194,10 @@ export default function GrantDetailPage({ params }: { params: { id: string } }) 
                     {req.required ? (
                       <CheckCircle2 size={16} style={{ color: '#166534', flexShrink: 0 }} />
                     ) : (
-                      <span className="text-xs font-medium flex-shrink-0" style={{ color: '#818CF8' }}>
+                      <span
+                        className="text-xs font-medium flex-shrink-0"
+                        style={{ color: '#818CF8' }}
+                      >
                         Optional
                       </span>
                     )}

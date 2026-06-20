@@ -87,6 +87,7 @@ export interface FarmerFormData {
   farmerName: string;
   stateOfResidence: string;
   lga: string;
+  farmAddress: string;
   farmType: FarmType | '';
   cropOrLivestockTypes: string[];
   // Section B
@@ -102,7 +103,7 @@ export interface FarmerFormData {
   hasLandDocument: boolean;
   isMemberOfCooperative: boolean;
   hasBVN: boolean;
-  hasExistingLoanDefault: boolean;
+  hasNoLoanDefault: boolean;
   // Section D
   additionalNotes: string;
   // Section E (Documents)
@@ -116,6 +117,7 @@ export const defaultFormData: FarmerFormData = {
   farmerName: '',
   stateOfResidence: '',
   lga: '',
+  farmAddress: '',
   farmType: '',
   cropOrLivestockTypes: [],
   farmSizeHectares: '',
@@ -129,7 +131,7 @@ export const defaultFormData: FarmerFormData = {
   hasLandDocument: false,
   isMemberOfCooperative: false,
   hasBVN: false,
-  hasExistingLoanDefault: false,
+  hasNoLoanDefault: true,
   additionalNotes: '',
   ninDocument: null,
   cacDocument: null,
