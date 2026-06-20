@@ -150,6 +150,7 @@ def generate_local_mock_response(message: str, farmer_name: str, profile: Option
         name = profile.farmerName or farmer_name
         state = profile.stateOfResidence
         lga = profile.lga or "your local area"
+        farm_address = profile.farmAddress or "your farm address"
         farm_type = profile.farmType.value if hasattr(profile.farmType, 'value') else str(profile.farmType)
         crops = ", ".join(profile.cropOrLivestockTypes) if profile.cropOrLivestockTypes else "agricultural produce"
         experience = int(profile.farmingExperienceYears or 1)
@@ -158,10 +159,10 @@ def generate_local_mock_response(message: str, farmer_name: str, profile: Option
         purpose = profile.fundingPurpose or "expanding operations"
 
         # Check default disqualifier first
-        if profile.hasExistingLoanDefault:
+        if not profile.hasNoLoanDefault:
             eng_res = (
                 f"Hello {name}. I have analyzed your profile, and I see a critical compliance block: you have an active "
-                "loan default recorded in the Credit Risk Management System (CRMS). \n\n"
+                "credit default recorded in the Credit Risk Management System (CRMS). \n\n"
                 "Under Central Bank of Nigeria (CBN), NIRSAL, and Bank of Agriculture (BOA) guidelines, any active default "
                 "results in immediate disqualification. I strongly recommend contacting your bank to resolve this outstanding "
                 "CRMS record. Once cleared, you will qualify for scoring."
@@ -175,7 +176,7 @@ def generate_local_mock_response(message: str, farmer_name: str, profile: Option
             reasons = []
             
             if profile.hasBVN:
-                reasons.append("✓ Your BVN is linked, which is required for all CBN/NIRSAL disbursed loans.")
+                reasons.append("✓ Your BVN is linked, which is required for all CBN/NIRSAL disbursed grants.")
             else:
                 score -= 30
                 reasons.append("✗ Critical: Your BVN is missing. No CBN program will disburse funds without a linked BVN.")
@@ -185,7 +186,7 @@ def generate_local_mock_response(message: str, farmer_name: str, profile: Option
                 reasons.append("✓ You have CAC registration, unlocking premium commercial windows like NIRSAL AGSMEIS.")
             else:
                 score -= 10
-                reasons.append("⚠ You lack CAC registration, which restricts you to smallholder microloans (Anchor Borrowers).")
+                reasons.append("⚠ You lack CAC registration, which restricts you to smallholder micro-grants (Anchor Borrowers).")
                 
             if profile.isMemberOfCooperative:
                 score += 10
@@ -195,13 +196,13 @@ def generate_local_mock_response(message: str, farmer_name: str, profile: Option
 
             if profile.hasLandDocument:
                 score += 10
-                reasons.append("✓ Holding land documents (C of O / Survey Plan) strengthens your position for BOA loans.")
+                reasons.append("✓ Holding land documents (C of O / Survey Plan) strengthens your position for BOA grants.")
             
             if profile.bankStatement:
                 score += 5
                 reasons.append("✓ You have uploaded a bank statement, which satisfies the cashflow compliance requirements for CBN/BOA.")
             else:
-                reasons.append("⚠ Bank statement is missing: it's optional for now, but you will need to upload a 6-month statement when applying for major loans like CBN ABP or BOA MSME.")
+                reasons.append("⚠ Bank statement is missing: it's optional for now, but you will need to upload a 6-month statement when applying for major grants like CBN ABP or BOA MSME.")
             
             if experience >= 3:
                 score += 5
@@ -231,12 +232,12 @@ def generate_local_mock_response(message: str, farmer_name: str, profile: Option
                     f"Since you operate a smallholder farm of {size} hectares in {state}, my recommendation is the **CBN Anchor Borrowers Programme (ABP)**. "
                     "This program distributes inputs (seeds, fertilizer, water pumps) directly to cooperative groups and guarantees off-takers. "
                     f"Given your focus on **{crops}**, you fit their key criteria. "
-                    "\n\nIf you want commercial capital, you also qualify for the **Bank of Agriculture (BOA) Micro-Agriculture Loan** "
-                    "(up to ₦1.5 Million), which has highly favorable interest rates for local farmers."
+                    "\n\nIf you want commercial capital, you also qualify for the **Bank of Agriculture (BOA) Micro-Agriculture Grant** "
+                    "(up to ₦1.5 Million), which has highly favorable terms for local farmers."
                 )
                 suggested = [
                     {"label": "Apply to CBN ABP", "action": "OPEN_GRANT", "data": {"grantName": "CBN Anchor Borrowers Programme"}},
-                    {"label": "View BOA details", "action": "OPEN_GRANT", "data": {"grantName": "BOA Micro-Agriculture Loan"}}
+                    {"label": "View BOA details", "action": "OPEN_GRANT", "data": {"grantName": "BOA Micro-Agriculture Grant"}}
                 ]
             else:
                 # Commercial or general recommendations
@@ -252,11 +253,11 @@ def generate_local_mock_response(message: str, farmer_name: str, profile: Option
                 else:
                     eng_res = (
                         f"I see you operate a commercial farm but do not have CAC business registration. This is a critical gap. "
-                        "To qualify for major capital like NIRSAL AGSMEIS or large BOA loans, you need to register a business name. "
-                        "Right now, you qualify for cooperative-based CBN ABP inputs or BOA Micro-loans."
+                        "To qualify for major capital like NIRSAL AGSMEIS or large BOA grants, you need to register a business name. "
+                        "Right now, you qualify for cooperative-based CBN ABP inputs or BOA Micro-grants."
                     )
                     suggested = [
-                        {"label": "View Micro-loans", "action": "VIEW_MATCHED_LIST"}
+                        {"label": "View Micro-grants", "action": "VIEW_MATCHED_LIST"}
                     ]
 
         # 3. Help writing proposal
