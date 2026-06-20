@@ -203,7 +203,7 @@ async def get_vault(user_id: str):
             "documents": docs,
             "farmerName": profile.get("farmer_name"),
             "hasBVN": profile.get("has_bvn", False),
-            "hasExistingLoanDefault": profile.get("has_existing_loan_default", False),
+            "hasNoLoanDefault": not profile.get("has_existing_loan_default", False),
         }
 
     except Exception as e:
