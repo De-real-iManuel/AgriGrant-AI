@@ -1,0 +1,391 @@
+﻿{
+  "document": {
+    "dsl": "1.0.0",
+    "name": "Workflow",
+    "tags": {
+      "projectId": "4f9209fa-5611-40be-9c73-896370433e8b",
+      "solutionId": "3a4257ff-ce33-4a90-be65-08dec08e2a71"
+    },
+    "version": "0.0.1",
+    "namespace": "default",
+    "metadata": {
+      "variables": {
+        "schema": {
+          "format": "json",
+          "document": {
+            "type": "object",
+            "properties": {
+              "applicationRef": {
+                "type": "string",
+                "default": ""
+              },
+              "status": {
+                "type": "string",
+                "default": ""
+              },
+              "grantDiscoveryResult": {
+                "type": "object",
+                "default": ""
+              },
+              "eligibilityResult": {
+                "type": "object",
+                "default": ""
+              },
+              "proposalResult": {
+                "type": "object",
+                "default": ""
+              },
+              "submissionResult": {
+                "type": "object",
+                "default": ""
+              },
+              "validationError": {
+                "type": "string",
+                "default": ""
+              },
+              "applicationReference": {
+                "type": "string",
+                "default": ""
+              },
+              "submissionStatus": {
+                "type": "string",
+                "default": ""
+              },
+              "confirmationEmailSent": {
+                "type": "boolean",
+                "default": "false"
+              },
+              "applicationLetterHTML": {
+                "type": "string",
+                "default": ""
+              },
+              "applicationLetterText": {
+                "type": "string",
+                "default": ""
+              },
+              "message": {
+                "type": "string",
+                "default": ""
+              },
+              "topGrant": {
+                "type": "object",
+                "default": ""
+              },
+              "documentStatus": {
+                "type": "string",
+                "default": ""
+              },
+              "documentReadinessScore": {
+                "type": "number",
+                "default": ""
+              },
+              "emailSent": {
+                "type": "boolean",
+                "default": "false"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "input": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "properties": {
+          "farmerName": {
+            "type": "string"
+          },
+          "farmerEmail": {
+            "type": "string"
+          },
+          "farmLocation": {
+            "type": "string"
+          },
+          "farmSizeHectares": {
+            "type": "number"
+          },
+          "farmType": {
+            "type": "string"
+          },
+          "cropOrLivestockTypes": {
+            "type": "string"
+          },
+          "yearsInOperation": {
+            "type": "number"
+          },
+          "annualRevenueNGN": {
+            "type": "number"
+          },
+          "requestedFundingAmountNGN": {
+            "type": "number"
+          },
+          "proposedProjectDescription": {
+            "type": "string"
+          },
+          "hasBVN": {
+            "type": "boolean"
+          },
+          "hasCACRegistration": {
+            "type": "boolean"
+          },
+          "isMemberOfCooperative": {
+            "type": "boolean"
+          },
+          "hasLandDocument": {
+            "type": "boolean"
+          },
+          "isSmallholderFarmer": {
+            "type": "boolean"
+          },
+          "isYouthFarmer": {
+            "type": "boolean"
+          },
+          "isWomanFarmer": {
+            "type": "boolean"
+          },
+          "hasExistingLoanDefault": {
+            "type": "boolean"
+          },
+          "additionalNotes": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "farmerName",
+          "farmerEmail",
+          "farmLocation",
+          "farmSizeHectares",
+          "farmType",
+          "cropOrLivestockTypes",
+          "yearsInOperation",
+          "annualRevenueNGN",
+          "requestedFundingAmountNGN",
+          "proposedProjectDescription",
+          "hasBVN",
+          "hasCACRegistration",
+          "isMemberOfCooperative",
+          "hasLandDocument",
+          "isSmallholderFarmer",
+          "isYouthFarmer",
+          "isWomanFarmer",
+          "hasExistingLoanDefault"
+        ]
+      }
+    }
+  },
+  "do": [
+    {
+      "sequence_1": {
+        "do": [
+          {
+            "WorkflowStart": {
+              "set": "${Object.entries($workflow.definition?.document?.metadata?.variables?.schema?.document?.properties || {}).reduce((acc, [name, def]) => ({ ...acc, [name]: def?.default }), {}) }",
+              "output": {
+                "as": "${$input}"
+              },
+              "export": {
+                "as": "{ ...$context, variables: { ...$context.variables, ...$output } }"
+              },
+              "metadata": {
+                "activityType": "Assign",
+                "displayName": "Workflow start",
+                "fullName": "Assign",
+                "isTransparent": true
+              }
+            }
+          },
+          {
+            "Validate_Inputs": {
+              "run": {
+                "script": {
+                  "code": "let validationError = \"\";\nlet validationPassed = true;\n\nif (!$input.farmerName || typeof $input.farmerName !== 'string' || $input.farmerName.trim() === \"\") {\n  validationPassed = false;\n  validationError += \"Farmer name is required. \";\n}\nif (!$input.farmerEmail || typeof $input.farmerEmail !== 'string' || !$input.farmerEmail.includes(\"@\")) {\n  validationPassed = false;\n  validationError += \"A valid farmer email is required. \";\n}\nif (!$input.farmLocation || typeof $input.farmLocation !== 'string' || $input.farmLocation.trim() === \"\") {\n  validationPassed = false;\n  validationError += \"Farm location is required. \";\n}\n\nreturn {\n  validationPassed: validationPassed,\n  validationError: validationError.trim()\n};",
+                  "language": "javascript",
+                  "arguments": "${{\n                        \"$context\": $context,\n                        \"$workflow\": $workflow,\n                        \"$input\": $input,\n                    }}"
+                }
+              },
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Validate_Inputs\": $output } }"
+              },
+              "metadata": {
+                "activityType": "JsInvoke",
+                "displayName": "Validate the farmer's input data",
+                "fullName": "JsInvoke",
+                "outputName": "Validate_Inputs"
+              }
+            }
+          },
+          {
+            "Generate_Letter_and_Reference": {
+              "run": {
+                "script": {
+                  "code": "const applicationReference = \"AGR-\" + String(Date.now()).slice(-6);\nconst applicationLetterText = `\n${$input.farmerName}\n${$input.farmLocation}\n${new Date().toString()}\n\nThe Grant Committee,\nAgroGrant AI Initiative,\nAbuja, Nigeria.\n\nDear Sir/Madam,\n\nAPPLICATION FOR AGRICULTURAL GRANT\n\nI, ${$input.farmerName}, hereby apply for the agricultural grant to support my farm located at ${$input.farmLocation}.\n\nMy farm is a ${$input.farmType} farm of ${$input.farmSizeHectares} hectares, specializing in ${$input.cropOrLivestockTypes}. I have been in operation for ${$input.yearsInOperation} years with an annual revenue of NGN ${String($input.annualRevenueNGN)}.\n\nI am requesting funding of NGN ${String($input.requestedFundingAmountNGN)} for the following project: ${$input.proposedProjectDescription}.\n\nI confirm that I have a BVN, CAC registration, and necessary land documents. I am a member of a cooperative and do not have any existing loan defaults.\n\nThank you for your consideration.\n\nSincerely,\n${$input.farmerName}\n`;\n\nconst emailBodyHTML = `\n<h3>New AgroGrant AI Application Received</h3>\n<p><strong>Application Reference:</strong> ${applicationReference}</p>\n<h4>Farmer Details:</h4>\n<ul>\n  <li><strong>Name:</strong> ${$input.farmerName}</li>\n  <li><strong>Email:</strong> ${$input.farmerEmail}</li>\n  <li><strong>Location:</strong> ${$input.farmLocation}</li>\n</ul>\n`;\n\nreturn {\n  applicationReference: applicationReference,\n  applicationLetterText: applicationLetterText,\n  emailBodyHTML: emailBodyHTML\n};",
+                  "language": "javascript",
+                  "arguments": "${{\n                        \"$context\": $context,\n                        \"$workflow\": $workflow,\n                        \"$input\": $input,\n                    }}"
+                }
+              },
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Generate_Letter_and_Reference\": $output } }"
+              },
+              "metadata": {
+                "activityType": "JsInvoke",
+                "displayName": "Generate application letter and reference number",
+                "fullName": "JsInvoke",
+                "outputName": "Generate_Letter_and_Reference"
+              }
+            }
+          },
+          {
+            "If_Validation_Passed#Wrapper": {
+              "do": [
+                {
+                  "If_Validation_Passed": {
+                    "switch": [
+                      {
+                        "case": {
+                          "when": "${$context.outputs.Validate_Inputs.validationPassed === true}",
+                          "then": "If_Validation_Passed#Then"
+                        }
+                      },
+                      {
+                        "default": {
+                          "then": "If_Validation_Passed#Else"
+                        }
+                      }
+                    ],
+                    "metadata": {
+                      "displayName": "Check if the input validation was successful"
+                    }
+                  }
+                },
+                {
+                  "If_Validation_Passed#Then": {
+                    "do": [
+                      {
+                        "Send_Confirmation_Email": {
+                          "call": "UiPath.Http",
+                          "export": {
+                            "as": "{ ...$context, outputs: { ...$context?.outputs, \"Send_Confirmation_Email\": $output } }"
+                          },
+                          "with": {
+                            "connector": "uipath-uipath-http",
+                            "connectionId": "ImplicitConnection",
+                            "connectionResourceId": null,
+                            "method": "POST",
+                            "endpoint": "/http-request",
+                            "bodyParameters": {
+                              "authentication": "manual",
+                              "method": "POST",
+                              "url": "https://api.sendgrid.com/v3/mail/send",
+                              "path": "https://api.sendgrid.com/v3/mail/send",
+                              "headers": "${{\"Authorization\": \"Bearer " + $workflow.input.sendgridApiKey + "\", \"Content-Type\": \"application/json\"}}",
+                              "body": "${{\"personalizations\": [{\"to\": [{\"email\": $workflow.input.farmerEmail, \"name\": $workflow.input.farmerName}]}], \"from\": {\"email\": \"info@agrigrant.xyz\", \"name\": \"AgriGrant AI\"}, \"subject\": \"Your AgroGrant Application \" + $context.outputs.Generate_Letter_and_Reference.applicationReference + \" has been received\", \"content\": [{\"type\": \"text/html\", \"value\": $context.outputs.Generate_Letter_and_Reference.emailBodyHTML}]}}"
+                            }
+                          },
+                          "metadata": {
+                            "activityType": "Connector",
+                            "configuration": "{\"essentialConfiguration\":{\"connectorVersion\":null,\"executionType\":null,\"customFieldsRequestDetails\":null,\"instanceParameters\":{\"connectorKey\":\"uipath-uipath-http\",\"objectName\":\"http-request\",\"httpMethod\":\"POST\",\"activityType\":\"Curated\",\"version\":\"1.0.0\",\"supportsStreaming\":false,\"subType\":\"method\"},\"objectName\":\"http-request\",\"packageVersion\":\"\",\"httpMethod\":\"POST\",\"path\":\"/http-request\",\"unifiedTypesCompatible\":false},\"optionalConfiguration\":{\"_textBlocks\":[],\"objectActions\":null,\"connectorName\":null,\"maxPageSize\":null,\"jobArguments\":null,\"isAutopilotInvalidConfig\":false,\"additionalHeaders\":null,\"cachedLookupValues\":[],\"cachedBrowserItems\":[],\"cachedPropertyMappings\":[],\"primaryKeys\":[],\"objectDisplayName\":null,\"baseObject\":null,\"eventMode\":null,\"eventOperation\":null,\"language\":\"en-US\",\"hasBreakingChanges\":null,\"fieldsContainer\":{\"inputFields\":[{\"id\":\"authentication\",\"name\":\"authentication\",\"fieldLocation\":\"body\",\"type\":\"string\",\"clrType\":{\"_elementType\":null,\"_isNullable\":false,\"isArray\":false,\"genericTypeArguments\":[],\"fullName\":null,\"name\":\"String\",\"assemblyQualifiedName\":\"String\",\"isValueType\":true},\"onCanvas\":true},{\"id\":\"method\",\"name\":\"method\",\"fieldLocation\":\"body\",\"type\":\"string\",\"clrType\":{\"_elementType\":null,\"_isNullable\":false,\"isArray\":false,\"genericTypeArguments\":[],\"fullName\":null,\"name\":\"String\",\"assemblyQualifiedName\":\"String\",\"isValueType\":true},\"onCanvas\":true},{\"id\":\"url\",\"name\":\"url\",\"fieldLocation\":\"body\",\"type\":\"string\",\"clrType\":{\"_elementType\":null,\"_isNullable\":false,\"isArray\":false,\"genericTypeArguments\":[],\"fullName\":null,\"name\":\"String\",\"assemblyQualifiedName\":\"String\",\"isValueType\":true},\"onCanvas\":true},{\"id\":\"path\",\"name\":\"path\",\"fieldLocation\":\"body\",\"type\":\"string\",\"clrType\":{\"_elementType\":null,\"_isNullable\":false,\"isArray\":false,\"genericTypeArguments\":[],\"fullName\":null,\"name\":\"String\",\"assemblyQualifiedName\":\"String\",\"isValueType\":true},\"onCanvas\":true},{\"id\":\"headers\",\"name\":\"headers\",\"fieldLocation\":\"body\",\"type\":\"string\",\"clrType\":{\"_elementType\":null,\"_isNullable\":false,\"isArray\":false,\"genericTypeArguments\":[],\"fullName\":null,\"name\":\"String\",\"assemblyQualifiedName\":\"String\",\"isValueType\":true},\"onCanvas\":true},{\"id\":\"body\",\"name\":\"body\",\"fieldLocation\":\"body\",\"type\":\"string\",\"clrType\":{\"_elementType\":null,\"_isNullable\":false,\"isArray\":false,\"genericTypeArguments\":[],\"fullName\":null,\"name\":\"String\",\"assemblyQualifiedName\":\"String\",\"isValueType\":true},\"onCanvas\":true}],\"outputFields\":[],\"inputMode\":null,\"jitInputField\":null},\"connectorKey\":\"uipath-uipath-http\",\"activityType\":\"Curated\",\"version\":\"1.0.0\",\"supportsStreaming\":false,\"subType\":\"method\"}}",
+                            "displayName": "Send a confirmation email to the farmer via SendGrid",
+                            "fullName": "Connector",
+                            "uiPathActivityTypeId": "5c4cc855-b42a-37e6-b910-de8588998fce",
+                            "assemblyQualifiedName": "Connector",
+                            "outputName": "Send_Confirmation_Email"
+                          }
+                        }
+                      },
+                      {
+                        "Build_Output_Success": {
+                          "run": {
+                            "script": {
+                              "code": "const emailSent = $context.outputs.Send_Confirmation_Email.statusCode === 202;\nreturn {\n  applicationReference: $context.outputs.Generate_Letter_and_Reference.applicationReference,\n  confirmationEmailSent: emailSent,\n  submissionStatus: emailSent ? \"Received\" : \"Failed\",\n  validationError: \"\",\n  applicationLetterText: $context.outputs.Generate_Letter_and_Reference.applicationLetterText,\n  farmerName: $input.farmerName,\n  farmerEmail: $input.farmerEmail,\n  farmLocation: $input.farmLocation,\n  message: emailSent ? \"Application submitted successfully. A confirmation email has been sent.\" : \"Application submitted, but the confirmation email failed to send.\"\n};",
+                              "language": "javascript",
+                              "arguments": "${{\n                        \"$context\": $context,\n                        \"$workflow\": $workflow,\n                        \"$input\": $input,\n                    }}"
+                            }
+                          },
+                          "export": {
+                            "as": "{ ...$context, outputs: { ...$context?.outputs, \"Build_Output_Success\": $output } }"
+                          },
+                          "metadata": {
+                            "activityType": "JsInvoke",
+                            "displayName": "Build the final output after sending the email",
+                            "fullName": "JsInvoke",
+                            "outputName": "Build_Output_Success"
+                          }
+                        }
+                      }
+                    ],
+                    "then": "exit"
+                  }
+                },
+                {
+                  "If_Validation_Passed#Else": {
+                    "do": [
+                      {
+                        "Build_Output_Failure": {
+                          "run": {
+                            "script": {
+                              "code": "return {\n  applicationReference: null,\n  confirmationEmailSent: false,\n  submissionStatus: \"Validation Failed\",\n  validationError: $context.outputs.Validate_Inputs.validationError,\n  applicationLetterText: null,\n  farmerName: $input.farmerName,\n  farmerEmail: $input.farmerEmail,\n  farmLocation: $input.farmLocation,\n  message: \"Application submission failed due to validation errors.\"\n};",
+                              "language": "javascript",
+                              "arguments": "${{\n                        \"$context\": $context,\n                        \"$workflow\": $workflow,\n                        \"$input\": $input,\n                    }}"
+                            }
+                          },
+                          "export": {
+                            "as": "{ ...$context, outputs: { ...$context?.outputs, \"Build_Output_Failure\": $output } }"
+                          },
+                          "metadata": {
+                            "activityType": "JsInvoke",
+                            "displayName": "Build the final output after failed validation",
+                            "fullName": "JsInvoke",
+                            "outputName": "Build_Output_Failure"
+                          }
+                        }
+                      }
+                    ],
+                    "then": "exit"
+                  }
+                }
+              ],
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"If_Validation_Passed\": $output } }"
+              },
+              "metadata": {
+                "activityType": "If",
+                "displayName": "Check if the input validation was successful",
+                "fullName": "If",
+                "outputName": "If_Validation_Passed"
+              }
+            }
+          },
+          {
+            "Final_Response": {
+              "response": "${$context.outputs.Build_Output_Success || $context.outputs.Build_Output_Failure}",
+              "markJobAsFailed": false,
+              "then": "end",
+              "export": {
+                "as": "{ ...$context, outputs: { ...$context?.outputs, \"Final_Response\": $output } }"
+              },
+              "metadata": {
+                "activityType": "Response",
+                "displayName": "Return the final result of the application submission",
+                "fullName": "Response",
+                "outputName": "Final_Response"
+              }
+            }
+          }
+        ],
+        "metadata": {
+          "activityType": "Sequence",
+          "displayName": "Sequence",
+          "fullName": "Sequence",
+          "outputName": "sequence_1"
+        }
+      }
+    }
+  ],
+  "evaluate": {
+    "mode": "strict",
+    "language": "javascript"
+  }
+}
