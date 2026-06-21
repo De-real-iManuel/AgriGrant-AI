@@ -1,0 +1,264 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "/content/agent.json",
+      "type": "agent",
+      "uniqueId": "a91ed759-7087-4b29-93c8-3850cf6ecf6e",
+      "input": {
+        "type": "object",
+        "required": [
+          "farmerName",
+          "stateOfResidence",
+          "farmType",
+          "fundingPurpose",
+          "isSmallholderFarmer",
+          "isYouthFarmer",
+          "isWomanFarmer"
+        ],
+        "properties": {
+          "farmerName": {
+            "type": "string",
+            "description": "Full name of the farmer or agribusiness name. Used to personalize results and cross-reference documents."
+          },
+          "stateOfResidence": {
+            "type": "string",
+            "description": "Nigerian state where the farmer operates (e.g., 'Kano', 'Ogun', 'Benue', 'Rivers', 'FCT'). Used to match state-specific and geographically targeted grants."
+          },
+          "lga": {
+            "type": "string",
+            "description": "Optional: Local Government Area within the state. Helps identify hyper-local or LGA-targeted programs. Omit if unknown."
+          },
+          "farmType": {
+            "type": "string",
+            "description": "Primary type of farming or agribusiness operation. Allowed values: 'crop', 'livestock', 'poultry', 'fishery/aquaculture', 'mixed', 'horticulture', 'agro-processing', 'cooperative', 'agribusiness', 'other'.",
+            "enum": [
+              "crop",
+              "livestock",
+              "poultry",
+              "fishery/aquaculture",
+              "mixed",
+              "horticulture",
+              "agro-processing",
+              "cooperative",
+              "agribusiness",
+              "other"
+            ]
+          },
+          "cropOrLivestockTypes": {
+            "type": "array",
+            "description": "List of specific crops grown or livestock/fish raised (e.g., ['cassava', 'maize', 'rice'] or ['cattle', 'poultry', 'catfish']). Used to match commodity-specific programs like CBN Anchor Borrowers or NIRSAL value chain schemes.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "farmSizeHectares": {
+            "type": "number",
+            "description": "Total farm area in hectares. Used to classify as smallholder (under 5 ha) or medium/large scale, which affects eligibility for most Nigerian grant schemes.",
+            "minimum": 0
+          },
+          "annualRevenueNGN": {
+            "type": "number",
+            "description": "Approximate annual farm revenue in Nigerian Naira (NGN). Used for income-based eligibility thresholds in BOA, NIRSAL, and microfinance-linked programs.",
+            "minimum": 0
+          },
+          "farmingExperienceYears": {
+            "type": "integer",
+            "description": "Number of years the farmer has been actively farming. Used to determine eligibility for youth agripreneurship programs (typically under 35 years old and under 5 years farming).",
+            "minimum": 0
+          },
+          "isSmallholderFarmer": {
+            "type": "boolean",
+            "description": "True if the farmer is a smallholder (typically farms under 5 hectares). Enables matching with NIRSAL, CBN Anchor Borrowers, IFAD, and FAO smallholder-specific programs."
+          },
+          "isYouthFarmer": {
+            "type": "boolean",
+            "description": "True if the farmer is aged 18–35. Enables matching with NASC, Youth in Agriculture programs, Agric-YES, and international youth-focused grants."
+          },
+          "isWomanFarmer": {
+            "type": "boolean",
+            "description": "True if the farmer is a woman or the farm is woman-led. Enables matching with IFAD women programs, GIZ She Feeds the World, and state women-in-agric initiatives."
+          },
+          "hasCACRegistration": {
+            "type": "boolean",
+            "description": "True if the farmer has a registered business or cooperative with the Corporate Affairs Commission (CAC). Many federal and international grants require formal registration."
+          },
+          "hasLandDocument": {
+            "type": "boolean",
+            "description": "True if the farmer has a formal land document (C of O, R of O, or Survey Plan). Required for most BOA loan-linked grants and land-improvement programs."
+          },
+          "isMemberOfCooperative": {
+            "type": "boolean",
+            "description": "True if the farmer is a registered member of a cooperative society. Cooperative membership is often required for CBN Anchor Borrowers Programme and group-based schemes."
+          },
+          "fundingPurpose": {
+            "type": "string",
+            "description": "What the farmer needs funding for (e.g., 'irrigation infrastructure', 'farm inputs and seeds', 'processing equipment', 'storage/silo construction', 'land clearing', 'market linkage', 'value chain development', 'livestock vaccination', 'fish pond construction'). This is the primary driver of grant matching."
+          },
+          "additionalNotes": {
+            "type": "string",
+            "description": "Optional: Any extra context (e.g., 'already applied for Anchor Borrowers', 'operates in conflict-affected area', 'has existing CBN loan', 'part of a cluster farm'). Omit if not applicable."
+          }
+        },
+        "title": "Inputs"
+      },
+      "output": {
+        "type": "object",
+        "required": [
+          "farmerName",
+          "stateOfResidence",
+          "totalMatchesFound",
+          "matchedGrants",
+          "profileGaps",
+          "topRecommendation",
+          "summary",
+          "disclaimer"
+        ],
+        "properties": {
+          "farmerName": {
+            "type": "string",
+            "description": "Full name of the farmer or agribusiness as provided in input, echoed for report identification."
+          },
+          "stateOfResidence": {
+            "type": "string",
+            "description": "Nigerian state of the farmer, echoed from input."
+          },
+          "totalMatchesFound": {
+            "type": "integer",
+            "description": "Total number of FREE grant opportunities matched to the farmer's profile with a matchScore of 40 or above. Only count grants that require zero repayment."
+          },
+          "matchedGrants": {
+            "type": "array",
+            "description": "Ranked list of matched FREE grant opportunities sorted by matchScore descending. Only include grants with matchScore >= 40. Every entry must be a free grant — no loans, no credit facilities, no repayment-based programs.",
+            "items": {
+              "type": "object",
+              "required": [
+                "grantName",
+                "grantingOrganization",
+                "grantCategory",
+                "fundingBody",
+                "description",
+                "matchScore",
+                "matchReason",
+                "eligibilityCriteria",
+                "requiredDocuments",
+                "applicationProcess",
+                "applicationDeadline",
+                "geographicScope",
+                "applicationUrl",
+                "contactInformation"
+              ],
+              "properties": {
+                "grantName": {
+                  "type": "string",
+                  "description": "Official name of the FREE grant program (e.g., 'USAID Feed the Future Nigeria', 'AGRA Smallholder Grant', 'World Bank APPEALS Project', 'GIZ Pro-AADII Grant', 'Tony Elumelu Foundation Grant'). Must be a grant — never a loan."
+                },
+                "grantingOrganization": {
+                  "type": "string",
+                  "description": "Full name of the organization providing the FREE grant (e.g., 'USAID', 'Bill & Melinda Gates Foundation', 'AGRA', 'World Bank', 'African Development Bank', 'GIZ', 'FAO Nigeria', 'TechnoServe')."
+                },
+                "grantCategory": {
+                  "type": "string",
+                  "description": "Category of grant source: 'international' = UN agencies and bilateral donors (FAO, IFAD, USAID, DFID). 'development-bank' = AfDB, World Bank grant windows. 'NGO' = international or local NGOs (GIZ, ActionAid, TechnoServe, Oxfam). 'federal' = Nigerian federal FREE programs (FMARD free inputs, NALDA, N-Power). 'state' = state government free grant programs. 'private' = private foundations (Gates, Tony Elumelu, Leventis).",
+                  "enum": [
+                    "federal",
+                    "state",
+                    "NGO",
+                    "international",
+                    "development-bank",
+                    "private"
+                  ]
+                },
+                "fundingBody": {
+                  "type": "string",
+                  "description": "Specific body or programme window providing the free grant (e.g., 'USAID Feed the Future', 'AGRA Grant Programme', 'World Bank IDA Grant', 'IFAD VCDP Grant Component', 'AfDB ENABLE Youth', 'GIZ Pro-AADII', 'Tony Elumelu Foundation')."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "2 to 3 sentence description of what the FREE grant funds, its objectives, and target beneficiaries. Must clearly state this is a non-repayable grant."
+                },
+                "fundingAmountRange": {
+                  "type": "string",
+                  "description": "Estimated FREE grant funding range in NGN or USD (e.g., 'NGN 500,000 to NGN 5,000,000', 'Up to USD 100,000', 'In-kind inputs valued at NGN 200,000'). Use 'Varies — check with organization' if not specified."
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "Primary currency of the grant disbursement.",
+                  "enum": [
+                    "NGN",
+                    "USD",
+                    "EUR",
+                    "GBP",
+                    "Mixed"
+                  ]
+                },
+                "matchScore": {
+                  "type": "integer",
+                  "description": "Match score 0 to 100 indicating how well the FREE grant fits this farmer's profile. Scored on: farm type match (+25), location eligibility (+20), demographic fit (+20), funding purpose alignment (+25), registration and documentation readiness (+10).",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "matchReason": {
+                  "type": "string",
+                  "description": "Specific explanation of why this FREE grant matches the farmer (e.g., 'Matches: smallholder rice farmer in Kano State, youth farmer under 35, USAID targets exactly this demographic for Feed the Future irrigation grants')."
+                },
+                "eligibilityCriteria": {
+                  "type": "string",
+                  "description": "Key eligibility requirements the farmer must meet for this FREE grant (e.g., 'Nigerian citizen, smallholder farmer under 5 hectares, registered cooperative member, valid BVN, farming in target state')."
+                },
+                "requiredDocuments": {
+                  "type": "array",
+                  "description": "List of key documents typically required to apply for this grant (e.g., 'Valid NIN or Voter Card', 'CAC registration certificate', 'Bank account with BVN', 'Passport photograph', 'Farm location map').",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "applicationProcess": {
+                  "type": "string",
+                  "description": "Brief description of how to apply for this FREE grant (e.g., 'Apply online via USAID partner portal', 'Contact GIZ state office', 'Apply through TechnoServe Nigeria field office', 'Submit application via cooperative society to FMARD desk')."
+                },
+                "applicationDeadline": {
+                  "type": "string",
+                  "description": "Application deadline or cycle (e.g., 'Rolling - apply any time', 'Annual - Q1 cycle', '2026-09-30', 'Verify current status'). Never guess a date. Use 'Check official source' if unknown."
+                },
+                "geographicScope": {
+                  "type": "string",
+                  "description": "Geographic coverage of the grant (e.g., 'Nationwide', 'Kano, Kaduna and Jigawa States', 'North-West geopolitical zone', 'All 36 states + FCT')."
+                },
+                "applicationUrl": {
+                  "type": "string",
+                  "description": "Official URL for the grant page, portal, or organization homepage. Use empty string if not found in search results. Never fabricate a URL."
+                },
+                "contactInformation": {
+                  "type": "string",
+                  "description": "Relevant contact details if available (e.g., 'USAID Nigeria: usaidnigeria@usaid.gov', 'GIZ Abuja office: +234-XXX', 'TechnoServe Nigeria: info@tns.org'). Use empty string if not available."
+                }
+              }
+            }
+          },
+          "profileGaps": {
+            "type": "array",
+            "description": "Specific profile gaps or missing registrations limiting the farmer's access to FREE grants (e.g., 'No CAC registration - excludes from most international donor programs', 'Not a cooperative member - limits access to group-based grants', 'No land document - restricts land-improvement grant eligibility').",
+            "items": {
+              "type": "string"
+            }
+          },
+          "topRecommendation": {
+            "type": "string",
+            "description": "The single best FREE grant opportunity for this farmer based on their profile. Name the grant, state why it is the top pick, and give the immediate action to take. Must be a free grant — never a loan."
+          },
+          "summary": {
+            "type": "string",
+            "description": "3 to 5 sentence professional summary covering: total FREE grants found, the most relevant programs, the farmer's strongest eligibility angle, and recommended immediate next steps. Emphasize that all recommendations are non-repayable grants."
+          },
+          "disclaimer": {
+            "type": "string",
+            "description": "Standard disclaimer. Must always read: 'Grant information is based on real-time web search results and is subject to change. Program availability, funding windows, and eligibility criteria should be verified directly with the issuing organization before applying. This analysis does not constitute financial or legal advice. All recommended programs are free grants — no loans or credit facilities are included.'"
+          }
+        },
+        "title": "Outputs"
+      }
+    }
+  ]
+}
