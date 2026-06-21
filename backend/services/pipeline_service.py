@@ -36,29 +36,78 @@ def _auth_headers(json_body: bool = False) -> Dict[str, str]:
 
 
 def _build_trigger_payload(form: FarmerSubmission) -> Dict[str, Any]:
-    """Maps the FastAPI farmer submission into the Pipeline's expected JSON shape."""
-    crops = ", ".join(form.cropOrLivestockTypes) if form.cropOrLivestockTypes else ""
+    """
+    Maps the FastAPI farmer submission into the exact JSON shape the Maestro
+    Pipeline + Grant Form Filler Robot expect.
+
+    Keys use the `in_` prefix so they map 1:1 to the robot's Main.xaml
+    arguments — Maestro can pass them through with no translation.
+    """
+    crops_str = ", ".join(form.cropOrLivestockTypes) if form.cropOrLivestockTypes else ""
+    farm_type = form.farmType.value if hasattr(form.farmType, "value") else str(form.farmType)
+
     return {
-        "farmerName": form.farmerName,
-        "farmerEmail": getattr(form, "farmerEmail", "") or "",
-        "farmLocation": getattr(form, "farmLocation", None) or form.stateOfResidence,
-        "farmAddress": getattr(form, "farmAddress", "") or "",
-        "farmSizeHectares": float(form.farmSizeHectares or 0),
-        "farmType": form.farmType.value if hasattr(form.farmType, "value") else str(form.farmType),
-        "cropOrLivestockTypes": crops,
-        "yearsInOperation": int(form.farmingExperienceYears or 0),
-        "annualRevenueNGN": float(form.annualRevenueNGN or 0),
-        "requestedFundingAmountNGN": float(getattr(form, "requestedFundingAmountNGN", 0) or 0),
-        "proposedProjectDescription": form.fundingPurpose or "",
-        "hasBVN": bool(form.hasBVN),
-        "hasCACRegistration": bool(form.hasCACRegistration),
-        "isMemberOfCooperative": bool(form.isMemberOfCooperative),
-        "hasLandDocument": bool(form.hasLandDocument),
-        "isSmallholderFarmer": bool(getattr(form, "isSmallholderFarmer", False)),
-        "isYouthFarmer": bool(getattr(form, "isYouthFarmer", False)),
-        "isWomanFarmer": bool(getattr(form, "isWomanFarmer", False)),
-        "hasExistingLoanDefault": not bool(form.hasNoLoanDefault),
-        "additionalNotes": getattr(form, "additionalNotes", "") or "",
+        # Identity / session
+        "in_userId": getattr(form, "userId", None) or "",
+        "in_sessionId": getattr(form, "sessionId", None) or "",
+
+        # Contact
+        "in_farmerName": form.farmerName,
+        "in_farmerEmail": form.farmerEmail or "",
+        "in_farmerPhone": form.farmerPhone or "",
+        "in_residentialAddress": form.residentialAddress or "",
+
+        # Location
+        "in_stateOfResidence": form.stateOfResidence,
+        "in_lga": form.lga or "",
+        "in_farmAddress": form.farmAddress or "",
+        "in_farmLocation": form.farmAddress or form.stateOfResidence,
+
+        # Farm profile
+        "in_farmType": farm_type,
+        "in_cropOrLivestockTypes": crops_str,
+        "in_farmSizeHectares": float(form.farmSizeHectares or 0),
+        "in_annualRevenueNGN": float(form.annualRevenueNGN or 0),
+        "in_farmingExperienceYears": float(form.farmingExperienceYears or 0),
+        "in_yearsInOperation": int(form.farmingExperienceYears or 0),
+
+        # Funding ask
+        "in_fundingPurpose": form.fundingPurpose or "",
+        "in_projectTitle": form.projectTitle or "",
+        "in_projectDescription": form.projectDescription or form.fundingPurpose or "",
+        "in_proposedProjectDescription": form.projectDescription or form.fundingPurpose or "",
+        "in_requestedAmount": float(form.requestedAmount or 0),
+        "in_requestedFundingAmountNGN": float(form.requestedAmount or 0),
+        "in_farmingChallenges": form.farmingChallenges or "",
+        "in_previousGrants": form.previousGrants or "",
+
+        # Eligibility flags
+        "in_isSmallholderFarmer": bool(form.isSmallholderFarmer),
+        "in_isYouthFarmer": bool(form.isYouthFarmer),
+        "in_isWomanFarmer": bool(form.isWomanFarmer),
+        "in_hasCACRegistration": bool(form.hasCACRegistration),
+        "in_hasLandDocument": bool(form.hasLandDocument),
+        "in_isMemberOfCooperative": bool(form.isMemberOfCooperative),
+        "in_hasBVN": bool(form.hasBVN),
+        "in_hasNoLoanDefault": bool(form.hasNoLoanDefault),
+        "in_hasExistingLoanDefault": not bool(form.hasNoLoanDefault),
+        "in_additionalNotes": form.additionalNotes or "",
+
+        # Submission preferences
+        "in_submissionMethod": form.submissionMethod or "online",
+        "in_submissionPortalUrl": form.submissionPortalUrl or "",
+        "in_targetPortalURL": form.submissionPortalUrl or "",
+        "in_currentStatus": form.currentStatus or "pending",
+        "in_documentsChecklist": form.documentsChecklist or "",
+        "in_agentAction": form.agentAction or "submit_application",
+        "in_preferredLanguage": form.preferredLanguage or "en",
+
+        # Document paths
+        "in_ninDocumentPath": form.ninDocument or "",
+        "in_cacDocumentPath": form.cacDocument or "",
+        "in_bankStatementPath": form.bankStatement or "",
+        "in_landDocumentPath": form.landDocument or "",
+        "in_declarationAgreed": True,
     }
 
 
