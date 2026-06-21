@@ -1,0 +1,43 @@
+{
+  "version": "2.0",
+  "resources": [
+    {
+      "resource": "process",
+      "key": "Solution.1.agent.Grant.Discovery._.Matching.Agent",
+      "id": "processSolution.1.agent.Grant.Discovery._.Matching.Agent",
+      "value": {
+        "name": {
+          "defaultValue": "Solution.1.agent.Grant.Discovery._.Matching.Agent",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "Grant Discovery Agent: Search & Match Eligible Grants",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true",
+        "subType": "Agent"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "Submission & Follow-up Agent",
+      "id": "processSubmission & Follow-up Agent",
+      "value": {
+        "name": {
+          "defaultValue": "Submission & Follow-up Agent",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "Submission & Follow-up Agent: Notify Farmer - No Grants Available",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true",
+        "subType": "Agent"
+      }
+    }
+  ]
+}

@@ -1,0 +1,1557 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:uipath="http://uipath.org/schema/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" exporter="UiPath Studio Web (https://uipath.com)" exporterVersion="e9e1aef3">
+  <bpmn:process id="Process_1" name="Process">
+    <bpmn:extensionElements>
+      <uipath:variables version="v1">
+        <uipath:input id="vxv5lnJ23" name="userId" type="string" elementId="start_event" default="" />
+        <uipath:input id="vIa2adQuu" name="sessionId" type="string" elementId="start_event" default="" />
+        <uipath:input id="vOiZ7Lxtq" name="farmerName" type="string" elementId="start_event" default="" />
+        <uipath:input id="v1tmocy6d" name="farmerEmail" type="string" elementId="start_event" default="" />
+        <uipath:input id="vdeqeWwcJ" name="stateOfResidence" type="string" elementId="start_event" default="" />
+        <uipath:input id="vWmqTsDAG" name="farmType" type="string" elementId="start_event" default="" />
+        <uipath:input id="vyjLJZQ2U" name="lga" type="string" elementId="start_event" default="" />
+        <uipath:input id="vWsOu30vB" name="farmPhone" type="string" elementId="start_event" default="" />
+        <uipath:input id="vBn3oQ4jv" name="farmerSizeHecaters" type="integer" elementId="start_event" default="" />
+        <uipath:input id="vliNPmg79" name="annualRevenueNGN" type="integer" elementId="start_event" default="" />
+        <uipath:input id="vG7Olrl0K" name="farmExperienceYears" type="integer" elementId="start_event" default="" />
+        <uipath:input id="vFfhqviiw" name="isSmallholderFarmer" type="boolean" elementId="start_event" default="true" />
+        <uipath:input id="v71ySc0fB" name="ProjectTittle" type="string" elementId="start_event" default="" />
+        <uipath:input id="vMwlDEDUX" name="projectDescription" type="string" elementId="start_event" default="" />
+        <uipath:input id="vCBR7P2e5" name="requestedAmount" type="integer" elementId="start_event" default="" />
+        <uipath:input id="v20f6gk9r" name="farmingChallenges" type="string" elementId="start_event" default="" />
+        <uipath:input id="vDeA3r9bu" name="previousGrants" type="string" elementId="start_event" default="" />
+        <uipath:input id="vvdQlata1" name="hasCACRegistration" type="boolean" elementId="start_event" default="false" />
+        <uipath:input id="vIOlJUJ5D" name="hasLandDocument" type="boolean" elementId="start_event" default="false" />
+        <uipath:input id="vd9NJauqt" name="isMemberOfCooperative" type="boolean" elementId="start_event" default="false" />
+        <uipath:input id="vquoMVE4G" name="additionalNotes" type="string" elementId="start_event" default="" />
+        <uipath:input id="vFq3T33XL" name="fundingPurpose" type="string" elementId="start_event" default="" />
+        <uipath:input id="vE1PidN8f" name="isYouthFarmer" type="boolean" elementId="start_event" default="" />
+        <uipath:input id="vELFKFJyi" name="isWomanFarmer" type="boolean" elementId="start_event" default="" />
+        <uipath:input id="vvf8WstMO" name="cropOrLivestockTypes" type="jsonSchema" elementId="start_event" default=""><![CDATA[{"type":"object","$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:input>
+        <uipath:input id="vWCgBQzGM" name="submissionMethod" type="string" elementId="start_event" default="" />
+        <uipath:input id="vtZKCiqUt" name="submissionOfficeAddress" type="string" elementId="start_event" default="" />
+        <uipath:input id="velbKB2gG" name="submissionPortalUrl" type="string" elementId="start_event" default="https://nagap.vercel.app/grant-application-form" />
+        <uipath:input id="viMefDN9U" name="submissionContactEmail" type="string" elementId="start_event" default="" />
+        <uipath:input id="vxbPkLDnU" name="submissionContactPhone" type="string" elementId="start_event" default="" />
+        <uipath:input id="vKHfc0WtZ" name="applicationReferenceNumber" type="string" elementId="start_event" default="" />
+        <uipath:input id="vabq2kutQ" name="submissionDate" type="string" elementId="start_event" default="" />
+        <uipath:input id="vCQgnY8KC" name="currentStatus" type="string" elementId="start_event" default="pending" />
+        <uipath:input id="vKsMIEIRy" name="agentAction" type="string" elementId="start_event" default="submit_application" />
+        <uipath:input id="vYTyudEdI" name="chatMessage" type="string" elementId="start_event" default="" />
+        <uipath:input id="v2cQXlwpr" name="message" type="string" elementId="start_event" default="" />
+        <uipath:input id="vBsDHYcsB" name="additionalInfoRequested" type="string" elementId="start_event" default="" />
+        <uipath:input id="vVBgTbTt4" name="rejectionReason" type="string" elementId="start_event" default="" />
+        <uipath:input id="vp07jIgvK" name="pererredLanguage" type="string" elementId="start_event" default="en" />
+        <uipath:input id="veA96DC13" name="submissionDeadline" type="string" elementId="start_event" default="" />
+        <uipath:input id="vNLeAcdrO" name="documentsChecklist" type="jsonSchema" elementId="start_event" default="ID, Bank Statement, Land Document, Farm Photo, CAC"><![CDATA[{"type":"object","$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:input>
+        <uipath:input id="vyoqEJZgg" name="missingDocuments" type="jsonSchema" elementId="start_event" default=""><![CDATA[{"type":"object","$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:input>
+        <uipath:input id="vDt2HSLNF" name="chatHistory" type="jsonSchema" elementId="start_event" default=""><![CDATA[{"type":"object","$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:input>
+        <uipath:inputOutput id="error" name="Error" type="jsonSchema" elementId="Activity_UG1NME"><![CDATA[{"type":"object","properties":{"code":{"type":"string"},"message":{"type":"string"},"detail":{"type":"string"},"category":{"type":"string"},"status":{"type":"number"},"element":{"type":"string"}}}]]></uipath:inputOutput>
+        <uipath:inputOutput id="farmerName" name="farmerName" type="string" elementId="Activity_UG1NME" />
+        <uipath:inputOutput id="stateOfResidence" name="stateOfResidence" type="string" elementId="Activity_UG1NME" />
+        <uipath:inputOutput id="totalMatchesFound" name="totalMatchesFound" type="integer" elementId="Activity_UG1NME" />
+        <uipath:inputOutput id="matchedGrants" name="matchedGrants" type="jsonSchema" subType="object" elementId="Activity_UG1NME"><![CDATA[{"type":"array","description":"Ranked list of matched grant opportunities sorted by matchScore descending. Only include grants with matchScore >= 40.","items":{"type":"object","properties":{"grantName":{"type":"string","description":"Official name of the grant, loan scheme, or funding program (e.g., 'CBN Anchor Borrowers Programme', 'NIRSAL AGSMEIS', 'World Bank APPEALS Project')."},"grantingOrganization":{"type":"string","description":"Full name of the organization administering the grant (e.g., 'Central Bank of Nigeria', 'Bank of Agriculture', 'FMARD', 'FAO Nigeria', 'World Bank')."},"grantCategory":{"type":"string","description":"Category of grant source: 'federal' = Nigerian federal agencies (CBN, BOA, FMARD, NIRSAL, NASC). 'state' = state government programs. 'NGO' = national or international NGOs (GIZ, ActionAid, etc.). 'international' = UN agencies and bilateral donors (FAO, IFAD, USAID). 'development-bank' = AfDB, World Bank, ECOWAS Bank. 'private' = private sector CSR or foundations.","enum":["federal","state","NGO","international","development-bank","private"]},"fundingBody":{"type":"string","description":"Specific body or programme window (e.g., 'CBN Development Finance Department', 'NIRSAL Plc', 'BOA Federal', 'FMARD APPEALS', 'IFAD VCDP', 'World Bank IDA')."},"description":{"type":"string","description":"2 to 3 sentence description of what the grant funds, its objectives, and target beneficiaries in the Nigerian agricultural context."},"fundingAmountRange":{"type":"string","description":"Estimated funding range in NGN or USD (e.g., 'NGN 500,000 to NGN 5,000,000', 'Up to NGN 50,000,000', 'USD 10,000 to USD 100,000'). Use 'Varies by state or cluster' or 'Check with issuing body' if not specified."},"currency":{"type":"string","description":"Primary currency of the grant disbursement.","enum":["NGN","USD","EUR","GBP","Mixed"]},"matchScore":{"type":"integer","description":"Match score 0 to 100 indicating how well the grant fits this farmer's profile. Scored on: farm type match (+25), location eligibility (+20), demographic fit (+20), funding purpose alignment (+25), registration and documentation readiness (+10).","minimum":0,"maximum":100},"matchReason":{"type":"string","description":"Specific explanation of why this grant matches the farmer (e.g., 'Matches: smallholder cassava farmer in Benue State, cooperative member, funding purpose aligns with input procurement under CBN Anchor Borrowers value chain')."},"eligibilityCriteria":{"type":"string","description":"Key eligibility requirements the farmer must meet (e.g., 'Nigerian citizen, registered cooperative member, smallholder farmer, minimum 1 hectare under cultivation, valid BVN, no CBN loan default')."},"requiredDocuments":{"type":"array","description":"List of key documents typically required to apply (e.g., 'Valid NIN or Voter Card', 'CAC registration certificate', 'Bank account with BVN', 'Land document or C of O', 'Passport photograph').","items":{"type":"string"}},"applicationProcess":{"type":"string","description":"Brief description of how to apply (e.g., 'Apply through nearest BOA branch', 'Submit via NIRSAL online portal', 'Apply through state FMARD office', 'Apply via cooperative society to CBN ACGSF desk')."},"applicationDeadline":{"type":"string","description":"Application deadline or cycle (e.g., 'Rolling - apply any time', 'Annual - Q1 cycle', 'Closed - watch for next window'). Never guess a date. Use 'Check official source' if unknown."},"geographicScope":{"type":"string","description":"Geographic coverage of the grant (e.g., 'Nationwide', 'Benue, Kogi and Niger States only', 'North-West geopolitical zone', 'FCT and Ogun State pilot')."},"applicationUrl":{"type":"string","description":"Official URL for the grant page, portal, or organization homepage. Use empty string if not found. Never fabricate a URL."},"contactInformation":{"type":"string","description":"Relevant contact details if available (e.g., 'NIRSAL Plc: info@nirsal.com', 'BOA nearest state branch', 'FMARD Abuja: info@fmard.gov.ng'). Use empty string if not available."}}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="profileGaps" name="profileGaps" type="jsonSchema" subType="string" elementId="Activity_UG1NME"><![CDATA[{"type":"array","description":"Specific profile gaps or missing registrations limiting the farmer's grant options (e.g., 'No CAC registration - excludes from most federal programs', 'Not a cooperative member - eliminates CBN Anchor Borrowers eligibility', 'No land document - restricts BOA land-linked programs').","items":{"type":"string"},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="topRecommendation" name="topRecommendation" type="string" elementId="Activity_UG1NME" />
+        <uipath:inputOutput id="summary" name="summary" type="string" elementId="Activity_UG1NME" />
+        <uipath:inputOutput id="disclaimer" name="disclaimer" type="string" elementId="Activity_UG1NME" />
+        <uipath:inputOutput id="error2" name="Error" type="jsonSchema" elementId="Activity_Ot7uet"><![CDATA[{"type":"object","properties":{"code":{"type":"string"},"message":{"type":"string"},"detail":{"type":"string"},"category":{"type":"string"},"status":{"type":"number"},"element":{"type":"string"}}}]]></uipath:inputOutput>
+        <uipath:inputOutput id="applicantName" name="applicantName" type="string" elementId="Activity_Ot7uet" />
+        <uipath:inputOutput id="farmLocation" name="farmLocation" type="string" elementId="Activity_Ot7uet" />
+        <uipath:inputOutput id="targetGrant" name="targetGrant" type="string" elementId="Activity_Ot7uet" />
+        <uipath:inputOutput id="overallEligibilityScore" name="overallEligibilityScore" type="number" elementId="Activity_Ot7uet" />
+        <uipath:inputOutput id="eligibilityVerdict" name="eligibilityVerdict" type="string" elementId="Activity_Ot7uet" />
+        <uipath:inputOutput id="categoryScores" name="categoryScores" type="jsonSchema" elementId="Activity_Ot7uet"><![CDATA[{"type":"object","description":"Breakdown of scores per evaluation category, each from 0 to 100. Weighted average produces the overallEligibilityScore.","properties":{"farmProfileAlignment":{"type":"number","description":"Score (0–100) for how well the farm type, size in hectares, Nigerian state location, crop or livestock types, and years of operation align with the grant's eligibility criteria."},"financialEligibility":{"type":"number","description":"Score (0–100) assessing whether the annual revenue in NGN and requested funding amount in NGN fall within the grant's financial thresholds (e.g., NIRSAL AGSMEIS max NGN 10M, CBN CACS minimum NGN 100M turnover)."},"projectRelevance":{"type":"number","description":"Score (0–100) for how clearly the proposed project aligns with the grant's stated objectives, eligible value chains, and permissible uses of funds."},"documentationReadiness":{"type":"number","description":"Score (0–100) for the completeness and quality of Nigerian grant documents: NIN, CAC certificate, BVN confirmation, bank statements, C of O or land document, cooperative letter, passport photograph, and farm business plan."},"complianceAndPlanning":{"type":"number","description":"Score (0–100) based on: CAC registration status, BVN linkage, cooperative membership, absence of CBN/BOA loan defaults (CRMS clean record), and existence of a documented farm business plan or cooperative development plan."}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="nigerianComplianceFlags" name="nigerianComplianceFlags" type="jsonSchema" elementId="Activity_Ot7uet"><![CDATA[{"type":"object","description":"Critical Nigerian-specific compliance checks that directly affect grant eligibility. Each flag is a pass/fail/warning indicator.","properties":{"bvnStatus":{"type":"string","enum":["Pass","Fail","Unknown"],"description":"Whether the farmer has a valid BVN linked to an active bank account. 'Fail' is a disqualifying factor for CBN, NIRSAL, and BOA programs."},"cacStatus":{"type":"string","enum":["Registered","Not Registered","Unknown"],"description":"Whether the farmer has a valid CAC registration (BN or RC number). Required for NIRSAL AGSMEIS, CBN CACS, and most federal programs."},"cooperativeMembership":{"type":"string","enum":["Active Member","Not a Member","Unknown"],"description":"Whether the farmer is an active registered cooperative member. Hard requirement for CBN Anchor Borrowers Programme."},"landDocumentStatus":{"type":"string","enum":["Valid Document Held","No Document","Unknown"],"description":"Whether the farmer holds a C of O, R of O, Survey Plan, or formal tenancy agreement. Affects BOA and land-linked grant eligibility."},"loanDefaultRisk":{"type":"string","enum":["No Known Default","Default Flagged — High Risk","Unknown"],"description":"Whether a CBN/BOA loan default exists in CRMS. 'Default Flagged' is a disqualifying factor for all CBN-backed and NIRSAL programs."},"smallholderClassification":{"type":"string","enum":["Smallholder (under 5 ha)","Medium-Scale (5–20 ha)","Large-Scale (above 20 ha)","Unknown"],"description":"Farm size classification in hectares. Determines eligibility for smallholder-specific programs (CBN ABP, NIRSAL, IFAD, FAO)."}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="strengths" name="strengths" type="jsonSchema" subType="string" elementId="Activity_Ot7uet"><![CDATA[{"type":"array","items":{"type":"string"},"description":"Specific factors that strongly support the Nigerian grant application. Each item must reference a concrete fact from the input (e.g., 'Active CAC registration strengthens eligibility for NIRSAL AGSMEIS window', 'Cooperative membership satisfies CBN Anchor Borrowers hard requirement').","$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="riskFactors" name="riskFactors" type="jsonSchema" subType="string" elementId="Activity_Ot7uet"><![CDATA[{"type":"array","items":{"type":"string"},"description":"Identified risks, red flags, or weak areas that may jeopardize eligibility or reduce the score (e.g., 'No BVN on record — disqualifies from all CBN-backed programs', 'Requested NGN 15M exceeds NIRSAL AGSMEIS maximum of NGN 10M', 'Farm size of 12 ha exceeds smallholder threshold for IFAD VCDP').","$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="missingItems" name="missingItems" type="jsonSchema" subType="string" elementId="Activity_Ot7uet"><![CDATA[{"type":"array","items":{"type":"string"},"description":"Specific documents, registrations, or conditions that are absent but required by the grant. Each item must describe exactly what is missing and why it matters for this Nigerian grant program (e.g., 'CAC registration missing — mandatory for NIRSAL AGSMEIS; obtain at any CAC office or via CAC online portal', 'No cooperative membership letter — required for CBN Anchor Borrowers Programme application through the cooperative desk').","$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="analystNarrative" name="analystNarrative" type="string" elementId="Activity_Ot7uet" />
+        <uipath:inputOutput id="recommendations" name="recommendations" type="jsonSchema" subType="string" elementId="Activity_Ot7uet"><![CDATA[{"type":"array","items":{"type":"string"},"description":"Actionable, Nigeria-specific steps the farmer can take to improve eligibility or strengthen the application. Be concrete and practical (e.g., 'Register a business name with CAC online at cac.gov.ng — costs NGN 10,000–25,000 and takes 5–10 business days', 'Join a registered cooperative society in your LGA to qualify for CBN Anchor Borrowers Programme', 'Visit your bank branch to confirm BVN is linked to your active account and request a BVN confirmation slip').","$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="alternativeGrants" name="alternativeGrants" type="string" elementId="Activity_Ot7uet" />
+        <uipath:inputOutput id="error3" name="Error" type="jsonSchema" elementId="Activity_pGNFdn"><![CDATA[{"type":"object","properties":{"code":{"type":"string"},"message":{"type":"string"},"detail":{"type":"string"},"category":{"type":"string"},"status":{"type":"number"},"element":{"type":"string"}}}]]></uipath:inputOutput>
+        <uipath:inputOutput id="farmerName2" name="farmerName" type="string" elementId="Activity_pGNFdn" />
+        <uipath:inputOutput id="nameConsistencyCheck" name="nameConsistencyCheck" type="string" elementId="Activity_pGNFdn" />
+        <uipath:inputOutput id="documentResults" name="documentResults" type="jsonSchema" subType="object" elementId="Activity_pGNFdn"><![CDATA[{"type":"array","description":"Per-document extraction results. One object per uploaded document.","items":{"type":"object","properties":{"documentIndex":{"type":"integer","description":"Zero-based index matching the position of the document in the input `documents` array."},"fileName":{"type":"string","description":"Original file name of the uploaded document."},"detectedDocumentType":{"type":"string","description":"Document type as detected by the agent (e.g., 'NIN Slip', 'Certificate of Occupancy', 'CAC Registration', 'Bank Statement', 'NIRSAL Loan Agreement', 'Farm Cooperative Certificate', 'Voter Card', 'International Passport', 'Survey Plan', 'NAFDAC Permit', 'Unknown')."},"extractedFields":{"type":"object","description":"Key-value pairs of all extracted fields from this document. Field names depend on document type. Examples: fullName, dateOfBirth, ninNumber, issuingAuthority, plotNumber, landArea, registrationNumber, accountName, bankName, statementPeriod, balance, loanAmount, cooperativeName, etc.","additionalProperties":{"type":"string"}},"validationStatus":{"type":"string","description":"Authenticity assessment of this document. 'Valid' = all expected fields present and internally consistent. 'Likely Valid' = minor issues but appears genuine. 'Suspicious' = notable anomalies flagged. 'Invalid' = clear forgery indicators or critical missing elements. 'Unverifiable' = cannot determine from content alone.","enum":["Valid","Likely Valid","Suspicious","Invalid","Unverifiable"]},"flags":{"type":"array","description":"Specific anomalies, inconsistencies, or concerns detected in this document (e.g., 'Date of issue is in the future', 'Name spelling differs from other documents', 'Missing official stamp', 'Blurred or unreadable section'). Empty array if no flags.","items":{"type":"string"}},"documentSummary":{"type":"string","description":"1–2 sentence plain-English summary of what this document confirms about the farmer."}}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="consolidatedFarmerProfile" name="consolidatedFarmerProfile" type="jsonSchema" elementId="Activity_pGNFdn"><![CDATA[{"type":"object","description":"A unified profile assembled from all documents combined. Contains the most reliable version of key data points.","properties":{"fullName":{"type":"string","description":"Best confirmed full name across all documents."},"dateOfBirth":{"type":"string","description":"Date of birth in ISO format (YYYY-MM-DD) if found."},"nationalId":{"type":"string","description":"NIN or other national ID number if found."},"address":{"type":"string","description":"Most complete address found across documents."},"stateOfOrigin":{"type":"string","description":"Nigerian state of origin if found."},"lgaOfOrigin":{"type":"string","description":"Local Government Area if found."},"landHoldings":{"type":"array","description":"List of confirmed land parcels with size and location (e.g., '2.5 hectares at Plot 4, Block B, Abuja FCT').","items":{"type":"string"}},"businessRegistration":{"type":"string","description":"CAC registration number and business name if found."},"bankDetails":{"type":"string","description":"Bank name, account name, and last 4 digits of account if found."},"farmingActivities":{"type":"array","description":"Confirmed farming activities or crops from cooperative or certification documents.","items":{"type":"string"}},"activeLoansOrObligations":{"type":"string","description":"Any active loans, CBN/NIRSAL obligations, or financial commitments found in documents."}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="crossDocumentInconsistencies" name="crossDocumentInconsistencies" type="jsonSchema" subType="string" elementId="Activity_pGNFdn"><![CDATA[{"type":"array","description":"Specific contradictions found when comparing data across multiple documents (e.g., 'Date of birth is 1985-03-10 on NIN but 1985-07-10 on passport', 'Land area is 5 hectares on C of O but 2 hectares on survey plan'). Empty array if none found.","items":{"type":"string"},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="missingCriticalDocuments" name="missingCriticalDocuments" type="jsonSchema" subType="string" elementId="Activity_pGNFdn"><![CDATA[{"type":"array","description":"Important document types not found in the uploaded set that are typically required for Nigerian agricultural grant applications (e.g., 'No valid government-issued ID found', 'No land ownership document provided', 'No bank statement found'). Empty array if all critical documents are present.","items":{"type":"string"},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="overallDocumentScore" name="overallDocumentScore" type="number" elementId="Activity_pGNFdn" />
+        <uipath:inputOutput id="documentVerdict" name="documentVerdict" type="string" elementId="Activity_pGNFdn" />
+        <uipath:inputOutput id="analystNotes" name="analystNotes" type="string" elementId="Activity_pGNFdn" />
+        <uipath:inputOutput id="recommendations2" name="recommendations" type="jsonSchema" subType="string" elementId="Activity_pGNFdn"><![CDATA[{"type":"array","description":"Concrete actions the farmer should take to resolve flags, fill gaps, or strengthen their document package (e.g., 'Resubmit NIN slip with clearer scan', 'Provide a recent utility bill to confirm residential address', 'Obtain updated CAC status report').","items":{"type":"string"},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="error5" name="Error" type="jsonSchema" elementId="Activity_MoZND9"><![CDATA[{"type":"object","properties":{"code":{"type":"string"},"message":{"type":"string"},"detail":{"type":"string"},"category":{"type":"string"},"status":{"type":"number"},"element":{"type":"string"}}}]]></uipath:inputOutput>
+        <uipath:inputOutput id="comment" name="Comment" type="string" elementId="Activity_MoZND9" />
+        <uipath:inputOutput id="action" name="Action" type="string" elementId="Activity_MoZND9" />
+        <uipath:inputOutput id="hitlTask" name="hitlTask" type="jsonSchema" elementId="Activity_MoZND9"><![CDATA[{"type":"object","displayName":"All Task Properties","properties":{"Id":{"type":"integer","description":"Task identifier"},"Key":{"type":"string","description":"Unique task identifier (UUID)"},"Title":{"type":"string","description":"Task title"},"Status":{"type":"string","description":"Task status: Unassigned, Pending, or Completed"},"Action":{"type":"string","description":"Action taken on the task"},"ActionLabel":{"type":"string","description":"Action display label"},"Priority":{"type":"string","description":"Task priority: Low, Medium, High, or Critical"},"Type":{"type":"string","description":"Task type (e.g. FormTask, AppTask, QuickFormTask)"},"Data":{"type":"object","description":"Task form field values"},"CompletedByUser":{"type":"object","description":"User who completed the task","properties":{"Id":{"type":"integer"},"Name":{"type":"string"},"Surname":{"type":"string"},"UserName":{"type":"string"},"EmailAddress":{"type":"string"},"DisplayName":{"type":"string"},"Type":{"type":"string","description":"User, Robot, DirectoryUser, DirectoryGroup, DirectoryRobot, or DirectoryExternalApplication"},"AuthenticationSource":{"type":"string"}}},"AssignedToUser":{"type":"object","description":"User currently assigned to the task","properties":{"Id":{"type":"integer"},"Name":{"type":"string"},"Surname":{"type":"string"},"UserName":{"type":"string"},"EmailAddress":{"type":"string"},"DisplayName":{"type":"string"},"Type":{"type":"string","description":"User, Robot, DirectoryUser, DirectoryGroup, DirectoryRobot, or DirectoryExternalApplication"},"AuthenticationSource":{"type":"string"}}},"AssignedToUserId":{"type":"integer","description":"ID of the assigned user"},"TaskAssignmentCriteria":{"type":"string","description":"Assignment criteria: SingleUser, Workload, AllUsers, RoundRobin, or Hierarchy"},"TaskAssignees":{"type":"array","description":"List of users assigned to the task","items":{"type":"object","properties":{"Id":{"type":"integer"},"Name":{"type":"string"},"Surname":{"type":"string"},"UserName":{"type":"string"},"EmailAddress":{"type":"string"},"DisplayName":{"type":"string"},"Type":{"type":"string","description":"User, Robot, DirectoryUser, DirectoryGroup, DirectoryRobot, or DirectoryExternalApplication"},"AuthenticationSource":{"type":"string"}}}},"CompletionTime":{"type":"string","description":"Task completion timestamp"},"CreationTime":{"type":"string","description":"Task creation timestamp"},"LastModificationTime":{"type":"string","description":"Last modification timestamp"},"LastAssignedTime":{"type":"string","description":"Last assignment timestamp"},"OrganizationUnitId":{"type":"integer","description":"Folder/organization unit ID"},"OrganizationUnitFullyQualifiedName":{"type":"string","description":"Fully qualified folder name"},"ParentOperationId":{"type":"string","description":"Operation ID that created this task"},"CreatorJobKey":{"type":"string","description":"Key of the job that created this task (UUID)"},"ExternalTag":{"type":"string","description":"External system identifier"},"ProcessingTime":{"type":"integer","description":"Time spent in assigned state"},"WaitJobState":{"type":"string","description":"State of the waiting job"},"WaitJobKey":{"type":"string","description":"Key of the waiting job (UUID)"},"TaskSchemaKey":{"type":"string","description":"Schema key for QuickFormTask (UUID)"},"IsDeleted":{"type":"boolean"},"IsCurrentUserInAllUserAssignedGroup":{"type":"boolean"},"CreatorUserId":{"type":"integer","description":"ID of the user who created the task"},"LastModifierUserId":{"type":"integer","description":"ID of the last user to modify the task"},"DeleterUserId":{"type":"integer"},"DeletionTime":{"type":"string"},"Tags":{"type":"array","description":"Tags associated to the task","items":{"type":"object","properties":{"Name":{"type":"string"},"DisplayName":{"type":"string"},"Value":{"type":"string"},"DisplayValue":{"type":"string"}}}},"TaskDefinitionPropertiesId":{"type":"integer","description":"Task definition properties ID"},"AppTasksMetadata":{"type":"object","description":"App task metadata","properties":{"Id":{"type":"integer"},"AppId":{"type":"string","description":"Associated App ID"},"AppVersion":{"type":"integer","description":"Associated App version"},"AppProcessKey":{"type":"string","description":"App process key (UUID)"},"FolderKey":{"type":"string","description":"Folder key (UUID)"},"Runtime":{"type":"string","description":"Serverless or Unattended"},"AppType":{"type":"string","description":"Custom or Dynamic"},"CreationTime":{"type":"string"},"CreatorUserId":{"type":"integer"},"CreatorUserKey":{"type":"string","description":"Creator user key (UUID)"}}},"TaskSlaDetails":{"type":"array","description":"Task SLA details","items":{"type":"object","properties":{"ExpiryTime":{"type":"string","description":"SLA expiry timestamp"},"StartCriteria":{"type":"string","description":"TaskCreated, TaskAssigned, or TaskCompleted"},"EndCriteria":{"type":"string","description":"TaskCreated, TaskAssigned, or TaskCompleted"},"Status":{"type":"string","description":"OverdueLater, OverdueSoon, Overdue, or CompletedInTime"}}}},"TaskSource":{"type":"object","description":"Task source information","properties":{"SourceName":{"type":"string","description":"Agent, Workflow, Maestro, CaseManagement, or Default"},"SourceId":{"type":"string"},"JobId":{"type":"string"}}}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="error6" name="Error" type="jsonSchema" elementId="Activity_hOUdUf"><![CDATA[{"type":"object","properties":{"code":{"type":"string"},"message":{"type":"string"},"detail":{"type":"string"},"category":{"type":"string"},"status":{"type":"number"},"element":{"type":"string"}}}]]></uipath:inputOutput>
+        <uipath:inputOutput id="farmerName3" name="farmerName" type="string" elementId="Activity_hOUdUf" />
+        <uipath:inputOutput id="grantName" name="grantName" type="string" elementId="Activity_hOUdUf" />
+        <uipath:inputOutput id="agentAction" name="agentAction" type="string" elementId="Activity_hOUdUf" />
+        <uipath:inputOutput id="currentStatus" name="currentStatus" type="string" elementId="Activity_hOUdUf" />
+        <uipath:inputOutput id="submissionPackage" name="submissionPackage" type="jsonSchema" elementId="Activity_hOUdUf"><![CDATA[{"type":"object","description":"Present only when agentAction is 'prepare-submission-package'. Contains everything the farmer needs to submit the application correctly.","properties":{"readinessAssessment":{"type":"string","enum":["Ready to Submit","Almost Ready — Minor Issues","Not Ready — Critical Items Missing"],"description":"Overall readiness verdict based on documents checklist and missing items."},"coverLetter":{"type":"string","description":"Complete formal cover letter addressed to the granting organization. Includes applicant details, project title, amount requested, brief project summary, list of enclosed documents, and a professional sign-off."},"documentsChecklistVerified":{"type":"array","items":{"type":"object","properties":{"document":{"type":"string"},"status":{"type":"string","enum":["Ready","Missing","Needs Update"]},"note":{"type":"string"}}},"description":"Status check of every document in the submission package."},"submissionGuide":{"type":"string","description":"Step-by-step plain-language guide (5 to 8 steps) on exactly how to submit this application specific to the submission method chosen."},"criticalWarnings":{"type":"array","items":{"type":"string"},"description":"Critical issues that must be resolved before submission. Empty array if none."},"submissionTips":{"type":"array","items":{"type":"string"},"description":"Practical tips for a successful submission (e.g., 'Make 3 copies of all documents', 'Arrive at the office before 10am')."}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="confirmationPackage" name="confirmationPackage" type="jsonSchema" elementId="Activity_hOUdUf"><![CDATA[{"type":"object","description":"Present only when agentAction is 'generate-confirmation'. Contains all confirmation messages for the farmer after successful submission.","properties":{"congratulatoryMessage":{"type":"string","description":"Warm encouraging message to the farmer confirming successful submission. Mentions the grant name, submission date, reference number if available, and next steps."},"smsMessage":{"type":"string","description":"Short SMS-ready confirmation message (max 160 characters) the farmer can receive on their phone."},"whatsappMessage":{"type":"string","description":"Friendly WhatsApp-style confirmation message (150 to 250 words) with appropriate emojis. Confirms submission, lists key details, and tells the farmer what to expect next."},"submissionSummaryCard":{"type":"object","properties":{"farmerName":{"type":"string"},"grantName":{"type":"string"},"projectTitle":{"type":"string"},"amountRequested":{"type":"string"},"submissionDate":{"type":"string"},"referenceNumber":{"type":"string"},"expectedResponseTime":{"type":"string"},"nextStep":{"type":"string"}}}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="reminderSchedule" name="reminderSchedule" type="jsonSchema" elementId="Activity_hOUdUf"><![CDATA[{"type":"object","description":"Present only when agentAction is 'set-reminders'. Contains a full timeline of reminders from pre-submission through to expected decision.","properties":{"totalReminders":{"type":"integer"},"reminders":{"type":"array","items":{"type":"object","properties":{"reminderNumber":{"type":"integer"},"triggerEvent":{"type":"string","description":"What triggers this reminder (e.g., '7 days before deadline', '2 weeks after submission')."},"suggestedDate":{"type":"string","description":"Suggested calendar date (YYYY-MM-DD) or relative description."},"channel":{"type":"string","enum":["SMS","WhatsApp","Email","Phone Call","In-Person Visit"]},"smsText":{"type":"string","description":"Short SMS reminder (max 160 characters)."},"fullMessage":{"type":"string","description":"Full reminder message (100 to 200 words) with context, action required, and encouragement."},"actionRequired":{"type":"string","description":"What the farmer must do in response to this reminder."}}}},"calendarSummary":{"type":"string","description":"Plain-language overview of the full reminder timeline describing all key dates and milestones."}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="trackingAndFollowUp" name="trackingAndFollowUp" type="jsonSchema" elementId="Activity_hOUdUf"><![CDATA[{"type":"object","description":"Present only when agentAction is 'track-and-follow-up'. Contains status assessment and ready-to-send follow-up communications.","properties":{"statusAssessment":{"type":"string","description":"Assessment of where the application stands, how long it has been in current status, whether the timeline is normal, and what the farmer should expect next."},"urgencyLevel":{"type":"string","enum":["Routine","Follow-Up Due","Action Required","Urgent"]},"followUpEmailDraft":{"type":"string","description":"Complete professional follow-up email draft addressed to the granting organization. Mentions reference number, project title, submission date, and politely inquires about status."},"followUpWhatsappMessage":{"type":"string","description":"Shorter polite follow-up message in WhatsApp format (80 to 120 words). Friendly but professional."},"phoneScriptForFollowUp":{"type":"string","description":"Word-for-word phone script the farmer can use when calling the grant office. Includes greeting, self-introduction, reference number, what to say, questions to ask, and how to close."},"nextActions":{"type":"array","items":{"type":"object","properties":{"action":{"type":"string"},"timeline":{"type":"string"},"channel":{"type":"string"}}},"description":"Ordered list of 3 to 5 concrete next actions for the farmer."}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="additionalInfoResponse" name="additionalInfoResponse" type="jsonSchema" elementId="Activity_hOUdUf"><![CDATA[{"type":"object","description":"Present only when agentAction is 'handle-additional-info-request'. Helps farmer respond to a request for more documents or information.","properties":{"acknowledgementLetter":{"type":"string","description":"Formal letter acknowledging the grantor request, confirming the farmer will provide the items, and committing to a response timeline."},"itemsToProvide":{"type":"array","items":{"type":"object","properties":{"item":{"type":"string"},"howToObtain":{"type":"string","description":"Practical guidance on where and how the farmer can obtain this item in Nigeria."},"estimatedTimeToObtain":{"type":"string"}}}},"farmerInstructions":{"type":"string","description":"Friendly plain-language instructions for the farmer explaining what was requested and exactly what they need to do step by step."},"responseDeadlineSuggestion":{"type":"string","description":"Suggested timeframe for responding to the grantor (e.g., 'Aim to respond within 5 to 7 business days')."}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="rejectionResponse" name="rejectionResponse" type="jsonSchema" elementId="Activity_hOUdUf"><![CDATA[{"type":"object","description":"Present only when agentAction is 'generate-rejection-response'. Helps the farmer process a rejection and plan next steps.","properties":{"farmerSupportMessage":{"type":"string","description":"Empathetic encouraging message acknowledging the disappointment, normalizing rejection in the grant process, and motivating the farmer to move forward."},"rejectionAnalysis":{"type":"string","description":"Professional analysis of the likely reasons for rejection and what it means practically for the farmer's next steps."},"appealLetter":{"type":"string","description":"Formal appeal letter professionally challenging the rejection reason, providing additional context, and requesting reconsideration or feedback."},"improvementPlan":{"type":"array","items":{"type":"string"},"description":"Concrete actions the farmer can take to strengthen their application for the next cycle."},"alternativeOptions":{"type":"array","items":{"type":"string"},"description":"Specific alternative grant programs or funding sources the farmer can pivot to."}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="farmerFacingMessagePrimary" name="farmerFacingMessagePrimary" type="string" elementId="Activity_hOUdUf" />
+        <uipath:inputOutput id="agentSummary" name="agentSummary" type="string" elementId="Activity_hOUdUf" />
+        <uipath:inputOutput id="error4" name="Error" type="jsonSchema" elementId="Activity_4HvjEH"><![CDATA[{"type":"object","properties":{"code":{"type":"string"},"message":{"type":"string"},"detail":{"type":"string"},"category":{"type":"string"},"status":{"type":"number"},"element":{"type":"string"}}}]]></uipath:inputOutput>
+        <uipath:inputOutput id="proposalTitle" name="proposalTitle" type="string" elementId="Activity_4HvjEH" />
+        <uipath:inputOutput id="applicantName2" name="applicantName" type="string" elementId="Activity_4HvjEH" />
+        <uipath:inputOutput id="organizationName" name="organizationName" type="string" elementId="Activity_4HvjEH" />
+        <uipath:inputOutput id="targetGrant2" name="targetGrant" type="string" elementId="Activity_4HvjEH" />
+        <uipath:inputOutput id="grantingOrganization" name="grantingOrganization" type="string" elementId="Activity_4HvjEH" />
+        <uipath:inputOutput id="requestedAmountNgn" name="requestedAmountNGN" type="number" elementId="Activity_4HvjEH" />
+        <uipath:inputOutput id="projectDurationMonths" name="projectDurationMonths" type="integer" elementId="Activity_4HvjEH" />
+        <uipath:inputOutput id="coverPage" name="coverPage" type="jsonSchema" elementId="Activity_4HvjEH"><![CDATA[{"type":"object","description":"Structured cover page metadata. Populated when documentType is 'full_proposal' or 'both'. Null object when documentType is 'application_letter'.","properties":{"projectTitle":{"type":"string","description":"Full project title as it appears on the cover page."},"submittedBy":{"type":"string","description":"Applicant or organization name."},"submittedTo":{"type":"string","description":"Granting organization name and department."},"projectLocation":{"type":"string","description":"State and LGA of the project."},"projectDuration":{"type":"string","description":"Project duration in readable format (e.g., '18 months: January 2026 – June 2027')."},"totalFundingRequested":{"type":"string","description":"Amount in NGN formatted with commas (e.g., 'NGN 5,000,000')."},"submissionDate":{"type":"string","description":"Submission date in format 'Month YYYY'."}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="executiveSummary" name="executiveSummary" type="string" elementId="Activity_4HvjEH" />
+        <uipath:inputOutput id="problemStatement" name="problemStatement" type="string" elementId="Activity_4HvjEH" />
+        <uipath:inputOutput id="projectDescription" name="projectDescription" type="string" elementId="Activity_4HvjEH" />
+        <uipath:inputOutput id="projectObjectives" name="projectObjectives" type="jsonSchema" subType="string" elementId="Activity_4HvjEH"><![CDATA[{"type":"array","description":"3–5 SMART objectives (Specific, Measurable, Achievable, Relevant, Time-bound). Each written as a complete action statement. Empty array when documentType is 'application_letter'.","items":{"type":"string"},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="methodology" name="methodology" type="jsonSchema" elementId="Activity_4HvjEH"><![CDATA[{"type":"object","description":"Structured methodology with phased activities. Populated when documentType is 'full_proposal' or 'both'.","properties":{"overview":{"type":"string","description":"100–150 word overview of the overall approach."},"activities":{"type":"array","description":"Phased activity plan covering the full project duration.","items":{"type":"object","properties":{"phase":{"type":"string","description":"Phase name (e.g., 'Phase 1: Mobilization and Procurement')."},"timeline":{"type":"string","description":"Time period for this phase (e.g., 'Month 1–3')."},"activities":{"type":"array","description":"List of specific activities in this phase.","items":{"type":"string"}}}}}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="budgetBreakdown" name="budgetBreakdown" type="jsonSchema" subType="object" elementId="Activity_4HvjEH"><![CDATA[{"type":"array","description":"Itemized budget summing to requestedAmountNGN. Empty array when documentType is 'application_letter'.","items":{"type":"object","properties":{"lineItem":{"type":"string","description":"Budget item name (e.g., 'Irrigation Equipment', 'Labour Costs')."},"description":{"type":"string","description":"Brief description of what this covers."},"amountNGN":{"type":"number","description":"Amount in NGN for this line item."},"percentageOfTotal":{"type":"string","description":"Percentage of total budget (e.g., '25%')."},"justification":{"type":"string","description":"1–2 sentence justification for this expenditure."}}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="budgetNarrative" name="budgetNarrative" type="string" elementId="Activity_4HvjEH" />
+        <uipath:inputOutput id="expectedOutcomes" name="expectedOutcomes" type="jsonSchema" elementId="Activity_4HvjEH"><![CDATA[{"type":"object","description":"Structured outcomes covering direct outputs, impact, and beneficiary breakdown. Populated when full proposal is generated.","properties":{"directOutputs":{"type":"array","description":"Concrete measurable deliverables.","items":{"type":"string"}},"impactStatements":{"type":"array","description":"Broader impact statements.","items":{"type":"string"}},"beneficiaries":{"type":"object","properties":{"directBeneficiaries":{"type":"integer","description":"Number of people directly benefiting."},"indirectBeneficiaries":{"type":"integer","description":"Number of people indirectly benefiting."},"womenBeneficiaries":{"type":"string","description":"Proportion or number of women beneficiaries (e.g., '60% women', '120 women farmers')."},"youthBeneficiaries":{"type":"string","description":"Proportion or number of youth beneficiaries (e.g., '35% youth aged 18–35')."}}}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="sustainabilityPlan" name="sustainabilityPlan" type="string" elementId="Activity_4HvjEH" />
+        <uipath:inputOutput id="organizationalCapacity" name="organizationalCapacity" type="string" elementId="Activity_4HvjEH" />
+        <uipath:inputOutput id="monitoringAndEvaluation" name="monitoringAndEvaluation" type="jsonSchema" elementId="Activity_4HvjEH"><![CDATA[{"type":"object","description":"M&E framework for tracking project progress. Populated when full proposal is generated.","properties":{"approach":{"type":"string","description":"100–150 word description of the overall M&E approach."},"keyIndicators":{"type":"array","description":"3–5 KPIs with baselines, targets, and measurement methods.","items":{"type":"object","properties":{"indicator":{"type":"string","description":"Name of the performance indicator."},"baseline":{"type":"string","description":"Starting value before the project."},"target":{"type":"string","description":"Expected value by project end."},"measurementMethod":{"type":"string","description":"How this will be measured."}}}},"reportingSchedule":{"type":"string","description":"Reporting frequency and format (e.g., 'Monthly activity reports, quarterly financial reports, final impact report at project close')."}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="conclusion" name="conclusion" type="string" elementId="Activity_4HvjEH" />
+        <uipath:inputOutput id="fullProposalText" name="fullProposalText" type="string" elementId="Activity_4HvjEH" />
+        <uipath:inputOutput id="proposalQualityScore" name="proposalQualityScore" type="integer" elementId="Activity_4HvjEH" />
+        <uipath:inputOutput id="writingNotes" name="writingNotes" type="jsonSchema" subType="string" elementId="Activity_4HvjEH"><![CDATA[{"type":"array","description":"1–3 specific improvement notes identifying what additional farmer information would strengthen the documents (e.g., 'Adding a letter of support from the cooperative chairman would significantly increase credibility', 'Including local post-harvest loss statistics for Kano State would strengthen the problem statement'). Empty array if all documents are strong as-is.","items":{"type":"string"},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="documentType" name="documentType" type="string" elementId="Activity_4HvjEH" />
+        <uipath:inputOutput id="applicationLetters" name="applicationLetters" type="jsonSchema" subType="object" elementId="Activity_4HvjEH"><![CDATA[{"type":"array","description":"Array of ready-to-submit formal application letters. Populated when documentType is 'application_letter' or 'both'. Empty array [] when documentType is 'full_proposal'.","items":{"type":"object","properties":{"grantName":{"type":"string","description":"Name of the grant this letter is for."},"letterType":{"type":"string","description":"Format of the letter based on grantCategory: 'formal_government' for CBN/BOA/FMARD, 'state_ministry' for state programs, 'microfinance' for NIRSAL/MFB programs, 'ngo_eoi' for NGO expression of interest, 'development_bank' for World Bank/IFAD/AfDB.","enum":["formal_government","state_ministry","microfinance","ngo_eoi","development_bank"]},"recipientAddress":{"type":"string","description":"Full recipient address block for the letter header (e.g., 'The Director, Development Finance Department, Central Bank of Nigeria, CBN Headquarters, Abuja')."},"subject":{"type":"string","description":"Subject line of the letter in uppercase (e.g., 'RE: APPLICATION FOR THE CBN ANCHOR BORROWERS PROGRAMME — RICE AND MAIZE PRODUCTION, KANO STATE')."},"letterBody":{"type":"string","description":"Complete formatted application letter body, ready to print and sign. Includes: farmer address header, date (June 2026), recipient address, subject line, salutation, 4–5 body paragraphs (introduction, farm profile, funding need, grant alignment, closing), complimentary close, and signature block. 400–600 words. Must be complete — not a template, not a draft."},"enclosureList":{"type":"array","description":"List of all supporting documents to attach with the letter (e.g., 'Certified copy of NIN slip', 'CAC Certificate', 'Land document or C of O', 'Recent passport photograph', 'Bank statement (last 6 months)').","items":{"type":"string"}},"recommendedSubmissionMethod":{"type":"string","description":"Step-by-step instructions on how to physically or digitally submit this specific letter (e.g., 'Print 3 copies. Hand-deliver to the nearest CBN branch or participating microfinance bank. Request an acknowledgement receipt at submission.')."},"wordCount":{"type":"integer","description":"Approximate word count of the letterBody."}}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="preparationChecklist" name="preparationChecklist" type="jsonSchema" subType="string" elementId="Activity_4HvjEH"><![CDATA[{"type":"array","description":"Always populated. Step-by-step checklist of everything the farmer must do and gather before submitting (e.g., 'Print 3 copies of the application letter on A4 paper', 'Obtain certified copy of CAC certificate from a notary public', 'Ensure BVN is linked to an active bank account', 'Attach one recent passport photograph per copy'). Minimum 6 items.","items":{"type":"string"},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="submissionInstructions" name="submissionInstructions" type="string" elementId="Activity_4HvjEH" />
+        <uipath:inputOutput id="disclaimer2" name="disclaimer" type="string" elementId="Activity_4HvjEH" />
+        <uipath:inputOutput id="jobId" name="jobId" type="string" elementId="Process_1" default="${$instance.id}" custom="true" />
+        <uipath:inputOutput id="userId" name="userId" type="string" elementId="Process_1" default="${trigger.userId}" custom="true" />
+        <uipath:inputOutput id="sessionId" name="sessionId" type="string" elementId="Process_1" default="${trigger.sessionId}" custom="true" />
+        <uipath:inputOutput id="farmerEmail" name="farmerEmail" type="string" elementId="Process_1" default="${trigger.farmerEmail}" custom="true" />
+        <uipath:inputOutput id="error7" name="Error" type="jsonSchema" elementId="task_grant_discovery"><![CDATA[{"type":"object","properties":{"code":{"type":"string"},"message":{"type":"string"},"detail":{"type":"string"},"category":{"type":"string"},"status":{"type":"number"},"element":{"type":"string"}}}]]></uipath:inputOutput>
+        <uipath:inputOutput id="farmerName5" name="farmerName" type="string" elementId="task_grant_discovery" />
+        <uipath:inputOutput id="stateOfResidence2" name="stateOfResidence" type="string" elementId="task_grant_discovery" />
+        <uipath:inputOutput id="totalMatchesFound2" name="totalMatchesFound" type="integer" elementId="task_grant_discovery" />
+        <uipath:inputOutput id="matchedGrants2" name="matchedGrants" type="jsonSchema" subType="object" elementId="task_grant_discovery"><![CDATA[{"type":"array","description":"Ranked list of matched FREE grant opportunities sorted by matchScore descending. Only include grants with matchScore >= 40. Every entry must be a free grant — no loans, no credit facilities, no repayment-based programs.","items":{"type":"object","properties":{"grantName":{"type":"string","description":"Official name of the FREE grant program (e.g., 'USAID Feed the Future Nigeria', 'AGRA Smallholder Grant', 'World Bank APPEALS Project', 'GIZ Pro-AADII Grant', 'Tony Elumelu Foundation Grant'). Must be a grant — never a loan."},"grantingOrganization":{"type":"string","description":"Full name of the organization providing the FREE grant (e.g., 'USAID', 'Bill & Melinda Gates Foundation', 'AGRA', 'World Bank', 'African Development Bank', 'GIZ', 'FAO Nigeria', 'TechnoServe')."},"grantCategory":{"type":"string","description":"Category of grant source: 'international' = UN agencies and bilateral donors (FAO, IFAD, USAID, DFID). 'development-bank' = AfDB, World Bank grant windows. 'NGO' = international or local NGOs (GIZ, ActionAid, TechnoServe, Oxfam). 'federal' = Nigerian federal FREE programs (FMARD free inputs, NALDA, N-Power). 'state' = state government free grant programs. 'private' = private foundations (Gates, Tony Elumelu, Leventis).","enum":["federal","state","NGO","international","development-bank","private"]},"fundingBody":{"type":"string","description":"Specific body or programme window providing the free grant (e.g., 'USAID Feed the Future', 'AGRA Grant Programme', 'World Bank IDA Grant', 'IFAD VCDP Grant Component', 'AfDB ENABLE Youth', 'GIZ Pro-AADII', 'Tony Elumelu Foundation')."},"description":{"type":"string","description":"2 to 3 sentence description of what the FREE grant funds, its objectives, and target beneficiaries. Must clearly state this is a non-repayable grant."},"fundingAmountRange":{"type":"string","description":"Estimated FREE grant funding range in NGN or USD (e.g., 'NGN 500,000 to NGN 5,000,000', 'Up to USD 100,000', 'In-kind inputs valued at NGN 200,000'). Use 'Varies — check with organization' if not specified."},"currency":{"type":"string","description":"Primary currency of the grant disbursement.","enum":["NGN","USD","EUR","GBP","Mixed"]},"matchScore":{"type":"integer","description":"Match score 0 to 100 indicating how well the FREE grant fits this farmer's profile. Scored on: farm type match (+25), location eligibility (+20), demographic fit (+20), funding purpose alignment (+25), registration and documentation readiness (+10).","minimum":0,"maximum":100},"matchReason":{"type":"string","description":"Specific explanation of why this FREE grant matches the farmer (e.g., 'Matches: smallholder rice farmer in Kano State, youth farmer under 35, USAID targets exactly this demographic for Feed the Future irrigation grants')."},"eligibilityCriteria":{"type":"string","description":"Key eligibility requirements the farmer must meet for this FREE grant (e.g., 'Nigerian citizen, smallholder farmer under 5 hectares, registered cooperative member, valid BVN, farming in target state')."},"requiredDocuments":{"type":"array","description":"List of key documents typically required to apply for this grant (e.g., 'Valid NIN or Voter Card', 'CAC registration certificate', 'Bank account with BVN', 'Passport photograph', 'Farm location map').","items":{"type":"string"}},"applicationProcess":{"type":"string","description":"Brief description of how to apply for this FREE grant (e.g., 'Apply online via USAID partner portal', 'Contact GIZ state office', 'Apply through TechnoServe Nigeria field office', 'Submit application via cooperative society to FMARD desk')."},"applicationDeadline":{"type":"string","description":"Application deadline or cycle (e.g., 'Rolling - apply any time', 'Annual - Q1 cycle', '2026-09-30', 'Verify current status'). Never guess a date. Use 'Check official source' if unknown."},"geographicScope":{"type":"string","description":"Geographic coverage of the grant (e.g., 'Nationwide', 'Kano, Kaduna and Jigawa States', 'North-West geopolitical zone', 'All 36 states + FCT')."},"applicationUrl":{"type":"string","description":"Official URL for the grant page, portal, or organization homepage. Use empty string if not found in search results. Never fabricate a URL."},"contactInformation":{"type":"string","description":"Relevant contact details if available (e.g., 'USAID Nigeria: usaidnigeria@usaid.gov', 'GIZ Abuja office: +234-XXX', 'TechnoServe Nigeria: info@tns.org'). Use empty string if not available."}}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="profileGaps2" name="profileGaps" type="jsonSchema" subType="string" elementId="task_grant_discovery"><![CDATA[{"type":"array","description":"Specific profile gaps or missing registrations limiting the farmer's access to FREE grants (e.g., 'No CAC registration - excludes from most international donor programs', 'Not a cooperative member - limits access to group-based grants', 'No land document - restricts land-improvement grant eligibility').","items":{"type":"string"},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="topRecommendation2" name="topRecommendation" type="string" elementId="task_grant_discovery" />
+        <uipath:inputOutput id="summary2" name="summary" type="string" elementId="task_grant_discovery" />
+        <uipath:inputOutput id="disclaimer3" name="disclaimer" type="string" elementId="task_grant_discovery" />
+        <uipath:inputOutput id="error8" name="Error" type="jsonSchema" elementId="task_notify_no_grants"><![CDATA[{"type":"object","properties":{"code":{"type":"string"},"message":{"type":"string"},"detail":{"type":"string"},"category":{"type":"string"},"status":{"type":"number"},"element":{"type":"string"}}}]]></uipath:inputOutput>
+        <uipath:inputOutput id="farmerName6" name="farmerName" type="string" elementId="task_notify_no_grants" />
+        <uipath:inputOutput id="grantName2" name="grantName" type="string" elementId="task_notify_no_grants" />
+        <uipath:inputOutput id="agentAction2" name="agentAction" type="string" elementId="task_notify_no_grants" />
+        <uipath:inputOutput id="currentStatus2" name="currentStatus" type="string" elementId="task_notify_no_grants" />
+        <uipath:inputOutput id="webAppNotification" name="webAppNotification" type="jsonSchema" elementId="task_notify_no_grants"><![CDATA[{"type":"object","description":"ALWAYS required. Notification pushed to the farmer's web app dashboard. This is the PRIMARY communication channel for Tier 1 (farmer-facing) alerts.","properties":{"type":{"type":"string","description":"Notification category for the web app UI.","enum":["info","action-required","milestone","warning","chat-response","celebration"]},"title":{"type":"string","description":"Short notification title (max 60 chars)."},"message":{"type":"string","description":"Notification body (max 200 words). Clear, friendly, matches preferredLanguage. NEVER contains technical jargon, error codes, or system details."},"actionRequired":{"type":"boolean","description":"True if the farmer needs to do something. False for informational updates."},"actionUrl":{"type":"string","description":"Optional: Deep link for farmer action (e.g., '/upload-documents', '/chat')."},"timestamp":{"type":"string","description":"ISO timestamp when notification was generated."},"stage":{"type":"string","description":"Current pipeline stage for progress tracker UI.","enum":["discovery","eligibility","documents","proposal","review","submission","monitoring","completed","rejected"]}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="technicalAlert" name="technicalAlert" type="jsonSchema" elementId="task_notify_no_grants"><![CDATA[{"type":"object","description":"ALWAYS required. Tier 2 alert for developers/technical team. The farmer NEVER sees this. Used when the system encounters portal issues, API failures, selector failures, or unexpected errors. If no technical issue occurred, set triggered=false and leave other fields empty.","properties":{"triggered":{"type":"boolean","description":"True if a technical issue was detected that requires developer attention. False if everything ran smoothly (normal operation)."},"alertLevel":{"type":"string","description":"Severity of the technical issue. 'low' = minor, auto-recoverable. 'medium' = needs attention within hours. 'high' = blocking farmer journey, needs attention within 30 min. 'critical' = complete system failure, immediate action required.","enum":["none","low","medium","high","critical"]},"alertType":{"type":"string","description":"Category of technical issue for developer dashboard routing.","enum":["none","portal-down","portal-layout-changed","selector-failed","api-error","timeout","authentication-failed","file-upload-failed","unexpected-popup","captcha-detected","network-error","unknown"]},"technicalDetails":{"type":"string","description":"Developer-only technical details. Include: error type, affected component, attempted action, failure point, stack context. This is for the technical dashboard ONLY — farmer never sees this. Empty string if triggered=false."},"farmerFacingMessage":{"type":"string","description":"The friendly, non-technical message shown to the farmer when a technical issue occurs. Must be warm, reassuring, and give no technical details. Example: 'We are doing a quick update on the portal. Your application will resume automatically in a few minutes. Nothing to worry about! 🌱'. Empty string if triggered=false."},"autoRetryInMinutes":{"type":"integer","description":"How many minutes before the system should auto-retry the failed operation. 0 = no auto-retry (requires manual developer intervention). Typical values: 2 for portal issues, 5 for API errors, 0 for critical failures.","minimum":0},"requiresDeveloperAction":{"type":"boolean","description":"True if a developer must manually intervene (e.g., update selectors, fix API keys, resolve portal changes). False if the system can auto-recover."},"suggestedFix":{"type":"string","description":"Optional: Suggested technical fix for the developer (e.g., 'Update selector for #farm-address input', 'Renew API token', 'Portal redesigned — needs full selector remapping'). Empty string if not applicable."}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="chatResponse" name="chatResponse" type="string" elementId="task_notify_no_grants" />
+        <uipath:inputOutput id="emailPayload" name="emailPayload" type="jsonSchema" elementId="task_notify_no_grants"><![CDATA[{"type":"object","description":"Email notification structure. ALWAYS present. sendEmail controls delivery.","properties":{"to":{"type":"string","description":"Farmer's email. Empty string if not provided."},"subject":{"type":"string","description":"Email subject personalized with farmer name."},"htmlBody":{"type":"string","description":"HTML email body. Only populated when sendEmail is true."},"plainTextBody":{"type":"string","description":"Plain text version. Only populated when sendEmail is true."},"sendEmail":{"type":"boolean","description":"TRUE = milestone, send email. FALSE = skip email."},"emailType":{"type":"string","enum":["prepare-submission-package","generate-confirmation","set-reminders","track-and-follow-up","handle-additional-info-request","generate-rejection-response","respond-to-farmer-chat"]}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="submissionPackage2" name="submissionPackage" type="jsonSchema" elementId="task_notify_no_grants"><![CDATA[{"type":"object","description":"Present only when agentAction is 'prepare-submission-package'.","properties":{"readinessAssessment":{"type":"string","enum":["Ready to Submit","Almost Ready — Minor Issues","Not Ready — Critical Items Missing"]},"coverLetter":{"type":"string"},"documentsChecklistVerified":{"type":"array","items":{"type":"object","properties":{"document":{"type":"string"},"status":{"type":"string","enum":["Ready","Missing","Needs Update"]},"note":{"type":"string"}}}},"submissionGuide":{"type":"string"},"criticalWarnings":{"type":"array","items":{"type":"string"}},"submissionTips":{"type":"array","items":{"type":"string"}}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="confirmationPackage2" name="confirmationPackage" type="jsonSchema" elementId="task_notify_no_grants"><![CDATA[{"type":"object","description":"Present only when agentAction is 'generate-confirmation'.","properties":{"congratulatoryMessage":{"type":"string"},"smsMessage":{"type":"string"},"whatsappMessage":{"type":"string"},"submissionSummaryCard":{"type":"object","properties":{"farmerName":{"type":"string"},"grantName":{"type":"string"},"projectTitle":{"type":"string"},"amountRequested":{"type":"string"},"submissionDate":{"type":"string"},"referenceNumber":{"type":"string"},"expectedResponseTime":{"type":"string"},"nextStep":{"type":"string"}}}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="reminderSchedule2" name="reminderSchedule" type="jsonSchema" elementId="task_notify_no_grants"><![CDATA[{"type":"object","description":"Present only when agentAction is 'set-reminders'.","properties":{"totalReminders":{"type":"integer"},"reminders":{"type":"array","items":{"type":"object","properties":{"reminderNumber":{"type":"integer"},"triggerEvent":{"type":"string"},"suggestedDate":{"type":"string"},"channel":{"type":"string","enum":["push-notification","SMS","WhatsApp","Email"]},"message":{"type":"string"},"actionRequired":{"type":"string"}}}},"calendarSummary":{"type":"string"}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="trackingAndFollowUp2" name="trackingAndFollowUp" type="jsonSchema" elementId="task_notify_no_grants"><![CDATA[{"type":"object","description":"Present only when agentAction is 'track-and-follow-up'.","properties":{"statusAssessment":{"type":"string"},"urgencyLevel":{"type":"string","enum":["Routine","Follow-Up Due","Action Required","Urgent"]},"followUpEmailDraft":{"type":"string"},"followUpWhatsappMessage":{"type":"string"},"phoneScriptForFollowUp":{"type":"string"},"nextActions":{"type":"array","items":{"type":"object","properties":{"action":{"type":"string"},"timeline":{"type":"string"},"channel":{"type":"string"}}}}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="additionalInfoResponse2" name="additionalInfoResponse" type="jsonSchema" elementId="task_notify_no_grants"><![CDATA[{"type":"object","description":"Present only when agentAction is 'handle-additional-info-request'.","properties":{"acknowledgementLetter":{"type":"string"},"itemsToProvide":{"type":"array","items":{"type":"object","properties":{"item":{"type":"string"},"howToObtain":{"type":"string"},"estimatedTimeToObtain":{"type":"string"}}}},"farmerInstructions":{"type":"string"},"responseDeadlineSuggestion":{"type":"string"}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="rejectionResponse2" name="rejectionResponse" type="jsonSchema" elementId="task_notify_no_grants"><![CDATA[{"type":"object","description":"Present only when agentAction is 'generate-rejection-response'.","properties":{"farmerSupportMessage":{"type":"string"},"rejectionAnalysis":{"type":"string"},"appealLetter":{"type":"string"},"improvementPlan":{"type":"array","items":{"type":"string"}},"alternativeOptions":{"type":"array","items":{"type":"string"}}},"$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="farmerFacingMessagePrimary2" name="farmerFacingMessagePrimary" type="string" elementId="task_notify_no_grants" />
+        <uipath:inputOutput id="agentSummary2" name="agentSummary" type="string" elementId="task_notify_no_grants" />
+        <uipath:inputOutput id="userId2" name="userId" type="string" elementId="start_event" />
+        <uipath:inputOutput id="sessionId2" name="sessionId" type="string" elementId="start_event" />
+        <uipath:inputOutput id="farmerName4" name="farmerName" type="string" elementId="start_event" />
+        <uipath:inputOutput id="farmerEmail2" name="farmerEmail" type="string" elementId="start_event" />
+        <uipath:inputOutput id="stateOfResidence3" name="stateOfResidence" type="string" elementId="start_event" />
+        <uipath:inputOutput id="farmType" name="farmType" type="string" elementId="start_event" />
+        <uipath:inputOutput id="lga" name="lga" type="string" elementId="start_event" />
+        <uipath:inputOutput id="farmPhone" name="farmPhone" type="string" elementId="start_event" />
+        <uipath:inputOutput id="farmerSizeHecaters" name="farmerSizeHecaters" type="integer" elementId="start_event" />
+        <uipath:inputOutput id="annualRevenueNgn" name="annualRevenueNGN" type="integer" elementId="start_event" />
+        <uipath:inputOutput id="farmExperienceYears" name="farmExperienceYears" type="integer" elementId="start_event" />
+        <uipath:inputOutput id="isSmallholderFarmer" name="isSmallholderFarmer" type="boolean" elementId="start_event" />
+        <uipath:inputOutput id="projectTittle" name="ProjectTittle" type="string" elementId="start_event" />
+        <uipath:inputOutput id="projectDescription2" name="projectDescription" type="string" elementId="start_event" />
+        <uipath:inputOutput id="requestedAmount" name="requestedAmount" type="integer" elementId="start_event" />
+        <uipath:inputOutput id="farmingChallenges" name="farmingChallenges" type="string" elementId="start_event" />
+        <uipath:inputOutput id="previousGrants" name="previousGrants" type="string" elementId="start_event" />
+        <uipath:inputOutput id="hasCacRegistration" name="hasCACRegistration" type="boolean" elementId="start_event" />
+        <uipath:inputOutput id="hasLandDocument" name="hasLandDocument" type="boolean" elementId="start_event" />
+        <uipath:inputOutput id="isMemberOfCooperative" name="isMemberOfCooperative" type="boolean" elementId="start_event" />
+        <uipath:inputOutput id="additionalNotes" name="additionalNotes" type="string" elementId="start_event" />
+        <uipath:inputOutput id="fundingPurpose" name="fundingPurpose" type="string" elementId="start_event" />
+        <uipath:inputOutput id="isYouthFarmer" name="isYouthFarmer" type="boolean" elementId="start_event" />
+        <uipath:inputOutput id="isWomanFarmer" name="isWomanFarmer" type="boolean" elementId="start_event" />
+        <uipath:inputOutput id="cropOrLivestockTypes" name="cropOrLivestockTypes" type="jsonSchema" elementId="start_event"><![CDATA[{"type":"object","$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="submissionMethod" name="submissionMethod" type="string" elementId="start_event" />
+        <uipath:inputOutput id="submissionOfficeAddress" name="submissionOfficeAddress" type="string" elementId="start_event" />
+        <uipath:inputOutput id="submissionPortalUrl" name="submissionPortalUrl" type="string" elementId="start_event" />
+        <uipath:inputOutput id="submissionContactEmail" name="submissionContactEmail" type="string" elementId="start_event" />
+        <uipath:inputOutput id="submissionContactPhone" name="submissionContactPhone" type="string" elementId="start_event" />
+        <uipath:inputOutput id="applicationReferenceNumber" name="applicationReferenceNumber" type="string" elementId="start_event" />
+        <uipath:inputOutput id="submissionDate" name="submissionDate" type="string" elementId="start_event" />
+        <uipath:inputOutput id="currentStatus3" name="currentStatus" type="string" elementId="start_event" />
+        <uipath:inputOutput id="agentAction3" name="agentAction" type="string" elementId="start_event" />
+        <uipath:inputOutput id="chatMessage" name="chatMessage" type="string" elementId="start_event" />
+        <uipath:inputOutput id="message" name="message" type="string" elementId="start_event" />
+        <uipath:inputOutput id="additionalInfoRequested" name="additionalInfoRequested" type="string" elementId="start_event" />
+        <uipath:inputOutput id="rejectionReason" name="rejectionReason" type="string" elementId="start_event" />
+        <uipath:inputOutput id="pererredLanguage" name="pererredLanguage" type="string" elementId="start_event" />
+        <uipath:inputOutput id="submissionDeadline" name="submissionDeadline" type="string" elementId="start_event" />
+        <uipath:inputOutput id="documentsChecklist" name="documentsChecklist" type="jsonSchema" elementId="start_event"><![CDATA[{"type":"object","$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="missingDocuments" name="missingDocuments" type="jsonSchema" elementId="start_event"><![CDATA[{"type":"object","$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="chatHistory" name="chatHistory" type="jsonSchema" elementId="start_event"><![CDATA[{"type":"object","$schema":"http://json-schema.org/draft-07/schema#"}]]></uipath:inputOutput>
+        <uipath:inputOutput id="internalCustomInstanceId2" name="_internalCustomInstanceId" type="string" elementId="start_event" custom="true" internal="true" />
+      </uipath:variables>
+      <uipath:bindings version="v1">
+        <uipath:binding id="biDfveeQk" name="folderPath" type="string" resource="process" resourceKey="Grant Discovery &#38; Matching Agent" propertyAttribute="folderPath" />
+        <uipath:binding id="bQDCOPWuv" name="name" type="string" default="Grant Discovery &#38; Matching Agent" resource="process" resourceKey="Grant Discovery &#38; Matching Agent" propertyAttribute="name" />
+        <uipath:binding id="bXI5fqkjq" name="folderPath" type="string" resource="process" resourceKey="Eligibility &#38; Risk Assessment Agent" propertyAttribute="folderPath" />
+        <uipath:binding id="buNQxReGw" name="name" type="string" default="Eligibility &#38; Risk Assessment Agent" resource="process" resourceKey="Eligibility &#38; Risk Assessment Agent" propertyAttribute="name" />
+        <uipath:binding id="bfB4Hbmbk" name="folderPath" type="string" resource="process" resourceKey="Document Understanding Agent" propertyAttribute="folderPath" />
+        <uipath:binding id="bMfbAXUEm" name="name" type="string" default="Document Understanding Agent" resource="process" resourceKey="Document Understanding Agent" propertyAttribute="name" />
+        <uipath:binding id="bCGv8jdRt" name="folderPath" type="string" resource="process" resourceKey="Proposal Generation Agent" propertyAttribute="folderPath" />
+        <uipath:binding id="buHr8Sc3d" name="name" type="string" default="Proposal Generation Agent" resource="process" resourceKey="Proposal Generation Agent" propertyAttribute="name" />
+        <uipath:binding id="bAyUdePPd" name="folderPath" type="string" default=".entities" resource="app" resourceKey=".entities.SimpleApprovalApp" propertyAttribute="folderPath" />
+        <uipath:binding id="beHIGNbTt" name="name" type="string" default="SimpleApprovalApp" resource="app" resourceKey=".entities.SimpleApprovalApp" propertyAttribute="name" />
+        <uipath:binding id="bMzdgQhlc" name="folderPath" type="string" resource="process" resourceKey="Submission &#38; Follow-up Agent" propertyAttribute="folderPath" />
+        <uipath:binding id="bqLifERAW" name="name" type="string" default="Submission &#38; Follow-up Agent" resource="process" resourceKey="Submission &#38; Follow-up Agent" propertyAttribute="name" />
+        <uipath:binding id="bBv6v8bJn" name="folderPath" type="string" resource="process" resourceKey="SimpleApprovalApp" propertyAttribute="folderPath" />
+        <uipath:binding id="bfstSTSqf" name="name" type="string" default="SimpleApprovalApp" resource="process" resourceKey="SimpleApprovalApp" propertyAttribute="name" />
+        <uipath:binding id="bocnJHoET" name="folderPath" type="string" resource="app" resourceKey="SimpleApprovalApp" propertyAttribute="folderPath" />
+        <uipath:binding id="bw2oL4iG8" name="name" type="string" default="SimpleApprovalApp" resource="app" resourceKey="SimpleApprovalApp" propertyAttribute="name" />
+        <uipath:binding id="bC2vIlmas" name="folderPath" type="string" default="nwajariemmanuel355@gmail.com&#39;s workspace/Debug_Solution 1" resource="process" resourceKey="nwajariemmanuel355@gmail.com&#39;s workspace/Debug_Solution 1.Submission &#38; Follow-up Agent" propertyAttribute="folderPath" />
+        <uipath:binding id="b1M3Snecl" name="name" type="string" default="Submission &#38; Follow-up Agent" resource="process" resourceKey="nwajariemmanuel355@gmail.com&#39;s workspace/Debug_Solution 1.Submission &#38; Follow-up Agent" propertyAttribute="name" />
+        <uipath:binding id="bYlj35hM6" name="folderPath" type="string" resource="process" resourceSubType="Agent" resourceKey="Grant Discovery &#38; Matching Agent_1" propertyAttribute="folderPath" />
+        <uipath:binding id="bJyvPdVz3" name="name" type="string" default="Grant Discovery &#38; Matching Agent_1" resource="process" resourceSubType="Agent" resourceKey="Grant Discovery &#38; Matching Agent_1" propertyAttribute="name" />
+        <uipath:binding id="bQUp3ov6X" name="folderPath" type="string" resource="process" resourceSubType="Agent" resourceKey="Solution.1.agent.Grant.Discovery._.Matching.Agent" propertyAttribute="folderPath" />
+        <uipath:binding id="buybohLIn" name="name" type="string" default="Solution.1.agent.Grant.Discovery._.Matching.Agent" resource="process" resourceSubType="Agent" resourceKey="Solution.1.agent.Grant.Discovery._.Matching.Agent" propertyAttribute="name" />
+        <uipath:binding id="bSfjNV3hA" name="folderPath" type="string" resource="process" resourceSubType="Agent" resourceKey="Submission &#38; Follow-up Agent_1" propertyAttribute="folderPath" />
+        <uipath:binding id="b4rFAkLhT" name="name" type="string" default="Submission &#38; Follow-up Agent_1" resource="process" resourceSubType="Agent" resourceKey="Submission &#38; Follow-up Agent_1" propertyAttribute="name" />
+        <uipath:binding id="be0RZF9Gi" name="folderPath" type="string" resource="process" resourceSubType="Agent" resourceKey="Submission &#38; Follow-up Agent" propertyAttribute="folderPath" />
+        <uipath:binding id="bjQ2SnE1A" name="name" type="string" default="Submission &#38; Follow-up Agent" resource="process" resourceSubType="Agent" resourceKey="Submission &#38; Follow-up Agent" propertyAttribute="name" />
+      </uipath:bindings>
+      <uipath:migrationVersion version="15" />
+      <uipath:intsvcActivityConfig version="v2" />
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="start_event" name="Farmer Submits Grant Application">
+      <bpmn:extensionElements>
+        <uipath:entryPointId value="9014356b-5c01-4d6c-834e-f7a3afa06aaf" />
+        <uipath:mapping version="v1">
+          <uipath:type value="BPMN.Variables" version="v1" />
+          <uipath:output name="userId" type="string" source="=vars.vxv5lnJ23" var="userId2" />
+          <uipath:output name="sessionId" type="string" source="=vars.vIa2adQuu" var="sessionId2" />
+          <uipath:output name="farmerName" type="string" source="=vars.vOiZ7Lxtq" var="farmerName4" />
+          <uipath:output name="farmerEmail" type="string" source="=vars.v1tmocy6d" var="farmerEmail2" />
+          <uipath:output name="stateOfResidence" type="string" source="=vars.vdeqeWwcJ" var="stateOfResidence3" />
+          <uipath:output name="farmType" type="string" source="=vars.vWmqTsDAG" var="farmType" />
+          <uipath:output name="lga" type="string" source="=vars.vyjLJZQ2U" var="lga" />
+          <uipath:output name="farmPhone" type="string" source="=vars.vWsOu30vB" var="farmPhone" />
+          <uipath:output name="farmerSizeHecaters" type="integer" source="=vars.vBn3oQ4jv" var="farmerSizeHecaters" />
+          <uipath:output name="annualRevenueNGN" type="integer" source="=vars.vliNPmg79" var="annualRevenueNgn" />
+          <uipath:output name="farmExperienceYears" type="integer" source="=vars.vG7Olrl0K" var="farmExperienceYears" />
+          <uipath:output name="isSmallholderFarmer" type="boolean" source="=vars.vFfhqviiw" var="isSmallholderFarmer" />
+          <uipath:output name="ProjectTittle" type="string" source="=vars.v71ySc0fB" var="projectTittle" />
+          <uipath:output name="projectDescription" type="string" source="=vars.vMwlDEDUX" var="projectDescription2" />
+          <uipath:output name="requestedAmount" type="integer" source="=vars.vCBR7P2e5" var="requestedAmount" />
+          <uipath:output name="farmingChallenges" type="string" source="=vars.v20f6gk9r" var="farmingChallenges" />
+          <uipath:output name="previousGrants" type="string" source="=vars.vDeA3r9bu" var="previousGrants" />
+          <uipath:output name="hasCACRegistration" type="boolean" source="=vars.vvdQlata1" var="hasCacRegistration" />
+          <uipath:output name="hasLandDocument" type="boolean" source="=vars.vIOlJUJ5D" var="hasLandDocument" />
+          <uipath:output name="isMemberOfCooperative" type="boolean" source="=vars.vd9NJauqt" var="isMemberOfCooperative" />
+          <uipath:output name="additionalNotes" type="string" source="=vars.vquoMVE4G" var="additionalNotes" />
+          <uipath:output name="fundingPurpose" type="string" source="=vars.vFq3T33XL" var="fundingPurpose" />
+          <uipath:output name="isYouthFarmer" type="boolean" source="=vars.vE1PidN8f" var="isYouthFarmer" />
+          <uipath:output name="isWomanFarmer" type="boolean" source="=vars.vELFKFJyi" var="isWomanFarmer" />
+          <uipath:output name="cropOrLivestockTypes" type="json" source="=vars.vvf8WstMO" var="cropOrLivestockTypes" />
+          <uipath:output name="submissionMethod" type="string" source="=vars.vWCgBQzGM" var="submissionMethod" />
+          <uipath:output name="submissionOfficeAddress" type="string" source="=vars.vtZKCiqUt" var="submissionOfficeAddress" />
+          <uipath:output name="submissionPortalUrl" type="string" source="=vars.velbKB2gG" var="submissionPortalUrl" />
+          <uipath:output name="submissionContactEmail" type="string" source="=vars.viMefDN9U" var="submissionContactEmail" />
+          <uipath:output name="submissionContactPhone" type="string" source="=vars.vxbPkLDnU" var="submissionContactPhone" />
+          <uipath:output name="applicationReferenceNumber" type="string" source="=vars.vKHfc0WtZ" var="applicationReferenceNumber" />
+          <uipath:output name="submissionDate" type="string" source="=vars.vabq2kutQ" var="submissionDate" />
+          <uipath:output name="currentStatus" type="string" source="=vars.vCQgnY8KC" var="currentStatus3" />
+          <uipath:output name="agentAction" type="string" source="=vars.vKsMIEIRy" var="agentAction3" />
+          <uipath:output name="chatMessage" type="string" source="=vars.vYTyudEdI" var="chatMessage" />
+          <uipath:output name="message" type="string" source="=vars.v2cQXlwpr" var="message" />
+          <uipath:output name="additionalInfoRequested" type="string" source="=vars.vBsDHYcsB" var="additionalInfoRequested" />
+          <uipath:output name="rejectionReason" type="string" source="=vars.vVBgTbTt4" var="rejectionReason" />
+          <uipath:output name="pererredLanguage" type="string" source="=vars.vp07jIgvK" var="pererredLanguage" />
+          <uipath:output name="_internalCustomInstanceId" type="string" source="=metadata.InstanceId" var="internalCustomInstanceId2" custom="true" internal="true" />
+          <uipath:output name="submissionDeadline" type="string" source="=vars.veA96DC13" var="submissionDeadline" />
+          <uipath:output name="documentsChecklist" type="json" source="=vars.vNLeAcdrO" var="documentsChecklist" />
+          <uipath:output name="missingDocuments" type="json" source="=vars.vyoqEJZgg" var="missingDocuments" />
+          <uipath:output name="chatHistory" type="json" source="=vars.vDt2HSLNF" var="chatHistory" />
+        </uipath:mapping>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>flow_start_to_validate</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="task_receive_validate" name="API: Receive &#38; Validate Farm Application Data">
+      <bpmn:incoming>flow_start_to_validate</bpmn:incoming>
+      <bpmn:incoming>flow_timer_to_validate</bpmn:incoming>
+      <bpmn:outgoing>flow_validate_to_gw_complete</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="gw_data_complete" name="Is Application Data Complete?" default="flow_data_complete_yes">
+      <bpmn:incoming>flow_validate_to_gw_complete</bpmn:incoming>
+      <bpmn:outgoing>flow_data_complete_no</bpmn:outgoing>
+      <bpmn:outgoing>flow_data_complete_yes</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="task_request_missing_info" name="Request Missing Information from Farmer">
+      <bpmn:incoming>flow_data_complete_no</bpmn:incoming>
+      <bpmn:outgoing>flow_request_to_timer</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:intermediateCatchEvent id="timer_await_farmer" name="Await Farmer Response (48hrs)">
+      <bpmn:incoming>flow_request_to_timer</bpmn:incoming>
+      <bpmn:outgoing>flow_timer_to_validate</bpmn:outgoing>
+      <bpmn:timerEventDefinition>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT48H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:serviceTask id="task_grant_discovery" name="Grant Discovery Agent: Search &#38; Match Eligible Grants">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Orchestrator.StartAgentJob" version="v2" />
+          <uipath:context>
+            <uipath:input name="name" type="string" value="=bindings.buybohLIn" />
+            <uipath:input name="folderPath" type="string" value="=bindings.bQUp3ov6X" />
+            <uipath:input name="_label" type="string" value="Solution.1.agent.Grant.Discovery._.Matching.Agent" />
+            <uipath:inputSchema type="jsonSchema"><![CDATA[{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"farmerName":{"type":"string"},"stateOfResidence":{"type":"string"},"lga":{"type":"string"},"farmType":{"type":"string"},"cropOrLivestockTypes":{"type":"array"},"farmSizeHectares":{"type":"number"},"annualRevenueNGN":{"type":"number"},"farmingExperienceYears":{"type":"integer"},"isSmallholderFarmer":{"type":"boolean"},"isYouthFarmer":{"type":"boolean"},"isWomanFarmer":{"type":"boolean"},"hasCACRegistration":{"type":"boolean"},"hasLandDocument":{"type":"boolean"},"isMemberOfCooperative":{"type":"boolean"},"fundingPurpose":{"type":"string"},"additionalNotes":{"type":"string"}},"required":["farmerName","stateOfResidence","farmType","isSmallholderFarmer","isYouthFarmer","isWomanFarmer","fundingPurpose"]}]]></uipath:inputSchema>
+          </uipath:context>
+          <uipath:input name="JobArguments" type="json" target="bodyField"><![CDATA[{"farmerName":"=vars.farmerName4","stateOfResidence":"=vars.stateOfResidence3","lga":"=vars.emailPayload.plainTextBody","farmType":"=vars.farmType","cropOrLivestockTypes":"=vars.cropOrLivestockTypes","farmSizeHectares":"=vars.farmerSizeHecaters","annualRevenueNGN":"=vars.annualRevenueNgn","farmingExperienceYears":"=vars.farmExperienceYears","isSmallholderFarmer":"=vars.isSmallholderFarmer","isYouthFarmer":"=vars.isYouthFarmer","isWomanFarmer":"=vars.isWomanFarmer","hasCACRegistration":"=vars.hasCacRegistration","hasLandDocument":"=vars.hasLandDocument","isMemberOfCooperative":"=vars.isMemberOfCooperative","fundingPurpose":"=vars.fundingPurpose","additionalNotes":"=vars.additionalNotes"}]]></uipath:input>
+          <uipath:output name="Error" type="jsonSchema" source="=Error" var="error7" />
+          <uipath:output name="farmerName" type="string" source="=farmerName" var="farmerName5" />
+          <uipath:output name="stateOfResidence" type="string" source="=stateOfResidence" var="stateOfResidence2" />
+          <uipath:output name="totalMatchesFound" type="integer" source="=totalMatchesFound" var="totalMatchesFound2" />
+          <uipath:output name="matchedGrants" type="jsonSchema" subType="object" source="=matchedGrants" var="matchedGrants2" />
+          <uipath:output name="profileGaps" type="jsonSchema" subType="string" source="=profileGaps" var="profileGaps2" />
+          <uipath:output name="topRecommendation" type="string" source="=topRecommendation" var="topRecommendation2" />
+          <uipath:output name="summary" type="string" source="=summary" var="summary2" />
+          <uipath:output name="disclaimer" type="string" source="=disclaimer" var="disclaimer3" />
+          <uipath:output name="stateOfResidence" type="string" source="" var="stateOfResidence2" custom="true" target="" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:incoming>flow_data_complete_yes</bpmn:incoming>
+      <bpmn:outgoing>flow_discovery_to_notify</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="gw_grants_found" name="Were Matching Grants Found?" default="flow_grants_found_to_present">
+      <bpmn:incoming>flow_notify_selected_to_gw</bpmn:incoming>
+      <bpmn:outgoing>flow_grants_found_no</bpmn:outgoing>
+      <bpmn:outgoing>flow_grants_found_to_present</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="task_notify_no_grants" name="Submission &#38; Follow-up Agent: Notify Farmer - No Grants Available">
+      <bpmn:extensionElements>
+        <uipath:activity version="v1">
+          <uipath:type value="Orchestrator.StartAgentJob" version="v2" />
+          <uipath:context>
+            <uipath:input name="name" type="string" value="=bindings.bjQ2SnE1A" />
+            <uipath:input name="folderPath" type="string" value="=bindings.be0RZF9Gi" />
+            <uipath:input name="_label" type="string" value="Submission &#38; Follow-up Agent" />
+            <uipath:inputSchema type="jsonSchema"><![CDATA[{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"farmerName":{"type":"string","title":"farmerName"},"farmerPhone":{"type":"string","title":"farmerPhone"},"farmerEmail":{"type":"string","title":"farmerEmail"},"stateOfResidence":{"type":"string","title":"stateOfResidence"},"grantName":{"type":"string","title":"grantName"},"grantingOrganization":{"type":"string","title":"grantingOrganization"},"projectTitle":{"type":"string","title":"projectTitle"},"requestedAmountNGN":{"type":"number","title":"requestedAmountNGN"},"submissionDeadline":{"type":"string","title":"submissionDeadline"},"submissionMethod":{"type":"string","title":"submissionMethod"},"submissionPortalUrl":{"type":"string","title":"submissionPortalUrl"},"submissionOfficeAddress":{"type":"string","title":"submissionOfficeAddress"},"submissionContactEmail":{"type":"string","title":"submissionContactEmail"},"submissionContactPhone":{"type":"string","title":"submissionContactPhone"},"applicationReferenceNumber":{"type":"string","title":"applicationReferenceNumber"},"submissionDate":{"type":"string","title":"submissionDate"},"currentStatus":{"type":"string","title":"currentStatus"},"documentsChecklist":{"type":"array","title":"documentsChecklist"},"missingDocuments":{"type":"array","title":"missingDocuments"},"agentAction":{"type":"string","title":"agentAction"},"chatMessage":{"type":"string","title":"chatMessage"},"chatHistory":{"type":"array","title":"chatHistory"},"additionalInfoRequested":{"type":"string","title":"additionalInfoRequested"},"rejectionReason":{"type":"string","title":"rejectionReason"},"preferredLanguage":{"type":"string","title":"preferredLanguage"},"additionalNotes":{"type":"string","title":"additionalNotes"}},"required":["farmerName","farmerPhone","stateOfResidence","grantName","grantingOrganization","projectTitle","requestedAmountNGN","submissionDeadline","submissionMethod","currentStatus","documentsChecklist","agentAction","preferredLanguage"]}]]></uipath:inputSchema>
+          </uipath:context>
+          <uipath:input name="JobArguments" type="json" target="bodyField"><![CDATA[{"farmerName":"=vars.farmerName5","farmerPhone":"=vars.farmPhone","farmerEmail":"=vars.farmerEmail","stateOfResidence":"=vars.stateOfResidence2","grantName":"=vars.matchedGrants2[0].grantName","grantingOrganization":"=vars.matchedGrants2[0].grantingOrganization","projectTitle":"=vars.projectTittle","requestedAmountNGN":"=vars.requestedAmount","submissionDeadline":"=vars.submissionDeadline","submissionMethod":"=vars.submissionMethod","submissionPortalUrl":"=vars.submissionPortalUrl","submissionOfficeAddress":"=vars.submissionOfficeAddress","submissionContactEmail":"=vars.submissionContactEmail","submissionContactPhone":"=vars.submissionContactPhone","applicationReferenceNumber":"=vars.applicationReferenceNumber","submissionDate":"=vars.submissionDate","currentStatus":"=vars.currentStatus3","documentsChecklist":"=vars.documentsChecklist","missingDocuments":"=vars.missingDocuments","agentAction":"=vars.agentAction3","chatMessage":"=vars.chatMessage","chatHistory":"=vars.chatHistory","additionalInfoRequested":"=vars.additionalInfoRequested","rejectionReason":"=vars.rejectionReason","preferredLanguage":"=vars.pererredLanguage","additionalNotes":"=vars.additionalNotes"}]]></uipath:input>
+          <uipath:output name="Error" type="jsonSchema" source="=Error" var="error8" />
+          <uipath:output name="farmerName" type="string" source="=farmerName" var="farmerName6" />
+          <uipath:output name="grantName" type="string" source="=grantName" var="grantName2" />
+          <uipath:output name="agentAction" type="string" source="=agentAction" var="agentAction2" />
+          <uipath:output name="currentStatus" type="string" source="=currentStatus" var="currentStatus2" />
+          <uipath:output name="webAppNotification" type="jsonSchema" source="=webAppNotification" var="webAppNotification" />
+          <uipath:output name="technicalAlert" type="jsonSchema" source="=technicalAlert" var="technicalAlert" />
+          <uipath:output name="chatResponse" type="string" source="=chatResponse" var="chatResponse" />
+          <uipath:output name="emailPayload" type="jsonSchema" source="=emailPayload" var="emailPayload" />
+          <uipath:output name="submissionPackage" type="jsonSchema" source="=submissionPackage" var="submissionPackage2" />
+          <uipath:output name="confirmationPackage" type="jsonSchema" source="=confirmationPackage" var="confirmationPackage2" />
+          <uipath:output name="reminderSchedule" type="jsonSchema" source="=reminderSchedule" var="reminderSchedule2" />
+          <uipath:output name="trackingAndFollowUp" type="jsonSchema" source="=trackingAndFollowUp" var="trackingAndFollowUp2" />
+          <uipath:output name="additionalInfoResponse" type="jsonSchema" source="=additionalInfoResponse" var="additionalInfoResponse2" />
+          <uipath:output name="rejectionResponse" type="jsonSchema" source="=rejectionResponse" var="rejectionResponse2" />
+          <uipath:output name="farmerFacingMessagePrimary" type="string" source="=farmerFacingMessagePrimary" var="farmerFacingMessagePrimary2" />
+          <uipath:output name="agentSummary" type="string" source="=agentSummary" var="agentSummary2" />
+        </uipath:activity>
+      </bpmn:extensionElements>
+      <bpmn:incoming>flow_grants_found_no</bpmn:incoming>
+      <bpmn:outgoing>flow_notify_no_grants_to_end</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="end_no_grants" name="No Matching Grants Found">
+      <bpmn:incoming>flow_notify_no_grants_to_end</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="task_eligibility_assessment" name="Eligibility &#38; Assessment Agent: Analyze Grant Requirements vs Farmer Profile">
+      <bpmn:incoming>flow_other_grants_yes</bpmn:incoming>
+      <bpmn:outgoing>flow_assessment_to_gw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="gw_requirements_met" name="Does Farmer Meet All Grant Requirements?" default="flow_reqs_met_yes">
+      <bpmn:incoming>flow_assessment_to_gw</bpmn:incoming>
+      <bpmn:incoming>flow_notify_eligibility_to_gw</bpmn:incoming>
+      <bpmn:outgoing>flow_reqs_met_no</bpmn:outgoing>
+      <bpmn:outgoing>flow_reqs_met_yes</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="gw_other_grants_to_check" name="Are There Other Grants to Check?" default="flow_other_grants_yes">
+      <bpmn:incoming>flow_reqs_met_no</bpmn:incoming>
+      <bpmn:outgoing>flow_other_grants_yes</bpmn:outgoing>
+      <bpmn:outgoing>flow_other_grants_no</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="task_notify_reqs_not_met" name="Submission &#38; Follow-up Agent: Notify Farmer - Requirements Not Met">
+      <bpmn:incoming>flow_other_grants_no</bpmn:incoming>
+      <bpmn:outgoing>flow_notify_reqs_not_met_to_end</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="end_reqs_not_met" name="Process Ended - Requirements Not Met">
+      <bpmn:incoming>flow_notify_reqs_not_met_to_end</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="task_check_docs_required" name="Document &#38; Understanding Agent: Check Required Documents for Grant">
+      <bpmn:incoming>flow_reqs_met_yes</bpmn:incoming>
+      <bpmn:outgoing>flow_check_docs_to_gw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="gw_docs_required" name="Are Documents Required for This Grant?" default="flow_docs_required_yes">
+      <bpmn:incoming>flow_check_docs_to_gw</bpmn:incoming>
+      <bpmn:outgoing>flow_docs_required_yes</bpmn:outgoing>
+      <bpmn:outgoing>flow_docs_required_no</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="task_identify_doc_types" name="Document &#38; Understanding Agent: Identify Required Document Types (PDF, Excel, etc.)">
+      <bpmn:incoming>flow_docs_required_yes</bpmn:incoming>
+      <bpmn:outgoing>flow_identify_to_upload</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="task_farmer_uploads_docs" name="Farmer Uploads Required Documents via Web App">
+      <bpmn:incoming>flow_identify_to_upload</bpmn:incoming>
+      <bpmn:outgoing>flow_upload_to_analyze</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="task_analyze_docs" name="Document &#38; Understanding Agent: Analyze Documents &#38; Extract Key Details">
+      <bpmn:incoming>flow_upload_to_analyze</bpmn:incoming>
+      <bpmn:incoming>flow_query_doc_to_analyze</bpmn:incoming>
+      <bpmn:outgoing>flow_analyze_to_notify</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="boundary_doc_analysis_failed" name="Document Analysis Failed" cancelActivity="false">
+      <bpmn:outgoing>flow_boundary_doc_to_query</bpmn:outgoing>
+      <bpmn:errorEventDefinition />
+    </bpmn:boundaryEvent>
+    <bpmn:serviceTask id="task_query_for_clarification_doc" name="Document &#38; Understanding Agent Queries Eligibility &#38; Assessment Agent for Clarification">
+      <bpmn:incoming>flow_boundary_doc_to_query</bpmn:incoming>
+      <bpmn:outgoing>flow_query_doc_to_analyze</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="task_prepare_doc_instructions" name="Document &#38; Understanding Agent: Prepare Document Attachment Instructions for RPA">
+      <bpmn:incoming>flow_notify_doc_to_prepare</bpmn:incoming>
+      <bpmn:outgoing>flow_prepare_instructions_to_collect</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="task_collect_grant_details" name="Proposal Agent: Collect Grant Details from Eligibility &#38; Assessment Agent">
+      <bpmn:incoming>flow_docs_required_no</bpmn:incoming>
+      <bpmn:incoming>flow_prepare_instructions_to_collect</bpmn:incoming>
+      <bpmn:outgoing>flow_collect_to_compose</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="task_compose_proposal" name="Proposal Agent: Compose Tailored Grant Proposal">
+      <bpmn:incoming>flow_collect_to_compose</bpmn:incoming>
+      <bpmn:incoming>flow_query_proposal_to_compose</bpmn:incoming>
+      <bpmn:outgoing>flow_compose_to_notify_proposal</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="boundary_proposal_error" name="Unclear Grant Requirements" cancelActivity="false">
+      <bpmn:outgoing>flow_boundary_proposal_to_query</bpmn:outgoing>
+      <bpmn:errorEventDefinition />
+    </bpmn:boundaryEvent>
+    <bpmn:serviceTask id="task_query_for_clarification_proposal" name="Proposal Agent Queries Eligibility &#38; Assessment Agent for Clarification">
+      <bpmn:incoming>flow_boundary_proposal_to_query</bpmn:incoming>
+      <bpmn:outgoing>flow_query_proposal_to_compose</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="task_package_for_rpa" name="Proposal Agent: Package All Data &#38; Send to RPA Submission Robot">
+      <bpmn:incoming>flow_notify_approved_to_package</bpmn:incoming>
+      <bpmn:outgoing>flow_package_to_gw_validated</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="task_rpa_query_fields" name="RPA Portal Submission Robot: Query Required Form Fields on Grant Portal">
+      <bpmn:incoming>flow_data_validated_ready</bpmn:incoming>
+      <bpmn:outgoing>flow_query_fields_to_submit</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="task_rpa_submit" name="RPA Portal Submission Robot: Fill &#38; Submit Application Form">
+      <bpmn:incoming>flow_query_fields_to_submit</bpmn:incoming>
+      <bpmn:incoming>flow_tech_alert_to_retry</bpmn:incoming>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="task_notify_successful_submission" name="Submission &#38; Follow-up Agent: Notify Farmer of Successful Submission">
+      <bpmn:incoming>flow_submission_success</bpmn:incoming>
+      <bpmn:incoming>flow_notify_submitted_to_notify_success</bpmn:incoming>
+      <bpmn:outgoing>flow_notify_success_to_followup</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:intermediateCatchEvent id="timer_monitor_status" name="Monitor Application Status (Every 24hrs)">
+      <bpmn:incoming>flow_update_pending_to_timer</bpmn:incoming>
+      <bpmn:incoming>flow_followup_to_timer</bpmn:incoming>
+      <bpmn:outgoing>flow_timer_monitor_to_check</bpmn:outgoing>
+      <bpmn:timerEventDefinition>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P1D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:serviceTask id="task_rpa_check_status" name="RPA Portal Submission Robot: Check Application Status on Portal">
+      <bpmn:incoming>flow_timer_monitor_to_check</bpmn:incoming>
+      <bpmn:outgoing>flow_check_status_to_gw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="gw_app_status" name="What is the Current Application Status?" default="flow_status_pending">
+      <bpmn:incoming>flow_check_status_to_gw</bpmn:incoming>
+      <bpmn:outgoing>flow_status_pending</bpmn:outgoing>
+      <bpmn:outgoing>flow_status_approved</bpmn:outgoing>
+      <bpmn:outgoing>flow_status_rejected</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="task_update_farmer_pending" name="Submission &#38; Follow-up Agent: Update Farmer on Current Stage via Web App">
+      <bpmn:incoming>flow_status_pending</bpmn:incoming>
+      <bpmn:outgoing>flow_update_pending_to_timer</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="task_send_congrats" name="Submission &#38; Follow-up Agent: Send Congratulations &#38; Grant Acceptance Details to Farmer">
+      <bpmn:incoming>flow_status_approved</bpmn:incoming>
+      <bpmn:outgoing>flow_congrats_to_end</bpmn:outgoing>
+      <bpmn:outgoing>flow_congrats_to_notify_complete</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="end_approved" name="Grant Application APPROVED - SUCCESS ✓">
+      <bpmn:incoming>flow_congrats_to_end</bpmn:incoming>
+      <bpmn:incoming>flow_notify_complete_to_end</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="task_rpa_get_rejection_reason" name="RPA Portal Submission Robot: Retrieve Rejection Reason from Portal">
+      <bpmn:incoming>flow_status_rejected</bpmn:incoming>
+      <bpmn:outgoing>flow_get_reason_to_review</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="task_specialist_reviews_rejection" name="Grant Specialist Reviews Rejection &#38; Decides on Appeal">
+      <bpmn:incoming>flow_get_reason_to_review</bpmn:incoming>
+      <bpmn:outgoing>flow_review_rejection_to_gw</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="gw_appeal_worthy" name="Is an Appeal Worth Filing?" default="flow_appeal_no">
+      <bpmn:incoming>flow_review_rejection_to_gw</bpmn:incoming>
+      <bpmn:outgoing>flow_appeal_no</bpmn:outgoing>
+      <bpmn:outgoing>flow_appeal_yes</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="task_send_rejection_analysis" name="Submission &#38; Follow-up Agent: Send Rejection Analysis &#38; Improvement Recommendations">
+      <bpmn:incoming>flow_appeal_no</bpmn:incoming>
+      <bpmn:outgoing>flow_rejection_analysis_to_end</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="end_rejected_recommendations" name="Application Rejected - Recommendations Sent">
+      <bpmn:incoming>flow_rejection_analysis_to_end</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="task_prepare_appeal" name="Proposal Agent: Prepare Appeal Documentation">
+      <bpmn:incoming>flow_appeal_yes</bpmn:incoming>
+      <bpmn:outgoing>flow_prepare_appeal_to_file</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="task_rpa_file_appeal" name="RPA Portal Submission Robot: File Appeal on Portal">
+      <bpmn:incoming>flow_prepare_appeal_to_file</bpmn:incoming>
+      <bpmn:outgoing>flow_file_appeal_to_notify</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="task_notify_appeal_filed" name="Submission &#38; Follow-up Agent: Notify Farmer - Appeal Filed">
+      <bpmn:incoming>flow_file_appeal_to_notify</bpmn:incoming>
+      <bpmn:outgoing>flow_notify_appeal_to_timer</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:intermediateCatchEvent id="timer_await_appeal" name="Await Appeal Decision">
+      <bpmn:incoming>flow_notify_appeal_to_timer</bpmn:incoming>
+      <bpmn:outgoing>flow_timer_appeal_to_check</bpmn:outgoing>
+      <bpmn:timerEventDefinition>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P14D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:serviceTask id="task_rpa_check_appeal_status" name="RPA Robot: Check Appeal Status">
+      <bpmn:incoming>flow_timer_appeal_to_check</bpmn:incoming>
+      <bpmn:outgoing>flow_check_appeal_to_gw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="gw_appeal_decision" name="Appeal Decision?" default="flow_appeal_approved">
+      <bpmn:incoming>flow_check_appeal_to_gw</bpmn:incoming>
+      <bpmn:outgoing>flow_appeal_approved</bpmn:outgoing>
+      <bpmn:outgoing>flow_appeal_rejected</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="task_notify_appeal_won" name="Submission &#38; Follow-up Agent: Notify Farmer - Appeal Won!">
+      <bpmn:incoming>flow_appeal_approved</bpmn:incoming>
+      <bpmn:outgoing>flow_appeal_won_to_end</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="end_appeal_approved" name="Appeal APPROVED - Grant Secured ✓">
+      <bpmn:incoming>flow_appeal_won_to_end</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="task_send_final_report" name="Submission &#38; Follow-up Agent: Send Final Report &#38; Future Recommendations to Farmer">
+      <bpmn:incoming>flow_appeal_rejected</bpmn:incoming>
+      <bpmn:outgoing>flow_final_report_to_end</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="end_final_rejection" name="Final Rejection - Case Closed">
+      <bpmn:incoming>flow_final_report_to_end</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="task_present_options" name="Submission &#38; Follow-up Agent: Present Grant Options to Farmer">
+      <bpmn:incoming>flow_grants_found_to_present</bpmn:incoming>
+      <bpmn:outgoing>flow_present_to_select</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="task_farmer_selects_grant" name="Farmer Selects Which Grant to Apply For">
+      <bpmn:incoming>flow_present_to_select</bpmn:incoming>
+      <bpmn:outgoing>flow_select_to_deep_dive</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="task_deep_dive_assessment" name="Eligibility &#38; Risk Assessment Agent: Deep-Dive Assessment of Selected Grant">
+      <bpmn:incoming>flow_select_to_deep_dive</bpmn:incoming>
+      <bpmn:outgoing>flow_deep_dive_to_notify</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="gw_submission_successful" name="Submission Successful?" default="flow_gw_submission_to_notify">
+      <bpmn:outgoing>flow_submission_success</bpmn:outgoing>
+      <bpmn:outgoing>flow_submission_failed</bpmn:outgoing>
+      <bpmn:outgoing>flow_gw_submission_to_notify</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="task_tech_alert" name="Technical Alert &#38; Retry (Tier 2)">
+      <bpmn:incoming>flow_submission_failed</bpmn:incoming>
+      <bpmn:outgoing>flow_tech_alert_to_retry</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="gw_data_validated" name="Data Validated?" default="flow_data_validated_ready">
+      <bpmn:incoming>flow_package_to_gw_validated</bpmn:incoming>
+      <bpmn:outgoing>flow_data_validated_ready</bpmn:outgoing>
+      <bpmn:outgoing>flow_data_validated_not_ready</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="task_request_correction" name="Request Correction (Tier 1)">
+      <bpmn:incoming>flow_data_validated_not_ready</bpmn:incoming>
+      <bpmn:outgoing>flow_correction_to_end</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="end_awaiting_farmer" name="End - Awaiting Farmer Input">
+      <bpmn:incoming>flow_correction_to_end</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="task_notify_eligibility_done" name="Notify: Eligibility Done">
+      <bpmn:incoming>flow_deep_dive_to_notify</bpmn:incoming>
+      <bpmn:outgoing>flow_notify_eligibility_to_gw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:task id="task_notify_discovery_done" name="Notify: Discovery Done">
+      <bpmn:incoming>flow_discovery_to_notify</bpmn:incoming>
+      <bpmn:outgoing>flow_notify_discovery_to_hitl</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:userTask id="task_grant_selection_hitl" name="Grant Selection (HITL)">
+      <bpmn:incoming>flow_notify_discovery_to_hitl</bpmn:incoming>
+      <bpmn:outgoing>flow_hitl_to_notify_selected</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="task_notify_grant_selected" name="Notify: Grant Selected">
+      <bpmn:incoming>flow_hitl_to_notify_selected</bpmn:incoming>
+      <bpmn:outgoing>flow_notify_selected_to_gw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="task_notify_doc_done" name="Notify: Document Done">
+      <bpmn:incoming>flow_analyze_to_notify</bpmn:incoming>
+      <bpmn:outgoing>flow_notify_doc_to_prepare</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="task_notify_proposal_done" name="Notify: Proposal Done">
+      <bpmn:incoming>flow_compose_to_notify_proposal</bpmn:incoming>
+      <bpmn:outgoing>flow_notify_proposal_to_review_req</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="task_notify_review_required" name="Notify: Review Required">
+      <bpmn:incoming>flow_notify_proposal_to_review_req</bpmn:incoming>
+      <bpmn:outgoing>flow_review_req_to_hitl</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="task_proposal_review_hitl" name="Proposal Review (HITL)">
+      <bpmn:incoming>flow_review_req_to_hitl</bpmn:incoming>
+      <bpmn:outgoing>flow_hitl_to_gw_approved</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="gw_proposal_approved" name="Proposal Approved?" default="flow_proposal_approved_no">
+      <bpmn:incoming>flow_hitl_to_gw_approved</bpmn:incoming>
+      <bpmn:outgoing>flow_proposal_approved_yes</bpmn:outgoing>
+      <bpmn:outgoing>flow_proposal_approved_no</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="task_notify_proposal_approved" name="Notify: Proposal Approved">
+      <bpmn:incoming>flow_proposal_approved_yes</bpmn:incoming>
+      <bpmn:outgoing>flow_notify_approved_to_package</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="task_notify_proposal_rejected" name="Notify: Proposal Rejected">
+      <bpmn:incoming>flow_proposal_approved_no</bpmn:incoming>
+      <bpmn:outgoing>flow_notify_rejected_to_end</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="end_rejected" name="Rejected">
+      <bpmn:incoming>flow_notify_rejected_to_end</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="task_notify_robot_submitted" name="Notify: Robot Submitted">
+      <bpmn:incoming>flow_gw_submission_to_notify</bpmn:incoming>
+      <bpmn:outgoing>flow_notify_submitted_to_notify_success</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="task_notify_followup_sent" name="Notify: Follow-up Sent">
+      <bpmn:incoming>flow_notify_success_to_followup</bpmn:incoming>
+      <bpmn:outgoing>flow_followup_to_timer</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="task_notify_pipeline_complete" name="Notify: Pipeline Complete">
+      <bpmn:incoming>flow_congrats_to_notify_complete</bpmn:incoming>
+      <bpmn:outgoing>flow_notify_complete_to_end</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="flow_start_to_validate" sourceRef="start_event" targetRef="task_receive_validate" />
+    <bpmn:sequenceFlow id="flow_validate_to_gw_complete" sourceRef="task_receive_validate" targetRef="gw_data_complete" />
+    <bpmn:sequenceFlow id="flow_data_complete_no" name="No" sourceRef="gw_data_complete" targetRef="task_request_missing_info">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${!isComplete}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_request_to_timer" sourceRef="task_request_missing_info" targetRef="timer_await_farmer" />
+    <bpmn:sequenceFlow id="flow_timer_to_validate" sourceRef="timer_await_farmer" targetRef="task_receive_validate" />
+    <bpmn:sequenceFlow id="flow_data_complete_yes" name="Yes" sourceRef="gw_data_complete" targetRef="task_grant_discovery">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${isComplete}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_grants_found_no" name="No" sourceRef="gw_grants_found" targetRef="task_notify_no_grants">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=matchedGrants != null</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_notify_no_grants_to_end" sourceRef="task_notify_no_grants" targetRef="end_no_grants" />
+    <bpmn:sequenceFlow id="flow_assessment_to_gw" sourceRef="task_eligibility_assessment" targetRef="gw_requirements_met" />
+    <bpmn:sequenceFlow id="flow_reqs_met_no" name="No" sourceRef="gw_requirements_met" targetRef="gw_other_grants_to_check">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${!requirementsMet}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_other_grants_yes" name="Yes" sourceRef="gw_other_grants_to_check" targetRef="task_eligibility_assessment">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${otherGrantsExist}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_other_grants_no" name="No" sourceRef="gw_other_grants_to_check" targetRef="task_notify_reqs_not_met">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${!otherGrantsExist}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_notify_reqs_not_met_to_end" sourceRef="task_notify_reqs_not_met" targetRef="end_reqs_not_met" />
+    <bpmn:sequenceFlow id="flow_reqs_met_yes" name="Yes" sourceRef="gw_requirements_met" targetRef="task_check_docs_required">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${requirementsMet}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_check_docs_to_gw" sourceRef="task_check_docs_required" targetRef="gw_docs_required" />
+    <bpmn:sequenceFlow id="flow_docs_required_yes" name="Yes" sourceRef="gw_docs_required" targetRef="task_identify_doc_types">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${documentsRequired}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_identify_to_upload" sourceRef="task_identify_doc_types" targetRef="task_farmer_uploads_docs" />
+    <bpmn:sequenceFlow id="flow_upload_to_analyze" sourceRef="task_farmer_uploads_docs" targetRef="task_analyze_docs" />
+    <bpmn:sequenceFlow id="flow_boundary_doc_to_query" sourceRef="boundary_doc_analysis_failed" targetRef="task_query_for_clarification_doc" />
+    <bpmn:sequenceFlow id="flow_query_doc_to_analyze" sourceRef="task_query_for_clarification_doc" targetRef="task_analyze_docs" />
+    <bpmn:sequenceFlow id="flow_docs_required_no" name="No" sourceRef="gw_docs_required" targetRef="task_collect_grant_details">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${!documentsRequired}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_prepare_instructions_to_collect" sourceRef="task_prepare_doc_instructions" targetRef="task_collect_grant_details" />
+    <bpmn:sequenceFlow id="flow_collect_to_compose" sourceRef="task_collect_grant_details" targetRef="task_compose_proposal" />
+    <bpmn:sequenceFlow id="flow_boundary_proposal_to_query" sourceRef="boundary_proposal_error" targetRef="task_query_for_clarification_proposal" />
+    <bpmn:sequenceFlow id="flow_query_proposal_to_compose" sourceRef="task_query_for_clarification_proposal" targetRef="task_compose_proposal" />
+    <bpmn:sequenceFlow id="flow_query_fields_to_submit" sourceRef="task_rpa_query_fields" targetRef="task_rpa_submit" />
+    <bpmn:sequenceFlow id="flow_timer_monitor_to_check" sourceRef="timer_monitor_status" targetRef="task_rpa_check_status" />
+    <bpmn:sequenceFlow id="flow_check_status_to_gw" sourceRef="task_rpa_check_status" targetRef="gw_app_status" />
+    <bpmn:sequenceFlow id="flow_status_pending" name="Pending" sourceRef="gw_app_status" targetRef="task_update_farmer_pending">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${status == 'PENDING'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_update_pending_to_timer" sourceRef="task_update_farmer_pending" targetRef="timer_monitor_status" />
+    <bpmn:sequenceFlow id="flow_status_approved" name="Approved" sourceRef="gw_app_status" targetRef="task_send_congrats">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${status == 'APPROVED'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_congrats_to_end" sourceRef="task_send_congrats" targetRef="end_approved" />
+    <bpmn:sequenceFlow id="flow_status_rejected" name="Rejected" sourceRef="gw_app_status" targetRef="task_rpa_get_rejection_reason">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${status == 'REJECTED'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_get_reason_to_review" sourceRef="task_rpa_get_rejection_reason" targetRef="task_specialist_reviews_rejection" />
+    <bpmn:sequenceFlow id="flow_review_rejection_to_gw" sourceRef="task_specialist_reviews_rejection" targetRef="gw_appeal_worthy" />
+    <bpmn:sequenceFlow id="flow_appeal_no" name="No" sourceRef="gw_appeal_worthy" targetRef="task_send_rejection_analysis">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${!isAppealWorthy}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_rejection_analysis_to_end" sourceRef="task_send_rejection_analysis" targetRef="end_rejected_recommendations" />
+    <bpmn:sequenceFlow id="flow_appeal_yes" name="Yes" sourceRef="gw_appeal_worthy" targetRef="task_prepare_appeal">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${isAppealWorthy}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_prepare_appeal_to_file" sourceRef="task_prepare_appeal" targetRef="task_rpa_file_appeal" />
+    <bpmn:sequenceFlow id="flow_file_appeal_to_notify" sourceRef="task_rpa_file_appeal" targetRef="task_notify_appeal_filed" />
+    <bpmn:sequenceFlow id="flow_notify_appeal_to_timer" sourceRef="task_notify_appeal_filed" targetRef="timer_await_appeal" />
+    <bpmn:sequenceFlow id="flow_timer_appeal_to_check" sourceRef="timer_await_appeal" targetRef="task_rpa_check_appeal_status" />
+    <bpmn:sequenceFlow id="flow_check_appeal_to_gw" sourceRef="task_rpa_check_appeal_status" targetRef="gw_appeal_decision" />
+    <bpmn:sequenceFlow id="flow_appeal_approved" name="Approved" sourceRef="gw_appeal_decision" targetRef="task_notify_appeal_won">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${appealStatus == 'APPROVED'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_appeal_won_to_end" sourceRef="task_notify_appeal_won" targetRef="end_appeal_approved" />
+    <bpmn:sequenceFlow id="flow_appeal_rejected" name="Rejected" sourceRef="gw_appeal_decision" targetRef="task_send_final_report">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${appealStatus == 'REJECTED'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_final_report_to_end" sourceRef="task_send_final_report" targetRef="end_final_rejection" />
+    <bpmn:sequenceFlow id="flow_grants_found_to_present" name="Yes" sourceRef="gw_grants_found" targetRef="task_present_options">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${matchedGrants != null}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_present_to_select" sourceRef="task_present_options" targetRef="task_farmer_selects_grant" />
+    <bpmn:sequenceFlow id="flow_select_to_deep_dive" sourceRef="task_farmer_selects_grant" targetRef="task_deep_dive_assessment" />
+    <bpmn:sequenceFlow id="flow_submission_success" name="SUCCESS" sourceRef="gw_submission_successful" targetRef="task_notify_successful_submission">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${submission.success == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_submission_failed" name="FAILED" sourceRef="gw_submission_successful" targetRef="task_tech_alert">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${submission.success == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_tech_alert_to_retry" sourceRef="task_tech_alert" targetRef="task_rpa_submit" />
+    <bpmn:sequenceFlow id="flow_package_to_gw_validated" sourceRef="task_package_for_rpa" targetRef="gw_data_validated" />
+    <bpmn:sequenceFlow id="flow_data_validated_ready" name="READY" sourceRef="gw_data_validated" targetRef="task_rpa_query_fields">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${data.validated == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_data_validated_not_ready" name="NOT READY" sourceRef="gw_data_validated" targetRef="task_request_correction">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${data.validated == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_correction_to_end" sourceRef="task_request_correction" targetRef="end_awaiting_farmer" />
+    <bpmn:sequenceFlow id="flow_deep_dive_to_notify" sourceRef="task_deep_dive_assessment" targetRef="task_notify_eligibility_done" />
+    <bpmn:sequenceFlow id="flow_notify_eligibility_to_gw" sourceRef="task_notify_eligibility_done" targetRef="gw_requirements_met" />
+    <bpmn:sequenceFlow id="flow_discovery_to_notify" sourceRef="task_grant_discovery" targetRef="task_notify_discovery_done" />
+    <bpmn:sequenceFlow id="flow_notify_discovery_to_hitl" sourceRef="task_notify_discovery_done" targetRef="task_grant_selection_hitl" />
+    <bpmn:sequenceFlow id="flow_hitl_to_notify_selected" sourceRef="task_grant_selection_hitl" targetRef="task_notify_grant_selected" />
+    <bpmn:sequenceFlow id="flow_notify_selected_to_gw" sourceRef="task_notify_grant_selected" targetRef="gw_grants_found" />
+    <bpmn:sequenceFlow id="flow_analyze_to_notify" sourceRef="task_analyze_docs" targetRef="task_notify_doc_done" />
+    <bpmn:sequenceFlow id="flow_notify_doc_to_prepare" sourceRef="task_notify_doc_done" targetRef="task_prepare_doc_instructions" />
+    <bpmn:sequenceFlow id="flow_compose_to_notify_proposal" sourceRef="task_compose_proposal" targetRef="task_notify_proposal_done" />
+    <bpmn:sequenceFlow id="flow_notify_proposal_to_review_req" sourceRef="task_notify_proposal_done" targetRef="task_notify_review_required" />
+    <bpmn:sequenceFlow id="flow_review_req_to_hitl" sourceRef="task_notify_review_required" targetRef="task_proposal_review_hitl" />
+    <bpmn:sequenceFlow id="flow_hitl_to_gw_approved" sourceRef="task_proposal_review_hitl" targetRef="gw_proposal_approved" />
+    <bpmn:sequenceFlow id="flow_proposal_approved_yes" name="Yes" sourceRef="gw_proposal_approved" targetRef="task_notify_proposal_approved">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${proposalApproved == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_notify_approved_to_package" sourceRef="task_notify_proposal_approved" targetRef="task_package_for_rpa" />
+    <bpmn:sequenceFlow id="flow_proposal_approved_no" name="No" sourceRef="gw_proposal_approved" targetRef="task_notify_proposal_rejected">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=js:proposalApproved == false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_notify_rejected_to_end" sourceRef="task_notify_proposal_rejected" targetRef="end_rejected" />
+    <bpmn:sequenceFlow id="flow_gw_submission_to_notify" sourceRef="gw_submission_successful" targetRef="task_notify_robot_submitted" />
+    <bpmn:sequenceFlow id="flow_notify_submitted_to_notify_success" sourceRef="task_notify_robot_submitted" targetRef="task_notify_successful_submission" />
+    <bpmn:sequenceFlow id="flow_notify_success_to_followup" sourceRef="task_notify_successful_submission" targetRef="task_notify_followup_sent" />
+    <bpmn:sequenceFlow id="flow_followup_to_timer" sourceRef="task_notify_followup_sent" targetRef="timer_monitor_status" />
+    <bpmn:sequenceFlow id="flow_congrats_to_notify_complete" sourceRef="task_send_congrats" targetRef="task_notify_pipeline_complete" />
+    <bpmn:sequenceFlow id="flow_notify_complete_to_end" sourceRef="task_notify_pipeline_complete" targetRef="end_approved" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="S_start_event" bpmnElement="start_event">
+        <dc:Bounds x="150" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="150" y="223" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_receive_validate" bpmnElement="task_receive_validate">
+        <dc:Bounds x="240" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="240" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_gw_data_complete" bpmnElement="gw_data_complete">
+        <dc:Bounds x="390" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="390" y="230" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_request_missing_info" bpmnElement="task_request_missing_info">
+        <dc:Bounds x="365" y="300" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="365" y="385" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_timer_await_farmer" bpmnElement="timer_await_farmer">
+        <dc:Bounds x="272" y="322" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="272" y="363" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_grant_discovery" bpmnElement="task_grant_discovery">
+        <dc:Bounds x="496" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="496" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_gw_grants_found" bpmnElement="gw_grants_found">
+        <dc:Bounds x="640" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="640" y="230" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_notify_no_grants" bpmnElement="task_notify_no_grants">
+        <dc:Bounds x="615" y="420" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="615" y="505" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_end_no_grants" bpmnElement="end_no_grants">
+        <dc:Bounds x="765" y="442" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="765" y="483" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_eligibility_assessment" bpmnElement="task_eligibility_assessment">
+        <dc:Bounds x="1040" y="540" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1040" y="625" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_gw_requirements_met" bpmnElement="gw_requirements_met">
+        <dc:Bounds x="1190" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1190" y="230" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_gw_other_grants_to_check" bpmnElement="gw_other_grants_to_check">
+        <dc:Bounds x="1190" y="555" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1190" y="610" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_notify_reqs_not_met" bpmnElement="task_notify_reqs_not_met">
+        <dc:Bounds x="1300" y="540" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1300" y="625" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_end_reqs_not_met" bpmnElement="end_reqs_not_met">
+        <dc:Bounds x="1450" y="562" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1450" y="603" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_check_docs_required" bpmnElement="task_check_docs_required">
+        <dc:Bounds x="1300" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1300" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_gw_docs_required" bpmnElement="gw_docs_required">
+        <dc:Bounds x="1450" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1450" y="230" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_identify_doc_types" bpmnElement="task_identify_doc_types">
+        <dc:Bounds x="1550" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1550" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_farmer_uploads_docs" bpmnElement="task_farmer_uploads_docs">
+        <dc:Bounds x="1700" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1700" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_analyze_docs" bpmnElement="task_analyze_docs">
+        <dc:Bounds x="1850" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1850" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_boundary_doc_analysis_failed" bpmnElement="boundary_doc_analysis_failed">
+        <dc:Bounds x="1968" y="256" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1968" y="297" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_query_for_clarification_doc" bpmnElement="task_query_for_clarification_doc">
+        <dc:Bounds x="1850" y="300" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1850" y="385" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_prepare_doc_instructions" bpmnElement="task_prepare_doc_instructions">
+        <dc:Bounds x="2000" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2000" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_collect_grant_details" bpmnElement="task_collect_grant_details">
+        <dc:Bounds x="2150" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2150" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_compose_proposal" bpmnElement="task_compose_proposal">
+        <dc:Bounds x="2300" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2300" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_boundary_proposal_error" bpmnElement="boundary_proposal_error">
+        <dc:Bounds x="2416" y="256" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2416" y="297" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_query_for_clarification_proposal" bpmnElement="task_query_for_clarification_proposal">
+        <dc:Bounds x="2300" y="300" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2300" y="385" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_package_for_rpa" bpmnElement="task_package_for_rpa">
+        <dc:Bounds x="3500" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3500" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_rpa_query_fields" bpmnElement="task_rpa_query_fields">
+        <dc:Bounds x="3750" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3750" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_rpa_submit" bpmnElement="task_rpa_submit">
+        <dc:Bounds x="3900" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3900" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_notify_successful_submission" bpmnElement="task_notify_successful_submission">
+        <dc:Bounds x="4350" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4350" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_timer_monitor_status" bpmnElement="timer_monitor_status">
+        <dc:Bounds x="4650" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4650" y="223" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_rpa_check_status" bpmnElement="task_rpa_check_status">
+        <dc:Bounds x="4740" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4740" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_gw_app_status" bpmnElement="gw_app_status">
+        <dc:Bounds x="4890" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4890" y="230" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_update_farmer_pending" bpmnElement="task_update_farmer_pending">
+        <dc:Bounds x="4740" y="300" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4740" y="385" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_send_congrats" bpmnElement="task_send_congrats">
+        <dc:Bounds x="4990" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4990" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_end_approved" bpmnElement="end_approved">
+        <dc:Bounds x="5140" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="5140" y="223" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_rpa_get_rejection_reason" bpmnElement="task_rpa_get_rejection_reason">
+        <dc:Bounds x="4990" y="660" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4990" y="745" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_specialist_reviews_rejection" bpmnElement="task_specialist_reviews_rejection">
+        <dc:Bounds x="5140" y="660" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="5140" y="745" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_gw_appeal_worthy" bpmnElement="gw_appeal_worthy">
+        <dc:Bounds x="5290" y="675" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="5290" y="730" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_send_rejection_analysis" bpmnElement="task_send_rejection_analysis">
+        <dc:Bounds x="5390" y="540" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="5390" y="625" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_end_rejected_recommendations" bpmnElement="end_rejected_recommendations">
+        <dc:Bounds x="5540" y="562" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="5540" y="603" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_prepare_appeal" bpmnElement="task_prepare_appeal">
+        <dc:Bounds x="5390" y="660" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="5390" y="745" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_rpa_file_appeal" bpmnElement="task_rpa_file_appeal">
+        <dc:Bounds x="5540" y="660" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="5540" y="745" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_notify_appeal_filed" bpmnElement="task_notify_appeal_filed">
+        <dc:Bounds x="5690" y="660" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="5690" y="745" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_timer_await_appeal" bpmnElement="timer_await_appeal">
+        <dc:Bounds x="5840" y="682" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="5840" y="723" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_rpa_check_appeal_status" bpmnElement="task_rpa_check_appeal_status">
+        <dc:Bounds x="5930" y="660" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="5930" y="745" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_gw_appeal_decision" bpmnElement="gw_appeal_decision">
+        <dc:Bounds x="6080" y="675" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="6080" y="730" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_notify_appeal_won" bpmnElement="task_notify_appeal_won">
+        <dc:Bounds x="6180" y="540" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="6180" y="625" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_end_appeal_approved" bpmnElement="end_appeal_approved">
+        <dc:Bounds x="6330" y="562" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="6330" y="603" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_send_final_report" bpmnElement="task_send_final_report">
+        <dc:Bounds x="6180" y="660" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="6180" y="745" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_end_final_rejection" bpmnElement="end_final_rejection">
+        <dc:Bounds x="6330" y="682" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="6330" y="723" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_present_options" bpmnElement="task_present_options">
+        <dc:Bounds x="740" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="740" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_farmer_selects_grant" bpmnElement="task_farmer_selects_grant">
+        <dc:Bounds x="890" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="890" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_deep_dive_assessment" bpmnElement="task_deep_dive_assessment">
+        <dc:Bounds x="1040" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1040" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_gw_submission_successful" bpmnElement="gw_submission_successful">
+        <dc:Bounds x="4050" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4050" y="230" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_tech_alert" bpmnElement="task_tech_alert">
+        <dc:Bounds x="4025" y="352" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4025" y="437" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_gw_data_validated" bpmnElement="gw_data_validated">
+        <dc:Bounds x="3650" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3650" y="230" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_request_correction" bpmnElement="task_request_correction">
+        <dc:Bounds x="3625" y="300" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3625" y="385" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_end_awaiting_farmer" bpmnElement="end_awaiting_farmer">
+        <dc:Bounds x="3775" y="322" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3775" y="363" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_notify_eligibility_done" bpmnElement="task_notify_eligibility_done">
+        <dc:Bounds x="1190" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1190" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_notify_discovery_done" bpmnElement="task_notify_discovery_done">
+        <dc:Bounds x="640" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="640" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_grant_selection_hitl" bpmnElement="task_grant_selection_hitl">
+        <dc:Bounds x="790" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="790" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_notify_grant_selected" bpmnElement="task_notify_grant_selected">
+        <dc:Bounds x="940" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="940" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_notify_doc_done" bpmnElement="task_notify_doc_done">
+        <dc:Bounds x="2000" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2000" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_notify_proposal_done" bpmnElement="task_notify_proposal_done">
+        <dc:Bounds x="2450" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2450" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_notify_review_required" bpmnElement="task_notify_review_required">
+        <dc:Bounds x="2600" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2600" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_proposal_review_hitl" bpmnElement="task_proposal_review_hitl">
+        <dc:Bounds x="2750" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2750" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_gw_proposal_approved" bpmnElement="gw_proposal_approved">
+        <dc:Bounds x="2900" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2900" y="230" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_notify_proposal_approved" bpmnElement="task_notify_proposal_approved">
+        <dc:Bounds x="3000" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3000" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_notify_proposal_rejected" bpmnElement="task_notify_proposal_rejected">
+        <dc:Bounds x="2875" y="300" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2875" y="385" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_end_rejected" bpmnElement="end_rejected">
+        <dc:Bounds x="3025" y="322" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3025" y="363" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_notify_robot_submitted" bpmnElement="task_notify_robot_submitted">
+        <dc:Bounds x="4150" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4150" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_notify_followup_sent" bpmnElement="task_notify_followup_sent">
+        <dc:Bounds x="4500" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4500" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_notify_pipeline_complete" bpmnElement="task_notify_pipeline_complete">
+        <dc:Bounds x="5200" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="5200" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_start_to_validate" bpmnElement="flow_start_to_validate">
+        <di:waypoint x="186" y="200" />
+        <di:waypoint x="240" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_validate_to_gw_complete" bpmnElement="flow_validate_to_gw_complete">
+        <di:waypoint x="340" y="200" />
+        <di:waypoint x="390" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_data_complete_no" bpmnElement="flow_data_complete_no">
+        <di:waypoint x="415" y="225" />
+        <di:waypoint x="415" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_request_to_timer" bpmnElement="flow_request_to_timer">
+        <di:waypoint x="365" y="340" />
+        <di:waypoint x="308" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_timer_to_validate" bpmnElement="flow_timer_to_validate">
+        <di:waypoint x="272" y="340" />
+        <di:waypoint x="210" y="340" />
+        <di:waypoint x="210" y="200" />
+        <di:waypoint x="240" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_data_complete_yes" bpmnElement="flow_data_complete_yes">
+        <di:waypoint x="440" y="200" />
+        <di:waypoint x="496" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_grants_found_no" bpmnElement="flow_grants_found_no">
+        <di:waypoint x="665" y="225" />
+        <di:waypoint x="665" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_notify_no_grants_to_end" bpmnElement="flow_notify_no_grants_to_end">
+        <di:waypoint x="715" y="460" />
+        <di:waypoint x="765" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_assessment_to_gw" bpmnElement="flow_assessment_to_gw">
+        <di:waypoint x="1090" y="540" />
+        <di:waypoint x="1090" y="200" />
+        <di:waypoint x="1190" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_reqs_met_no" bpmnElement="flow_reqs_met_no">
+        <di:waypoint x="1215" y="225" />
+        <di:waypoint x="1215" y="555" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_other_grants_yes" bpmnElement="flow_other_grants_yes">
+        <di:waypoint x="1190" y="580" />
+        <di:waypoint x="1140" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_other_grants_no" bpmnElement="flow_other_grants_no">
+        <di:waypoint x="1240" y="580" />
+        <di:waypoint x="1300" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_notify_reqs_not_met_to_end" bpmnElement="flow_notify_reqs_not_met_to_end">
+        <di:waypoint x="1400" y="580" />
+        <di:waypoint x="1450" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_reqs_met_yes" bpmnElement="flow_reqs_met_yes">
+        <di:waypoint x="1240" y="200" />
+        <di:waypoint x="1300" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_check_docs_to_gw" bpmnElement="flow_check_docs_to_gw">
+        <di:waypoint x="1400" y="200" />
+        <di:waypoint x="1450" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_docs_required_yes" bpmnElement="flow_docs_required_yes">
+        <di:waypoint x="1500" y="200" />
+        <di:waypoint x="1550" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_identify_to_upload" bpmnElement="flow_identify_to_upload">
+        <di:waypoint x="1650" y="200" />
+        <di:waypoint x="1700" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_upload_to_analyze" bpmnElement="flow_upload_to_analyze">
+        <di:waypoint x="1800" y="200" />
+        <di:waypoint x="1850" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_boundary_doc_to_query" bpmnElement="flow_boundary_doc_to_query">
+        <di:waypoint x="1968" y="274" />
+        <di:waypoint x="1900" y="274" />
+        <di:waypoint x="1900" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_query_doc_to_analyze" bpmnElement="flow_query_doc_to_analyze">
+        <di:waypoint x="1900" y="380" />
+        <di:waypoint x="1900" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_docs_required_no" bpmnElement="flow_docs_required_no">
+        <di:waypoint x="1475" y="225" />
+        <di:waypoint x="1475" y="400" />
+        <di:waypoint x="2200" y="400" />
+        <di:waypoint x="2200" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_prepare_instructions_to_collect" bpmnElement="flow_prepare_instructions_to_collect">
+        <di:waypoint x="2100" y="200" />
+        <di:waypoint x="2150" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_collect_to_compose" bpmnElement="flow_collect_to_compose">
+        <di:waypoint x="2250" y="200" />
+        <di:waypoint x="2300" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_boundary_proposal_to_query" bpmnElement="flow_boundary_proposal_to_query">
+        <di:waypoint x="2416" y="274" />
+        <di:waypoint x="2350" y="274" />
+        <di:waypoint x="2350" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_query_proposal_to_compose" bpmnElement="flow_query_proposal_to_compose">
+        <di:waypoint x="2350" y="380" />
+        <di:waypoint x="2350" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_query_fields_to_submit" bpmnElement="flow_query_fields_to_submit">
+        <di:waypoint x="3050" y="200" />
+        <di:waypoint x="3100" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_timer_monitor_to_check" bpmnElement="flow_timer_monitor_to_check">
+        <di:waypoint x="3536" y="200" />
+        <di:waypoint x="3590" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_check_status_to_gw" bpmnElement="flow_check_status_to_gw">
+        <di:waypoint x="3690" y="200" />
+        <di:waypoint x="3740" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_status_pending" bpmnElement="flow_status_pending">
+        <di:waypoint x="3765" y="225" />
+        <di:waypoint x="3765" y="340" />
+        <di:waypoint x="3690" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_update_pending_to_timer" bpmnElement="flow_update_pending_to_timer">
+        <di:waypoint x="3590" y="340" />
+        <di:waypoint x="3518" y="340" />
+        <di:waypoint x="3518" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_status_approved" bpmnElement="flow_status_approved">
+        <di:waypoint x="3790" y="200" />
+        <di:waypoint x="3840" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_congrats_to_end" bpmnElement="flow_congrats_to_end">
+        <di:waypoint x="3940" y="200" />
+        <di:waypoint x="3990" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_status_rejected" bpmnElement="flow_status_rejected">
+        <di:waypoint x="3765" y="225" />
+        <di:waypoint x="3765" y="700" />
+        <di:waypoint x="3840" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_get_reason_to_review" bpmnElement="flow_get_reason_to_review">
+        <di:waypoint x="3940" y="700" />
+        <di:waypoint x="3990" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_review_rejection_to_gw" bpmnElement="flow_review_rejection_to_gw">
+        <di:waypoint x="4090" y="700" />
+        <di:waypoint x="4140" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_appeal_no" bpmnElement="flow_appeal_no">
+        <di:waypoint x="4165" y="675" />
+        <di:waypoint x="4165" y="580" />
+        <di:waypoint x="4240" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_rejection_analysis_to_end" bpmnElement="flow_rejection_analysis_to_end">
+        <di:waypoint x="4340" y="580" />
+        <di:waypoint x="4390" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_appeal_yes" bpmnElement="flow_appeal_yes">
+        <di:waypoint x="4190" y="700" />
+        <di:waypoint x="4240" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_prepare_appeal_to_file" bpmnElement="flow_prepare_appeal_to_file">
+        <di:waypoint x="4340" y="700" />
+        <di:waypoint x="4390" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_file_appeal_to_notify" bpmnElement="flow_file_appeal_to_notify">
+        <di:waypoint x="4490" y="700" />
+        <di:waypoint x="4540" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_notify_appeal_to_timer" bpmnElement="flow_notify_appeal_to_timer">
+        <di:waypoint x="4640" y="700" />
+        <di:waypoint x="4690" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_timer_appeal_to_check" bpmnElement="flow_timer_appeal_to_check">
+        <di:waypoint x="4726" y="700" />
+        <di:waypoint x="4780" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_check_appeal_to_gw" bpmnElement="flow_check_appeal_to_gw">
+        <di:waypoint x="4880" y="700" />
+        <di:waypoint x="4930" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_appeal_approved" bpmnElement="flow_appeal_approved">
+        <di:waypoint x="4955" y="675" />
+        <di:waypoint x="4955" y="580" />
+        <di:waypoint x="5030" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_appeal_won_to_end" bpmnElement="flow_appeal_won_to_end">
+        <di:waypoint x="5130" y="580" />
+        <di:waypoint x="5180" y="580" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_appeal_rejected" bpmnElement="flow_appeal_rejected">
+        <di:waypoint x="4980" y="700" />
+        <di:waypoint x="5030" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_final_report_to_end" bpmnElement="flow_final_report_to_end">
+        <di:waypoint x="5130" y="700" />
+        <di:waypoint x="5180" y="700" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_grants_found_to_present" bpmnElement="flow_grants_found_to_present">
+        <di:waypoint x="690" y="200" />
+        <di:waypoint x="740" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_present_to_select" bpmnElement="flow_present_to_select">
+        <di:waypoint x="840" y="200" />
+        <di:waypoint x="890" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_select_to_deep_dive" bpmnElement="flow_select_to_deep_dive">
+        <di:waypoint x="990" y="200" />
+        <di:waypoint x="1040" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_submission_success" bpmnElement="flow_submission_success">
+        <di:waypoint x="3300" y="200" />
+        <di:waypoint x="3350" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_submission_failed" bpmnElement="flow_submission_failed">
+        <di:waypoint x="4075" y="225" />
+        <di:waypoint x="4075" y="352" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_tech_alert_to_retry" bpmnElement="flow_tech_alert_to_retry">
+        <di:waypoint x="4075" y="352" />
+        <di:waypoint x="4075" y="296" />
+        <di:waypoint x="3950" y="296" />
+        <di:waypoint x="3950" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_package_to_gw_validated" bpmnElement="flow_package_to_gw_validated">
+        <di:waypoint x="2800" y="200" />
+        <di:waypoint x="2850" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_data_validated_ready" bpmnElement="flow_data_validated_ready">
+        <di:waypoint x="2900" y="200" />
+        <di:waypoint x="2950" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_data_validated_not_ready" bpmnElement="flow_data_validated_not_ready">
+        <di:waypoint x="2875" y="225" />
+        <di:waypoint x="2875" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_correction_to_end" bpmnElement="flow_correction_to_end">
+        <di:waypoint x="2925" y="340" />
+        <di:waypoint x="2975" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_deep_dive_to_notify" bpmnElement="flow_deep_dive_to_notify">
+        <di:waypoint x="1140" y="200" />
+        <di:waypoint x="1190" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_notify_eligibility_to_gw" bpmnElement="flow_notify_eligibility_to_gw">
+        <di:waypoint x="1290" y="200" />
+        <di:waypoint x="1190" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_discovery_to_notify" bpmnElement="flow_discovery_to_notify">
+        <di:waypoint x="596" y="200" />
+        <di:waypoint x="640" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_notify_discovery_to_hitl" bpmnElement="flow_notify_discovery_to_hitl">
+        <di:waypoint x="740" y="200" />
+        <di:waypoint x="790" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_hitl_to_notify_selected" bpmnElement="flow_hitl_to_notify_selected">
+        <di:waypoint x="890" y="200" />
+        <di:waypoint x="940" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_notify_selected_to_gw" bpmnElement="flow_notify_selected_to_gw">
+        <di:waypoint x="1040" y="200" />
+        <di:waypoint x="640" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_analyze_to_notify" bpmnElement="flow_analyze_to_notify">
+        <di:waypoint x="1950" y="200" />
+        <di:waypoint x="2000" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_notify_doc_to_prepare" bpmnElement="flow_notify_doc_to_prepare">
+        <di:waypoint x="2100" y="200" />
+        <di:waypoint x="2000" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_compose_to_notify_proposal" bpmnElement="flow_compose_to_notify_proposal">
+        <di:waypoint x="2400" y="200" />
+        <di:waypoint x="2450" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_notify_proposal_to_review_req" bpmnElement="flow_notify_proposal_to_review_req">
+        <di:waypoint x="2550" y="200" />
+        <di:waypoint x="2600" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_review_req_to_hitl" bpmnElement="flow_review_req_to_hitl">
+        <di:waypoint x="2700" y="200" />
+        <di:waypoint x="2750" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_hitl_to_gw_approved" bpmnElement="flow_hitl_to_gw_approved">
+        <di:waypoint x="2850" y="200" />
+        <di:waypoint x="2900" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_proposal_approved_yes" bpmnElement="flow_proposal_approved_yes">
+        <di:waypoint x="2950" y="200" />
+        <di:waypoint x="3000" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_notify_approved_to_package" bpmnElement="flow_notify_approved_to_package">
+        <di:waypoint x="3100" y="200" />
+        <di:waypoint x="3500" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_proposal_approved_no" bpmnElement="flow_proposal_approved_no">
+        <di:waypoint x="2925" y="225" />
+        <di:waypoint x="2925" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_notify_rejected_to_end" bpmnElement="flow_notify_rejected_to_end">
+        <di:waypoint x="2975" y="340" />
+        <di:waypoint x="3025" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_gw_submission_to_notify" bpmnElement="flow_gw_submission_to_notify">
+        <di:waypoint x="4100" y="200" />
+        <di:waypoint x="4150" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_notify_submitted_to_notify_success" bpmnElement="flow_notify_submitted_to_notify_success">
+        <di:waypoint x="4250" y="200" />
+        <di:waypoint x="4350" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_notify_success_to_followup" bpmnElement="flow_notify_success_to_followup">
+        <di:waypoint x="4450" y="200" />
+        <di:waypoint x="4500" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_followup_to_timer" bpmnElement="flow_followup_to_timer">
+        <di:waypoint x="4600" y="200" />
+        <di:waypoint x="4650" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_congrats_to_notify_complete" bpmnElement="flow_congrats_to_notify_complete">
+        <di:waypoint x="5090" y="200" />
+        <di:waypoint x="5200" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_flow_notify_complete_to_end" bpmnElement="flow_notify_complete_to_end">
+        <di:waypoint x="5300" y="200" />
+        <di:waypoint x="5140" y="200" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

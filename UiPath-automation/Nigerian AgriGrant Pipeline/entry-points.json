@@ -1,0 +1,198 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "/content/Process.bpmn#start_event",
+      "uniqueId": "9014356b-5c01-4d6c-834e-f7a3afa06aaf",
+      "type": "ProcessOrchestration",
+      "input": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "title": "userId"
+          },
+          "sessionId": {
+            "type": "string",
+            "title": "sessionId"
+          },
+          "farmerName": {
+            "type": "string",
+            "title": "farmerName"
+          },
+          "farmerEmail": {
+            "type": "string",
+            "title": "farmerEmail"
+          },
+          "stateOfResidence": {
+            "type": "string",
+            "title": "stateOfResidence"
+          },
+          "farmType": {
+            "type": "string",
+            "title": "farmType"
+          },
+          "lga": {
+            "type": "string",
+            "title": "lga"
+          },
+          "farmPhone": {
+            "type": "string",
+            "title": "farmPhone"
+          },
+          "farmerSizeHecaters": {
+            "type": "integer",
+            "title": "farmerSizeHecaters"
+          },
+          "annualRevenueNGN": {
+            "type": "integer",
+            "title": "annualRevenueNGN"
+          },
+          "farmExperienceYears": {
+            "type": "integer",
+            "title": "farmExperienceYears"
+          },
+          "isSmallholderFarmer": {
+            "type": "boolean",
+            "title": "isSmallholderFarmer",
+            "default": "true"
+          },
+          "ProjectTittle": {
+            "type": "string",
+            "title": "ProjectTittle"
+          },
+          "projectDescription": {
+            "type": "string",
+            "title": "projectDescription"
+          },
+          "requestedAmount": {
+            "type": "integer",
+            "title": "requestedAmount"
+          },
+          "farmingChallenges": {
+            "type": "string",
+            "title": "farmingChallenges"
+          },
+          "previousGrants": {
+            "type": "string",
+            "title": "previousGrants"
+          },
+          "hasCACRegistration": {
+            "type": "boolean",
+            "title": "hasCACRegistration",
+            "default": "false"
+          },
+          "hasLandDocument": {
+            "type": "boolean",
+            "title": "hasLandDocument",
+            "default": "false"
+          },
+          "isMemberOfCooperative": {
+            "type": "boolean",
+            "title": "isMemberOfCooperative",
+            "default": "false"
+          },
+          "additionalNotes": {
+            "type": "string",
+            "title": "additionalNotes"
+          },
+          "fundingPurpose": {
+            "type": "string",
+            "title": "fundingPurpose"
+          },
+          "isYouthFarmer": {
+            "type": "boolean",
+            "title": "isYouthFarmer"
+          },
+          "isWomanFarmer": {
+            "type": "boolean",
+            "title": "isWomanFarmer"
+          },
+          "cropOrLivestockTypes": {
+            "type": "object"
+          },
+          "submissionMethod": {
+            "type": "string",
+            "title": "submissionMethod"
+          },
+          "submissionOfficeAddress": {
+            "type": "string",
+            "title": "submissionOfficeAddress"
+          },
+          "submissionPortalUrl": {
+            "type": "string",
+            "title": "submissionPortalUrl",
+            "default": "https://nagap.vercel.app/grant-application-form"
+          },
+          "submissionContactEmail": {
+            "type": "string",
+            "title": "submissionContactEmail"
+          },
+          "submissionContactPhone": {
+            "type": "string",
+            "title": "submissionContactPhone"
+          },
+          "applicationReferenceNumber": {
+            "type": "string",
+            "title": "applicationReferenceNumber"
+          },
+          "submissionDate": {
+            "type": "string",
+            "title": "submissionDate"
+          },
+          "currentStatus": {
+            "type": "string",
+            "title": "currentStatus",
+            "default": "pending"
+          },
+          "agentAction": {
+            "type": "string",
+            "title": "agentAction",
+            "default": "submit_application"
+          },
+          "chatMessage": {
+            "type": "string",
+            "title": "chatMessage"
+          },
+          "message": {
+            "type": "string",
+            "title": "message"
+          },
+          "additionalInfoRequested": {
+            "type": "string",
+            "title": "additionalInfoRequested"
+          },
+          "rejectionReason": {
+            "type": "string",
+            "title": "rejectionReason"
+          },
+          "pererredLanguage": {
+            "type": "string",
+            "title": "pererredLanguage",
+            "default": "en"
+          },
+          "submissionDeadline": {
+            "type": "string",
+            "title": "submissionDeadline"
+          },
+          "documentsChecklist": {
+            "type": "object"
+          },
+          "missingDocuments": {
+            "type": "object"
+          },
+          "chatHistory": {
+            "type": "object"
+          }
+        },
+        "required": []
+      },
+      "output": {
+        "type": "object",
+        "properties": {}
+      },
+      "displayName": "Farmer Submits Grant Application"
+    }
+  ]
+}
