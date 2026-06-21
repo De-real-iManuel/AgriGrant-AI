@@ -361,7 +361,7 @@ export default function ChatPage() {
 
           // Update session list in localStorage
           const storedSessions = localStorage.getItem('agrigrant_chat_sessions');
-          let sessionsList = storedSessions ? JSON.parse(storedSessions) : [];
+          const sessionsList = storedSessions ? JSON.parse(storedSessions) : [];
           const exists = sessionsList.some((s: any) => s.sessionId === data.sessionId);
           if (!exists) {
             sessionsList.unshift({
@@ -699,7 +699,7 @@ export default function ChatPage() {
       try {
         const storedSessions = localStorage.getItem('agrigrant_chat_sessions');
         if (storedSessions && session) {
-          let sessionsList = JSON.parse(storedSessions);
+          const sessionsList = JSON.parse(storedSessions);
           const idx = sessionsList.findIndex((s: any) => s.sessionId === session.sessionId);
           if (
             idx !== -1 &&
