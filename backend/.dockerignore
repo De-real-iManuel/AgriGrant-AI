@@ -1,0 +1,37 @@
+# ── Secrets — NEVER bake into images ──
+.env
+.env.*
+!.env.example
+
+# ── Python build artefacts ──
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ── Virtualenvs ──
+.venv/
+venv/
+env/
+
+# ── IDE / OS ──
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# ── VCS / docs not needed at runtime ──
+.git/
+.gitignore
+*.md
+!README.md
+
+# ── Tests (optional — uncomment if image should not include tests) ──
+# tests/
+test_token.py

@@ -9,10 +9,10 @@ class Settings(BaseSettings):
     UIPATH_PAT: str = ""  # Personal Access Token — primary auth
     UIPATH_ORGANIZATION: str = ""
     UIPATH_TENANT: str = ""
-    UIPATH_BASE_URL: str = "https://cloud.uipath.com"
+    UIPATH_BASE_URL: str = "https://staging.uipath.com"
 
     # UiPath Orchestrator
-    UIPATH_FOLDER_ID: str = "3081039"
+    UIPATH_FOLDER_ID: str = ""
     UIPATH_FOLDER_KEY: str = ""
     UIPATH_PIPELINE_PROCESS_KEY: str = ""
     UIPATH_FORM_FILLER_ROBOT_KEY: str = ""

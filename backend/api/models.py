@@ -81,6 +81,12 @@ class PipelineStatusResponse(BaseModel):
     result: Optional[PipelineOutput] = None
     error: Optional[str] = None
 
+class ChatMessage(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str
+    timestamp: datetime
+    suggestedActions: List[Dict[str, Any]] = []
+
 class ChatStartRequest(BaseModel):
     farmerName: str
     farmerProfile: Optional[FarmerSubmission] = None
@@ -99,12 +105,6 @@ class ChatMessageRequest(BaseModel):
 class ChatEditRequest(BaseModel):
     sessionId: str
     message: str = Field(..., max_length=1000)
-
-class ChatMessage(BaseModel):
-    role: Literal["user", "assistant"]
-    content: str
-    timestamp: datetime
-    suggestedActions: List[Dict[str, Any]] = []
 
 class ChatMessageResponse(BaseModel):
     sessionId: str
