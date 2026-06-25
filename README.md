@@ -43,29 +43,87 @@ AgriGrant AI removes these barriers through a five-agent AI pipeline:
 
 ## System Architecture
 
-### High-Level Phase Overview
+AgriGrant AI is composed of three layers: a farmer-facing web app, a FastAPI backend, and a UiPath Agentic Automation suite that does the heavy lifting.
+
+### How the layers connect
 
 ```mermaid
-flowchart LR
-    A((🌱 Farmer<br/>Submits)) --> P1[/"Phase 1<br/>Intake &amp; Validation"/]
-    P1 --> P2[/"Phase 2<br/>Grant Discovery"/]
-    P2 --> P3[/"Phase 3<br/>Eligibility &amp; Risk"/]
-    P3 --> P4[/"Phase 4<br/>Document Verification"/]
-    P4 --> P5[/"Phase 5<br/>Proposal Generation"/]
-    P5 --> P6[/"Phase 6<br/>Human Approval"/]
-    P6 --> P7[/"Phase 7<br/>RPA Submission"/]
-    P7 --> P8[/"Phase 8<br/>Monitoring &amp; Appeal"/]
-    P8 --> Z(((🎉 Grant<br/>Awarded)))
+flowchart TB
+    subgraph Farmer["👨‍🌾 Farmer Layer"]
+        F[Farmer]
+        W["Web App<br/>(Next.js · agrigrant.xyz)"]
+        F <--> W
+    end
 
-    classDef phase fill:#1D4ED8,stroke:#1E3A8A,color:#fff,stroke-width:2px
-    classDef startNode fill:#22C55E,stroke:#166534,color:#fff,stroke-width:3px
-    classDef endNode fill:#16A34A,stroke:#14532D,color:#fff,stroke-width:3px
-    class P1,P2,P3,P4,P5,P6,P7,P8 phase
-    class A startNode
-    class Z endNode
+    subgraph Backend["🔧 Backend Layer"]
+        API["FastAPI Backend<br/>(api.agrigrant.xyz)"]
+        DB[("Supabase<br/>Postgres + Storage")]
+        SG["SendGrid<br/>Branded Emails"]
+        API <--> DB
+        API --> SG
+    end
+
+    subgraph UiPath["🤖 UiPath Agentic Automation"]
+        BPMN["Maestro Pipeline<br/>(BPMN Orchestrator)"]
+        AGENTS["5 AI Agents<br/>Discovery · Eligibility · Documents<br/>Proposal · Submission"]
+        APP["SimpleApprovalApp<br/>(Human Gate)"]
+        RPA["Form Filler Robot<br/>(Portal Automation)"]
+        BPMN --> AGENTS --> APP --> RPA
+    end
+
+    W -->|HTTPS| API
+    API -->|HTTP Trigger| BPMN
+    BPMN -.->|Status webhooks| API
+    RPA -.->|Confirmation #| API
+    SG -.->|OTP · status · results| F
+
+    classDef farmer fill:#22C55E,stroke:#166534,color:#fff,stroke-width:2px
+    classDef backend fill:#1D4ED8,stroke:#1E3A8A,color:#fff,stroke-width:2px
+    classDef uipath fill:#CA8A04,stroke:#854D0E,color:#fff,stroke-width:2px
+    class F,W farmer
+    class API,DB,SG backend
+    class BPMN,AGENTS,APP,RPA uipath
 ```
 
-### Detailed BPMN Process Flow
+### What happens when a farmer submits
+
+```mermaid
+sequenceDiagram
+    participant F as 👨‍🌾 Farmer
+    participant W as Web App
+    participant B as FastAPI Backend
+    participant P as Maestro Pipeline
+    participant A as 5 AI Agents
+    participant H as Human Approver
+    participant R as RPA Robot
+    participant E as SendGrid
+
+    F->>W: Fill grant application
+    W->>B: POST /pipeline/submit
+    B->>E: Send confirmation email
+    E-->>F: ✉️ "We received your application"
+    B->>P: Trigger pipeline (HTTP)
+
+    P->>A: 1️⃣ Discover free grants
+    P->>A: 2️⃣ Score eligibility (0–100)
+    P->>A: 3️⃣ Validate uploaded documents
+    P->>A: 4️⃣ Generate proposal letter
+
+    P->>H: Request approval
+    H-->>P: ✅ Approved
+
+    P->>R: Submit to grant portal
+    R-->>P: Portal confirmation #
+
+    P->>A: 5️⃣ Build follow-up package
+    P->>B: Pipeline complete
+    B->>E: Send full results email
+    E-->>F: ✉️ Matched grants · score · letter · next steps
+```
+
+### Detailed BPMN Process Flow (reference)
+
+For implementers — full flow with every gateway, retry, timer event, and end-state. Judges can skip this.
 
 > **Legend:** 🟢 Start · 🔵 AI Agent · 🟡 RPA Robot · 🟣 Human Task · ⏱️ Timer · ◇ Gateway · 🔴 Failure End · 🟢 Success End
 
@@ -341,7 +399,7 @@ Handles synchronous response on submission: validates input, generates a draft l
 
 | Field | Description |
 |-------|-------------|
-| `applicationReference` | e.g. "AGR-843921" |
+| `applicationReference` | e.g. "NAGAP-843921" |
 | `confirmationEmailSent` | true / false |
 | `submissionStatus` | "Received" / "Email Failed" |
 | `applicationLetterText` | Full draft letter |
@@ -350,14 +408,6 @@ Handles synchronous response on submission: validates input, generates a draft l
 
 ---
 
-## Email Delivery
-
-| Parameter | Value |
-|-----------|-------|
-| Provider | SendGrid |
-| Endpoint | POST https://api.sendgrid.com/v3/mail/send |
-| From | info@agrigrant.xyz |
-| Success Code | 202 |
 
 Two-stage delivery:
 
