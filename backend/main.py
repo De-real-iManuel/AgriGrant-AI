@@ -9,6 +9,7 @@ from api.chat import router as chat_router
 from api.health import router as health_router
 from api.profile import router as profile_router
 from api.farmer import router as farmer_router
+from api.hitl import router as hitl_router
 
 app = FastAPI(
     title="AgriGrant AI Backend",
@@ -26,7 +27,6 @@ origins = [
     "https://agrigrant.xyz",        # Production root
     "https://www.agrigrant.xyz",    # Production www
     "https://api.agrigrant.xyz",    # Production API subdomain
-    "https://v1.api.agrigrant.xyz", # Legacy versioned subdomain
 ]
 
 app.add_middleware(
@@ -48,16 +48,9 @@ v1.include_router(chat_router)
 v1.include_router(health_router)
 v1.include_router(profile_router)
 v1.include_router(farmer_router)
+v1.include_router(hitl_router)
 
 app.include_router(v1)
-
-# Backwards-compat: keep legacy un-versioned routes alive so the previous
-# frontend / monitors don't break during the cutover. Remove once v2 ships.
-app.include_router(pipeline_router)
-app.include_router(chat_router)
-app.include_router(health_router)
-app.include_router(profile_router)
-app.include_router(farmer_router)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=settings.PORT, reload=True)
