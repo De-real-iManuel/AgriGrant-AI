@@ -70,6 +70,13 @@ const navGroups = [
         href: '/dashboard/chat',
         badge: null,
       },
+      {
+        id: 'nav-hitl',
+        icon: Sparkles,
+        label: 'HITL Sandbox',
+        href: '/dashboard/hitl',
+        badge: 'BPMN',
+      },
     ],
   },
   {
