@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<p style="margin:0 0 16px;font-size:16px;">Hi {{ farmer_name }},</p>
+
+<p style="margin:0 0 20px;">{{ message }}</p>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;background:#fafbfa;border-radius:12px;border:1px solid #e7ecea;">
+  <tr><td style="padding:16px 20px;border-bottom:1px solid #e7ecea;">
+    <div style="font-size:12px;color:#8a9890;text-transform:uppercase;letter-spacing:1px;font-weight:600;">Application</div>
+    <div style="font-size:16px;font-weight:600;color:#1f5e3f;margin-top:4px;font-family:'SF Mono',Monaco,monospace;">{{ application_reference }}</div>
+  </td></tr>
+  <tr><td style="padding:14px 20px;">
+    <span style="color:#8a9890;font-size:13px;">Current stage:</span>
+    <span style="color:#1f3329;font-weight:500;">{{ stage }}</span>
+  </td></tr>
+</table>
+
+{% if action_url %}
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
+  <tr><td style="background:#2d8659;border-radius:8px;">
+    <a href="{{ action_url }}" style="display:inline-block;padding:12px 28px;color:#ffffff;font-weight:600;text-decoration:none;font-size:15px;">{{ action_label | default("View update →") }}</a>
+  </td></tr>
+</table>
+{% endif %}
+{% endblock %}

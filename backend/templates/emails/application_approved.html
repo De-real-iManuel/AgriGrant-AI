@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<p style="margin:0 0 16px;font-size:16px;">Hi {{ farmer_name }},</p>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;background:#eef7f1;border-radius:12px;border:1px solid #b8e0c8;">
+  <tr><td align="center" style="padding:24px;">
+    <div style="font-size:36px;">🎉</div>
+    <div style="font-size:18px;font-weight:700;color:#1f5e3f;margin-top:8px;">Your application has been approved!</div>
+  </td></tr>
+</table>
+
+<p style="margin:0 0 20px;">Great news — <strong>{{ grant_program }}</strong> has accepted your AgriGrant AI submission.</p>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;background:#fafbfa;border-radius:12px;border:1px solid #e7ecea;">
+  <tr><td style="padding:14px 20px;border-bottom:1px solid #e7ecea;">
+    <span style="color:#8a9890;font-size:13px;">Reference:</span>
+    <span style="color:#1f3329;font-weight:600;font-family:'SF Mono',Monaco,monospace;">{{ application_reference }}</span>
+  </td></tr>
+  {% if funding_amount %}
+  <tr><td style="padding:14px 20px;border-bottom:1px solid #e7ecea;">
+    <span style="color:#8a9890;font-size:13px;">Funding amount:</span>
+    <span style="color:#1f3329;font-weight:600;">{{ funding_amount }}</span>
+  </td></tr>
+  {% endif %}
+  {% if next_steps %}
+  <tr><td style="padding:14px 20px;">
+    <span style="color:#8a9890;font-size:13px;">Next steps:</span>
+    <div style="color:#1f3329;margin-top:6px;">{{ next_steps }}</div>
+  </td></tr>
+  {% endif %}
+</table>
+
+<p style="margin:0;color:#5a6b62;font-size:13px;">Congratulations from the entire AgriGrant AI team 🌾</p>
+{% endblock %}
