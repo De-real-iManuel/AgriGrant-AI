@@ -265,7 +265,8 @@
     "storageVersion": "50.0.0",
     "isConversational": false,
     "targetRuntime": "pythonAgent",
-    "showProjectCreationExperience": false
+    "showProjectCreationExperience": false,
+    "agentMemory": true
   },
   "type": "lowCode",
   "projectId": "3888157c-7f61-41ae-a9a6-9a540b064040",
