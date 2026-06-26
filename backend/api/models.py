@@ -10,20 +10,33 @@ class FarmTypeEnum(str, Enum):
     FISHERY = "Fishery"
     MIXED = "Mixed Farming"
     AGRO = "Agro-processing"
+    HORTICULTURE = "Horticulture"
+    COOPERATIVE = "Cooperative"
+    AGRIBUSINESS = "Agribusiness"
     OTHERS = "Others"
+    OTHER = "Other"
 
 class FarmerSubmission(BaseModel):
     userId: Optional[str] = None
+    sessionId: Optional[str] = None
     farmerName: str = Field(..., max_length=100)
+    farmerEmail: Optional[str] = None
+    farmerPhone: Optional[str] = None
+    residentialAddress: Optional[str] = None
     stateOfResidence: str
     lga: str = ""
     farmAddress: str = ""
-    farmType: FarmTypeEnum
+    farmType: FarmTypeEnum = FarmTypeEnum.MIXED
     cropOrLivestockTypes: List[str] = []
     farmSizeHectares: Optional[float] = None
     annualRevenueNGN: Optional[float] = None
     farmingExperienceYears: Optional[float] = None
     fundingPurpose: str = Field(..., min_length=3)
+    projectTitle: Optional[str] = None
+    projectDescription: Optional[str] = None
+    requestedAmount: Optional[float] = None
+    farmingChallenges: Optional[str] = None
+    previousGrants: Optional[str] = None
     isSmallholderFarmer: bool = False
     isYouthFarmer: bool = False
     isWomanFarmer: bool = False
@@ -33,6 +46,12 @@ class FarmerSubmission(BaseModel):
     hasBVN: bool = False
     hasNoLoanDefault: bool = True
     additionalNotes: str = ""
+    submissionMethod: Optional[str] = "online"
+    submissionPortalUrl: Optional[str] = None
+    currentStatus: Optional[str] = "pending"
+    documentsChecklist: Optional[str] = None
+    agentAction: Optional[str] = "submit_application"
+    preferredLanguage: Optional[str] = "en"
     ninDocument: Optional[str] = None
     cacDocument: Optional[str] = None
     bankStatement: Optional[str] = None

@@ -114,6 +114,51 @@ export default function FarmerIntakeForm({
               <FieldError msg={errors.farmerName} />
             </div>
 
+            {/* Email & Phone */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="label-base" htmlFor="farmerEmail">
+                  Email Address
+                </label>
+                <input
+                  id="farmerEmail"
+                  type="email"
+                  className="input-base"
+                  placeholder="e.g. emeka@example.com"
+                  value={data.farmerEmail}
+                  onChange={(e) => onChange({ farmerEmail: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="label-base" htmlFor="farmerPhone">
+                  Phone Number
+                </label>
+                <input
+                  id="farmerPhone"
+                  type="tel"
+                  className="input-base"
+                  placeholder="e.g. 08012345678"
+                  value={data.farmerPhone}
+                  onChange={(e) => onChange({ farmerPhone: e.target.value })}
+                />
+              </div>
+            </div>
+
+            {/* Residential Address */}
+            <div>
+              <label className="label-base" htmlFor="residentialAddress">
+                Residential Address
+              </label>
+              <input
+                id="residentialAddress"
+                type="text"
+                className="input-base"
+                placeholder="e.g. 10 Broad Street, Lagos Island"
+                value={data.residentialAddress}
+                onChange={(e) => onChange({ residentialAddress: e.target.value })}
+              />
+            </div>
+
             {/* State */}
             <div>
               <label className="label-base" htmlFor="stateOfResidence">
@@ -318,6 +363,88 @@ export default function FarmerIntakeForm({
                 style={errors.fundingPurpose ? { borderColor: 'var(--destructive)' } : {}}
               />
               <FieldError msg={errors.fundingPurpose} />
+            </div>
+
+            {/* Project Title & Requested Amount */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="label-base" htmlFor="projectTitle">
+                  Project Title
+                </label>
+                <input
+                  id="projectTitle"
+                  type="text"
+                  className="input-base"
+                  placeholder="e.g. Drip Irrigation Expansion"
+                  value={data.projectTitle}
+                  onChange={(e) => onChange({ projectTitle: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="label-base" htmlFor="requestedAmount">
+                  Requested Grant Amount (NGN)
+                </label>
+                <input
+                  id="requestedAmount"
+                  type="number"
+                  min={0}
+                  step={10000}
+                  className="input-base"
+                  placeholder="e.g. 2000000"
+                  value={data.requestedAmount}
+                  onChange={(e) =>
+                    onChange({
+                      requestedAmount: e.target.value === '' ? '' : parseFloat(e.target.value),
+                    })
+                  }
+                />
+              </div>
+            </div>
+
+            {/* Project Description */}
+            <div>
+              <label className="label-base" htmlFor="projectDescription">
+                Project Description
+              </label>
+              <textarea
+                id="projectDescription"
+                rows={3}
+                className="input-base resize-none"
+                placeholder="Briefly describe your project and how the grant will be used"
+                value={data.projectDescription}
+                onChange={(e) => onChange({ projectDescription: e.target.value })}
+              />
+            </div>
+
+            {/* Farming Challenges */}
+            <div>
+              <label className="label-base" htmlFor="farmingChallenges">
+                Key Farming Challenges
+              </label>
+              <textarea
+                id="farmingChallenges"
+                rows={2}
+                className="input-base resize-none"
+                placeholder="e.g. Limited access to water, poor road network, high cost of fertilizers"
+                value={data.farmingChallenges}
+                onChange={(e) => onChange({ farmingChallenges: e.target.value })}
+              />
+            </div>
+
+            {/* Previous Grants */}
+            <div>
+              <label className="label-base" htmlFor="previousGrants">
+                Previous Grants Received{' '}
+                <span style={{ color: 'var(--muted-foreground)', fontWeight: 400 }}>(Optional)</span>
+              </label>
+              <input
+                id="previousGrants"
+                type="text"
+                className="input-base"
+                placeholder="e.g. AFAN Grant 2022 – ₦500,000, USAID MARKETS II"
+                value={data.previousGrants}
+                onChange={(e) => onChange({ previousGrants: e.target.value })}
+              />
             </div>
           </div>
         </section>

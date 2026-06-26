@@ -35,6 +35,26 @@ def _auth_headers(json_body: bool = False) -> Dict[str, str]:
     return headers
 
 
+_FARM_TYPE_SLUG: Dict[str, str] = {
+    "crop farming":    "crop",
+    "livestock":       "livestock",
+    "poultry":         "poultry",
+    "fishery":         "fishery/aquaculture",
+    "mixed farming":   "mixed",
+    "horticulture":    "horticulture",
+    "agro-processing": "agro-processing",
+    "cooperative":     "cooperative",
+    "agribusiness":    "agribusiness",
+    "others":          "other",
+    "other":           "other",
+}
+
+
+def _normalise_farm_type(raw: str) -> str:
+    """Convert FarmTypeEnum display value → lowercase slug UiPath expects."""
+    return _FARM_TYPE_SLUG.get(raw.lower().strip(), raw.lower().strip()) or "other"
+
+
 def _build_trigger_payload(form: FarmerSubmission) -> Dict[str, Any]:
     """
     Maps the FastAPI farmer submission into the exact JSON shape the Maestro
@@ -42,26 +62,42 @@ def _build_trigger_payload(form: FarmerSubmission) -> Dict[str, Any]:
 
     Keys use the `in_` prefix so they map 1:1 to the robot's Main.xaml
     arguments — Maestro can pass them through with no translation.
+    Bare (no-prefix) copies of key fields are also included so UiPath's
+    DynamicType_0 schema validation passes for sub-agent invocations.
     """
     crops_str = ", ".join(form.cropOrLivestockTypes) if form.cropOrLivestockTypes else ""
-    farm_type = form.farmType.value if hasattr(form.farmType, "value") else str(form.farmType)
+    raw_farm_type = form.farmType.value if hasattr(form.farmType, "value") else str(form.farmType)
+    farm_type_slug = _normalise_farm_type(raw_farm_type)
+    farm_type = farm_type_slug or "other"
+
+    is_youth  = bool(form.isYouthFarmer)
+    is_woman  = bool(form.isWomanFarmer)
 
     return {
         # Identity / session
-        "in_userId": getattr(form, "userId", None) or "",
-        "in_sessionId": getattr(form, "sessionId", None) or "",
+        "in_userId": form.userId or "",
+        "in_sessionId": form.sessionId or "",
+        # bare aliases (required by UiPath DynamicType_0 sub-agent schema)
+        "userId": form.userId or "",
+        "sessionId": form.sessionId or "",
 
         # Contact
         "in_farmerName": form.farmerName,
         "in_farmerEmail": form.farmerEmail or "",
         "in_farmerPhone": form.farmerPhone or "",
         "in_residentialAddress": form.residentialAddress or "",
+        # bare aliases
+        "farmerName": form.farmerName,
+        "farmerEmail": form.farmerEmail or "",
+        "stateOfResidence": form.stateOfResidence,
 
         # Location
         "in_stateOfResidence": form.stateOfResidence,
         "in_lga": form.lga or "",
         "in_farmAddress": form.farmAddress or "",
         "in_farmLocation": form.farmAddress or form.stateOfResidence,
+        # bare aliases
+        "lga": form.lga or "",
 
         # Farm profile
         "in_farmType": farm_type,
@@ -70,6 +106,11 @@ def _build_trigger_payload(form: FarmerSubmission) -> Dict[str, Any]:
         "in_annualRevenueNGN": float(form.annualRevenueNGN or 0),
         "in_farmingExperienceYears": float(form.farmingExperienceYears or 0),
         "in_yearsInOperation": int(form.farmingExperienceYears or 0),
+        # bare aliases — farmType must be the slug UiPath expects
+        "farmType": farm_type,
+        "annualRevenueNGN": int(form.annualRevenueNGN or 0),
+        "farmExperienceYears": int(form.farmingExperienceYears or 0),
+        "farmerSizeHecaters": int(form.farmSizeHectares or 0),
 
         # Funding ask
         "in_fundingPurpose": form.fundingPurpose or "",
@@ -80,11 +121,18 @@ def _build_trigger_payload(form: FarmerSubmission) -> Dict[str, Any]:
         "in_requestedFundingAmountNGN": float(form.requestedAmount or 0),
         "in_farmingChallenges": form.farmingChallenges or "",
         "in_previousGrants": form.previousGrants or "",
+        # bare aliases
+        "fundingPurpose": form.fundingPurpose or "",
+        "ProjectTittle": form.projectTitle or "",
+        "projectDescription": form.projectDescription or form.fundingPurpose or "",
+        "requestedAmount": int(form.requestedAmount or 0),
+        "farmingChallenges": form.farmingChallenges or "",
+        "previousGrants": form.previousGrants or "",
 
         # Eligibility flags
         "in_isSmallholderFarmer": bool(form.isSmallholderFarmer),
-        "in_isYouthFarmer": bool(form.isYouthFarmer),
-        "in_isWomanFarmer": bool(form.isWomanFarmer),
+        "in_isYouthFarmer": is_youth,
+        "in_isWomanFarmer": is_woman,
         "in_hasCACRegistration": bool(form.hasCACRegistration),
         "in_hasLandDocument": bool(form.hasLandDocument),
         "in_isMemberOfCooperative": bool(form.isMemberOfCooperative),
@@ -92,6 +140,14 @@ def _build_trigger_payload(form: FarmerSubmission) -> Dict[str, Any]:
         "in_hasNoLoanDefault": bool(form.hasNoLoanDefault),
         "in_hasExistingLoanDefault": not bool(form.hasNoLoanDefault),
         "in_additionalNotes": form.additionalNotes or "",
+        # bare aliases — these are the fields DynamicType_0 marks required
+        "isSmallholderFarmer": bool(form.isSmallholderFarmer),
+        "isYouthFarmer": is_youth,
+        "isWomanFarmer": is_woman,
+        "hasCACRegistration": bool(form.hasCACRegistration),
+        "hasLandDocument": bool(form.hasLandDocument),
+        "isMemberOfCooperative": bool(form.isMemberOfCooperative),
+        "additionalNotes": form.additionalNotes or "",
 
         # Submission preferences
         "in_submissionMethod": form.submissionMethod or "online",
@@ -101,6 +157,12 @@ def _build_trigger_payload(form: FarmerSubmission) -> Dict[str, Any]:
         "in_documentsChecklist": form.documentsChecklist or "",
         "in_agentAction": form.agentAction or "submit_application",
         "in_preferredLanguage": form.preferredLanguage or "en",
+        # bare aliases
+        "submissionMethod": form.submissionMethod or "online",
+        "submissionPortalUrl": form.submissionPortalUrl or "",
+        "currentStatus": form.currentStatus or "pending",
+        "agentAction": form.agentAction or "submit_application",
+        "pererredLanguage": form.preferredLanguage or "en",  # matches entry-points.json typo
 
         # Document paths
         "in_ninDocumentPath": form.ninDocument or "",
@@ -235,8 +297,8 @@ async def create_pipeline_submission(form: FarmerSubmission, client: httpx.Async
         await save_pipeline_job_with_user_db(
             job_id=job_id,
             app_ref=app_ref,
-            user_id=getattr(form, "userId", None),
-            session_id=getattr(form, "sessionId", None),
+            user_id=form.userId,
+            session_id=form.sessionId,
             farmer_name=form.farmerName,
             state=form.stateOfResidence,
             status="PROCESSING",

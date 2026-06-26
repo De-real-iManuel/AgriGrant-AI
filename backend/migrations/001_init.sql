@@ -166,3 +166,98 @@ CREATE TRIGGER update_farmer_profiles_updated_at
     BEFORE UPDATE ON farmer_profiles
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
+
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- 6. hitl_tasks — Human-in-the-Loop approval tasks
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS hitl_tasks (
+    task_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    title VARCHAR(300) NOT NULL,
+    description TEXT DEFAULT '',
+    task_type VARCHAR(50) DEFAULT 'FormTask',
+    priority VARCHAR(20) DEFAULT 'Medium' CHECK (priority IN ('Low', 'Medium', 'High')),
+    status VARCHAR(20) DEFAULT 'Pending' CHECK (status IN ('Pending', 'Unassigned', 'Assigned', 'Completed')),
+    assigned_to_user_id INTEGER,
+    tags JSONB DEFAULT '[]'::jsonb,
+    actions JSONB DEFAULT '["approve", "reject"]'::jsonb,
+    callback_url TEXT,
+    metadata JSONB DEFAULT '{}'::jsonb,
+    source VARCHAR(50) DEFAULT 'backend',
+    decision VARCHAR(50),
+    completed_by VARCHAR(200),
+    completed_at TIMESTAMPTZ,
+    form_data JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE hitl_tasks ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Service role full access to hitl_tasks" ON hitl_tasks
+    FOR ALL USING (auth.role() = 'service_role');
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- 7. Auto-update trigger for updated_at (hitl_tasks)
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE TRIGGER update_hitl_tasks_updated_at
+    BEFORE UPDATE ON hitl_tasks
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- 6. pipeline_events — stage timeline for each pipeline job
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS pipeline_events (
+    id BIGSERIAL PRIMARY KEY,
+    job_id VARCHAR(100) NOT NULL,
+    stage VARCHAR(100) NOT NULL,
+    icon VARCHAR(50) DEFAULT '',
+    label VARCHAR(200) DEFAULT '',
+    detail TEXT DEFAULT '',
+    data JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE pipeline_events ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Service role full access to pipeline_events" ON pipeline_events
+    FOR ALL USING (auth.role() = 'service_role');
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- 7. hitl_tasks — Human-in-the-Loop approval tasks
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS hitl_tasks (
+    task_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    title VARCHAR(300) NOT NULL,
+    description TEXT DEFAULT '',
+    task_type VARCHAR(50) DEFAULT 'FormTask',
+    priority VARCHAR(20) DEFAULT 'Medium' CHECK (priority IN ('Low', 'Medium', 'High')),
+    status VARCHAR(20) DEFAULT 'Pending' CHECK (status IN ('Pending', 'Unassigned', 'Assigned', 'Completed')),
+    assigned_to_user_id INTEGER,
+    tags JSONB DEFAULT '[]'::jsonb,
+    actions JSONB DEFAULT '["approve", "reject"]'::jsonb,
+    callback_url TEXT,
+    metadata JSONB DEFAULT '{}'::jsonb,
+    source VARCHAR(50) DEFAULT 'backend',
+    decision VARCHAR(50),
+    completed_by VARCHAR(200),
+    completed_at TIMESTAMPTZ,
+    form_data JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE hitl_tasks ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Service role full access to hitl_tasks" ON hitl_tasks
+    FOR ALL USING (auth.role() = 'service_role');
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- 8. Auto-update trigger for updated_at (hitl_tasks)
+-- ─────────────────────────────────────────────────────────────────────────────
+CREATE TRIGGER update_hitl_tasks_updated_at
+    BEFORE UPDATE ON hitl_tasks
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();

@@ -9,7 +9,11 @@ export type FarmType =
   | 'Fishery'
   | 'Mixed Farming'
   | 'Agro-processing'
-  | 'Others';
+  | 'Horticulture'
+  | 'Cooperative'
+  | 'Agribusiness'
+  | 'Others'
+  | 'Other';
 
 export const NIGERIAN_STATES = [
   'Abia',
@@ -26,7 +30,7 @@ export const NIGERIAN_STATES = [
   'Edo',
   'Ekiti',
   'Enugu',
-  'FCT (Abuja)',
+  'FCT',
   'Gombe',
   'Imo',
   'Jigawa',
@@ -58,6 +62,9 @@ export const FARM_TYPES: FarmType[] = [
   'Fishery',
   'Mixed Farming',
   'Agro-processing',
+  'Horticulture',
+  'Cooperative',
+  'Agribusiness',
   'Others',
 ];
 
@@ -83,19 +90,27 @@ export const LIVESTOCK_RELATED: Record<string, string[]> = {
 };
 
 export interface FarmerFormData {
-  // Section A
+  // Section A — Basic Info
   farmerName: string;
+  farmerEmail: string;
+  farmerPhone: string;
+  residentialAddress: string;
   stateOfResidence: string;
   lga: string;
   farmAddress: string;
   farmType: FarmType | '';
   cropOrLivestockTypes: string[];
-  // Section B
+  // Section B — Farm Details
   farmSizeHectares: number | '';
   annualRevenueNGN: number | '';
   farmingExperienceYears: number | '';
   fundingPurpose: string;
-  // Section C
+  projectTitle: string;
+  projectDescription: string;
+  requestedAmount: number | '';
+  farmingChallenges: string;
+  previousGrants: string;
+  // Section C — Profile Flags
   isSmallholderFarmer: boolean;
   isYouthFarmer: boolean;
   isWomanFarmer: boolean;
@@ -104,9 +119,9 @@ export interface FarmerFormData {
   isMemberOfCooperative: boolean;
   hasBVN: boolean;
   hasNoLoanDefault: boolean;
-  // Section D
+  // Section D — Additional Notes
   additionalNotes: string;
-  // Section E (Documents)
+  // Section E — Documents
   ninDocument: string | null;
   cacDocument: string | null;
   bankStatement: string | null;
@@ -115,6 +130,9 @@ export interface FarmerFormData {
 
 export const defaultFormData: FarmerFormData = {
   farmerName: '',
+  farmerEmail: '',
+  farmerPhone: '',
+  residentialAddress: '',
   stateOfResidence: '',
   lga: '',
   farmAddress: '',
@@ -124,6 +142,11 @@ export const defaultFormData: FarmerFormData = {
   annualRevenueNGN: '',
   farmingExperienceYears: '',
   fundingPurpose: '',
+  projectTitle: '',
+  projectDescription: '',
+  requestedAmount: '',
+  farmingChallenges: '',
+  previousGrants: '',
   isSmallholderFarmer: false,
   isYouthFarmer: false,
   isWomanFarmer: false,

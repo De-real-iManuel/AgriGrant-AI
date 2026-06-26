@@ -34,7 +34,8 @@ NIGERIAN_STATES = {
     "abia", "adamawa", "akwa ibom", "anambra", "bauchi", "bayelsa", "benue", "borno",
     "cross river", "delta", "ebonyi", "edo", "ekiti", "enugu", "gombe", "imo", "jigawa",
     "kaduna", "kano", "katsina", "kebbi", "kogi", "kwara", "lagos", "nasarawa", "niger",
-    "ogun", "ondo", "osun", "oyo", "plateau", "rivers", "sokoto", "taraba", "yobe", "zamfara", "fct"
+    "ogun", "ondo", "osun", "oyo", "plateau", "rivers", "sokoto", "taraba", "yobe", "zamfara",
+    "fct", "abuja", "fct abuja", "fct (abuja)",  # all common variants the frontend may send
 }
 
 @router.post("/submit", response_model=PipelineSubmitResponse, status_code=status.HTTP_202_ACCEPTED)

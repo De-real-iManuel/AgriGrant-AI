@@ -363,6 +363,110 @@ async def list_chat_sessions_for_user_db(user_id: str, limit: int = 50) -> list:
         return []
 
 
+
+# ---------------------------------------------------------------------------
+# HITL Tasks CRUD
+# ---------------------------------------------------------------------------
+async def save_hitl_task_db(
+    task_id: str,
+    title: str,
+    description: str = "",
+    task_type: str = "FormTask",
+    priority: str = "Medium",
+    status: str = "Pending",
+    assigned_to_user_id: Optional[int] = None,
+    tags: Optional[list] = None,
+    actions: Optional[list] = None,
+    callback_url: Optional[str] = None,
+    metadata: Optional[dict] = None,
+    source: str = "backend",
+) -> bool:
+    """Insert or upsert a HITL task into Supabase."""
+    if not supabase_client:
+        return False
+    try:
+        data = {
+            "task_id": task_id,
+            "title": title,
+            "description": description,
+            "task_type": task_type,
+            "priority": priority,
+            "status": status,
+            "assigned_to_user_id": assigned_to_user_id,
+            "tags": tags or [],
+            "actions": actions or ["approve", "reject"],
+            "callback_url": callback_url,
+            "metadata": metadata or {},
+            "source": source,
+        }
+        res = supabase_client.table("hitl_tasks").upsert(data).execute()
+        return bool(res.data)
+    except Exception as e:
+        logger.error(f"Database error in save_hitl_task_db: {e}")
+        return False
+
+
+async def get_hitl_task_db(task_id: str) -> Optional[dict]:
+    """Fetch a single HITL task by UUID."""
+    if not supabase_client:
+        return None
+    try:
+        res = supabase_client.table("hitl_tasks").select("*").eq("task_id", task_id).execute()
+        if res.data and len(res.data) > 0:
+            return res.data[0]
+    except Exception as e:
+        logger.error(f"Database error in get_hitl_task_db: {e}")
+    return None
+
+
+async def list_hitl_tasks_db(
+    status_filter: Optional[str] = None,
+    task_type: Optional[str] = None,
+    limit: int = 50,
+) -> list:
+    """List HITL tasks with optional filters."""
+    if not supabase_client:
+        return []
+    try:
+        query = supabase_client.table("hitl_tasks").select("*").order("created_at", desc=True).limit(limit)
+        if status_filter:
+            query = query.eq("status", status_filter)
+        if task_type:
+            query = query.eq("task_type", task_type)
+        res = query.execute()
+        return res.data or []
+    except Exception as e:
+        logger.error(f"Database error in list_hitl_tasks_db: {e}")
+        return []
+
+
+async def update_hitl_task_status_db(
+    task_id: str,
+    status: str,
+    decision: Optional[str] = None,
+    completed_by: Optional[str] = None,
+    form_data: Optional[dict] = None,
+) -> bool:
+    """Update task status (e.g. Pending → Completed) and optional decision."""
+    if not supabase_client:
+        return False
+    try:
+        data: dict = {"status": status}
+        if decision is not None:
+            data["decision"] = decision
+        if completed_by is not None:
+            data["completed_by"] = completed_by
+        if form_data is not None:
+            data["form_data"] = form_data
+        if status == "Completed":
+            data["completed_at"] = "now()"
+        res = supabase_client.table("hitl_tasks").update(data).eq("task_id", task_id).execute()
+        return bool(res.data)
+    except Exception as e:
+        logger.error(f"Database error in update_hitl_task_status_db: {e}")
+        return False
+
+
 async def save_pipeline_job_with_user_db(
     job_id: str,
     app_ref: str,
