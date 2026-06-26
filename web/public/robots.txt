@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard/
+Disallow: /farmer-portal/
+
+Sitemap: https://www.agrigrant.xyz/sitemap.xml
