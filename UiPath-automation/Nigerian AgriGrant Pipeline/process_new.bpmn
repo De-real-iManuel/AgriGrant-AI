@@ -35,15 +35,15 @@
         <uipath:input default="" elementId="start_event" id="vxbPkLDnU" name="submissionContactPhone" type="string" />
         <uipath:input default="" elementId="start_event" id="vKHfc0WtZ" name="applicationReferenceNumber" type="string" />
         <uipath:input default="" elementId="start_event" id="vabq2kutQ" name="submissionDate" type="string" />
-        <uipath:input default="not-yet-submitted" elementId="start_event" id="vCQgnY8KC" name="currentStatus" type="string" />
-        <uipath:input default="prepare-submission-package" elementId="start_event" id="vKsMIEIRy" name="agentAction" type="string" />
+        <uipath:input default="pending" elementId="start_event" id="vCQgnY8KC" name="currentStatus" type="string" />
+        <uipath:input default="submit_application" elementId="start_event" id="vKsMIEIRy" name="agentAction" type="string" />
         <uipath:input default="" elementId="start_event" id="vYTyudEdI" name="chatMessage" type="string" />
         <uipath:input default="" elementId="start_event" id="v2cQXlwpr" name="message" type="string" />
         <uipath:input default="" elementId="start_event" id="vBsDHYcsB" name="additionalInfoRequested" type="string" />
         <uipath:input default="" elementId="start_event" id="vVBgTbTt4" name="rejectionReason" type="string" />
-        <uipath:input default="english" elementId="start_event" id="vp07jIgvK" name="preferredLanguage" type="string" />
+        <uipath:input default="en" elementId="start_event" id="vp07jIgvK" name="pererredLanguage" type="string" />
         <uipath:input default="" elementId="start_event" id="veA96DC13" name="submissionDeadline" type="string" />
-        <uipath:input default="[&#34;ID&#34;, &#34;Bank Statement&#34;, &#34;Land Document&#34;, &#34;Farm Photo&#34;, &#34;CAC&#34;]" elementId="start_event" id="vNLeAcdrO" name="documentsChecklist" type="jsonSchema">{"type":"array","items":{"type":"string"},"$schema":"http://json-schema.org/draft-07/schema#"}</uipath:input>
+        <uipath:input default="ID, Bank Statement, Land Document, Farm Photo, CAC" elementId="start_event" id="vNLeAcdrO" name="documentsChecklist" type="jsonSchema">{"type":"object","$schema":"http://json-schema.org/draft-07/schema#"}</uipath:input>
         <uipath:input default="" elementId="start_event" id="vyoqEJZgg" name="missingDocuments" type="jsonSchema">{"type":"object","$schema":"http://json-schema.org/draft-07/schema#"}</uipath:input>
         <uipath:input default="" elementId="start_event" id="vDt2HSLNF" name="chatHistory" type="jsonSchema">{"type":"object","$schema":"http://json-schema.org/draft-07/schema#"}</uipath:input>
         <uipath:inputOutput elementId="Activity_UG1NME" id="error" name="Error" type="jsonSchema">{"type":"object","properties":{"code":{"type":"string"},"message":{"type":"string"},"detail":{"type":"string"},"category":{"type":"string"},"status":{"type":"number"},"element":{"type":"string"}}}</uipath:inputOutput>
@@ -358,10 +358,9 @@
         </uipath:activity>
       </bpmn:extensionElements>
       <bpmn:incoming>flow_data_complete_yes</bpmn:incoming>
-      <bpmn:outgoing>flow_discovery_to_notify</bpmn:outgoing>
+      <bpmn:incoming>flow_notify_selected_to_gw</bpmn:incoming>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="gw_grants_found" name="Were Matching Grants Found?" default="flow_gw_to_notify_no_grants">
-      <bpmn:incoming>flow_discovery_to_notify</bpmn:incoming>
       <bpmn:outgoing>flow_gw_to_notify_no_grants</bpmn:outgoing>
       <bpmn:outgoing>edge_gw_grants_found-task_farmer_selects_grant21CrM1</bpmn:outgoing>
     </bpmn:exclusiveGateway>
@@ -528,7 +527,7 @@
             <uipath:input name="priority" type="string" value="High" />
             <uipath:inputSchema type="jsonSchema">{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"body":{"type":"object"}},"required":[]}</uipath:inputSchema>
           </uipath:context>
-          <uipath:input name="body" target="body" type="json">{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"rejectionReason":"=vars.rejectionReason"}}}}}}}}}}}}}}}}}}}}}}}</uipath:input>
+          <uipath:input name="body" target="body" type="json">{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"rejectionReason":"=vars.rejectionReason"}}}}}}}}}}}}}}}}}}</uipath:input>
           <uipath:output name="appealWorthy" source="=output.appealWorthy" type="boolean" var="appealWorthy" />
           <uipath:output name="specialistNotes" source="=output.specialistNotes" type="string" var="specialistNotes" />
         </uipath:activity>
@@ -601,12 +600,12 @@
             <uipath:input name="priority" type="string" value="Medium" />
             <uipath:inputSchema type="jsonSchema">{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"body":{"type":"object"}},"required":[]}</uipath:inputSchema>
           </uipath:context>
-          <uipath:input name="body" target="body" type="json">{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"farmerName":"=vars.farmerName","matchedGrants":"=vars.matchedGrants2","totalMatchesFound":"=vars.totalMatchesFound2"}}}}}}}}}}}}}}}}}}}}}}</uipath:input>
+          <uipath:input name="body" target="body" type="json">{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"farmerName":"=vars.farmerName","matchedGrants":"=vars.matchedGrants2","totalMatchesFound":"=vars.totalMatchesFound2"}}}}}}}}}}}}}}}}}</uipath:input>
           <uipath:output name="selectedGrantName" source="=output.selectedGrantName" type="string" var="selectedGrantName" />
           <uipath:output name="selectedGrantIndex" source="=output.selectedGrantIndex" type="integer" var="selectedGrantIndex" />
         </uipath:activity>
       </bpmn:extensionElements>
-      <bpmn:incoming>flow_notify_selected_to_gw</bpmn:incoming>
+      <bpmn:incoming>edge_gw_grants_found-task_farmer_selects_grant21CrM1</bpmn:incoming>
       <bpmn:outgoing>flow_select_to_deep_dive</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="task_deep_dive_assessment" name="Eligibility &#38; Risk Assessment Agent: Deep-Dive Assessment of Selected Grant">
@@ -639,7 +638,6 @@
       <bpmn:outgoing>flow_notify_eligibility_to_gw</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:task id="task_notify_discovery_done" name="Notify: Discovery Done">
-      <bpmn:incoming>edge_gw_grants_found-task_farmer_selects_grant21CrM1</bpmn:incoming>
       <bpmn:outgoing>flow_notify_discovery_to_hitl</bpmn:outgoing>
     </bpmn:task>
     <bpmn:userTask id="task_grant_selection_hitl" name="Grant Selection (HITL)">
@@ -653,7 +651,7 @@
             <uipath:input name="priority" type="string" value="Medium" />
             <uipath:inputSchema type="jsonSchema">{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"body":{"type":"object"}},"required":[]}</uipath:inputSchema>
           </uipath:context>
-          <uipath:input name="body" target="body" type="json">{"body":"{\"body\":{\"body\":{\"body\":{\"body\":{\"body\":{\"body\":{\"body\":{\"body\":{\"body\":{\"body\":{\"body\":{\"body\":{\"body\":{\"body\":{\"body\":{\"body\":{\"body\":{\"body\":{\"farmerName\":\"=vars.farmerName\",\"matchedGrants\":\"=vars.matchedGrants2\",\"totalMatchesFound\":\"=vars.totalMatchesFound2\"}}}}}}}}}}}}}}}}}}}}}"}</uipath:input>
+          <uipath:input name="body" target="body" type="json">{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"farmerName":"=vars.farmerName","matchedGrants":"=vars.matchedGrants2","totalMatchesFound":"=vars.totalMatchesFound2"}}}}}}}}}}}}}}}}}}}}}</uipath:input>
           <uipath:output name="grantSelected" source="=output.grantSelected" type="boolean" var="grantSelected" />
           <uipath:output name="selectedGrantName" source="=output.selectedGrantName" type="string" var="selectedGrantName" />
         </uipath:activity>
@@ -688,7 +686,7 @@
             <uipath:input name="priority" type="string" value="Medium" />
             <uipath:inputSchema type="jsonSchema">{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"body":{"type":"object"}},"required":[]}</uipath:inputSchema>
           </uipath:context>
-          <uipath:input name="body" target="body" type="json">{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"applicantName":"=vars.farmerName","targetGrant":"=vars.matchedGrants2[0].grantName","executiveSummary":"=vars.executiveSummary","requestedAmount":"=vars.requestedAmount"}}}}}}}}}}}}}}}}}}}}}}}}</uipath:input>
+          <uipath:input name="body" target="body" type="json">{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"body":{"applicantName":"=vars.farmerName","targetGrant":"=vars.matchedGrants2[0].grantName","executiveSummary":"=vars.executiveSummary","requestedAmount":"=vars.requestedAmount"}}}}}}}}}}}}}}}}}}}}</uipath:input>
           <uipath:output name="proposalApproved" source="=output.proposalApproved" type="boolean" var="proposalApproved" />
           <uipath:output name="reviewerComments" source="=output.reviewerComments" type="string" var="reviewerComments" />
         </uipath:activity>
@@ -865,10 +863,9 @@
     <bpmn:sequenceFlow id="flow_correction_to_end" sourceRef="task_request_correction" targetRef="end_awaiting_farmer" />
     <bpmn:sequenceFlow id="flow_deep_dive_to_notify" sourceRef="task_deep_dive_assessment" targetRef="task_notify_eligibility_done" />
     <bpmn:sequenceFlow id="flow_notify_eligibility_to_gw" sourceRef="task_notify_eligibility_done" targetRef="gw_requirements_met" />
-    <bpmn:sequenceFlow id="flow_discovery_to_notify" sourceRef="task_grant_discovery" targetRef="gw_grants_found" />
     <bpmn:sequenceFlow id="flow_notify_discovery_to_hitl" sourceRef="task_notify_discovery_done" targetRef="task_grant_selection_hitl" />
     <bpmn:sequenceFlow id="flow_hitl_to_notify_selected" sourceRef="task_grant_selection_hitl" targetRef="task_notify_grant_selected" />
-    <bpmn:sequenceFlow id="flow_notify_selected_to_gw" sourceRef="task_notify_grant_selected" targetRef="task_farmer_selects_grant" />
+    <bpmn:sequenceFlow id="flow_notify_selected_to_gw" sourceRef="task_notify_grant_selected" targetRef="task_grant_discovery" />
     <bpmn:sequenceFlow id="flow_analyze_to_notify" sourceRef="task_analyze_docs" targetRef="task_notify_doc_done" />
     <bpmn:sequenceFlow id="flow_notify_doc_to_prepare" sourceRef="task_notify_doc_done" targetRef="task_prepare_doc_instructions" />
     <bpmn:sequenceFlow id="flow_compose_to_notify_proposal" sourceRef="task_compose_proposal" targetRef="task_notify_proposal_done" />
@@ -893,12 +890,54 @@
     <bpmn:sequenceFlow id="edge_IkSHqn" sourceRef="task_init_vars" targetRef="task_receive_validate" />
     <bpmn:sequenceFlow id="flow_notify_no_grants_to_end" sourceRef="task_notify_no_grants" targetRef="end_no_grants" />
     <bpmn:sequenceFlow id="flow_gw_to_notify_no_grants" name="No" sourceRef="gw_grants_found" targetRef="task_notify_no_grants" />
-    <bpmn:sequenceFlow id="edge_gw_grants_found-task_farmer_selects_grant21CrM1" name="Yes" sourceRef="gw_grants_found" targetRef="task_notify_discovery_done">
+    <bpmn:sequenceFlow id="edge_gw_grants_found-task_farmer_selects_grant21CrM1" name="Yes" sourceRef="gw_grants_found" targetRef="task_farmer_selects_grant">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=${totalMatchesFound &gt; 0}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="S_start_event" bpmnElement="start_event">
+        <dc:Bounds x="128" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="128" y="223" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_receive_validate" bpmnElement="task_receive_validate">
+        <dc:Bounds x="240" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="240" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_gw_data_complete" bpmnElement="gw_data_complete" isMarkerVisible="true">
+        <dc:Bounds x="390" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="390" y="230" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_request_missing_info" bpmnElement="task_request_missing_info">
+        <dc:Bounds x="365" y="300" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="365" y="385" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_timer_await_farmer" bpmnElement="timer_await_farmer">
+        <dc:Bounds x="272" y="322" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="272" y="363" width="36" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_grant_discovery" bpmnElement="task_grant_discovery">
+        <dc:Bounds x="496" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="496" y="245" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_gw_grants_found" bpmnElement="gw_grants_found" isMarkerVisible="true">
+        <dc:Bounds x="640" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="640" y="230" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="S_end_no_grants" bpmnElement="end_no_grants">
         <dc:Bounds x="848" y="438" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -914,7 +953,7 @@
       <bpmndi:BPMNShape id="S_gw_requirements_met" bpmnElement="gw_requirements_met" isMarkerVisible="true">
         <dc:Bounds x="1190" y="175" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1177" y="125" width="75" height="40" />
+          <dc:Bounds x="1190" y="230" width="50" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="S_gw_other_grants_to_check" bpmnElement="gw_other_grants_to_check" isMarkerVisible="true">
@@ -1265,102 +1304,55 @@
           <dc:Bounds x="5200" y="245" width="100" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="S_start_event" bpmnElement="start_event">
-        <dc:Bounds x="72" y="182" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="48" y="223" width="85" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="S_task_init_vars" bpmnElement="task_init_vars">
-        <dc:Bounds x="150" y="50" width="100" height="80" />
+        <dc:Bounds x="240" y="50" width="100" height="80" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="150" y="135" width="100" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="S_task_receive_validate" bpmnElement="task_receive_validate">
-        <dc:Bounds x="150" y="160" width="100" height="80" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="150" y="245" width="100" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="S_timer_await_farmer" bpmnElement="timer_await_farmer">
-        <dc:Bounds x="182" y="322" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="156" y="363" width="88" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="S_task_request_missing_info" bpmnElement="task_request_missing_info">
-        <dc:Bounds x="270" y="300" width="100" height="80" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="270" y="385" width="100" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="S_gw_data_complete" bpmnElement="gw_data_complete" isMarkerVisible="true">
-        <dc:Bounds x="295" y="175" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="280" y="137.5" width="80" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="S_task_grant_discovery" bpmnElement="task_grant_discovery">
-        <dc:Bounds x="400" y="160" width="100" height="80" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="400" y="245" width="100" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="S_gw_grants_found" bpmnElement="gw_grants_found" isMarkerVisible="true">
-        <dc:Bounds x="545" y="175" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="533" y="137.5" width="74" height="27" />
+          <dc:Bounds x="240" y="135" width="100" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="S_task_notify_no_grants" bpmnElement="task_notify_no_grants">
-        <dc:Bounds x="520" y="416" width="100" height="80" />
+        <dc:Bounds x="615" y="416" width="100" height="80" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="520" y="501" width="100" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="S_task_notify_discovery_done" bpmnElement="task_notify_discovery_done">
-        <dc:Bounds x="620" y="160" width="100" height="80" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="620" y="245" width="100" height="14" />
+          <dc:Bounds x="615" y="501" width="100" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="S_task_notify_grant_selected" bpmnElement="task_notify_grant_selected">
-        <dc:Bounds x="860" y="30" width="100" height="80" />
+        <dc:Bounds x="860" y="20" width="100" height="80" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="860" y="115" width="100" height="14" />
+          <dc:Bounds x="860" y="105" width="100" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_task_notify_discovery_done" bpmnElement="task_notify_discovery_done">
+        <dc:Bounds x="590" y="20" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="590" y="105" width="100" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_validate_to_gw_complete" bpmnElement="flow_validate_to_gw_complete">
-        <di:waypoint x="250" y="200" />
-        <di:waypoint x="295" y="200" />
+        <di:waypoint x="340" y="200" />
+        <di:waypoint x="390" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_data_complete_no" bpmnElement="flow_data_complete_no">
-        <di:waypoint x="320" y="225" />
-        <di:waypoint x="320" y="300" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="317" y="234" width="15" height="14" />
-        </bpmndi:BPMNLabel>
+        <di:waypoint x="415" y="225" />
+        <di:waypoint x="415" y="300" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_request_to_timer" bpmnElement="flow_request_to_timer">
-        <di:waypoint x="270" y="340" />
-        <di:waypoint x="218" y="340" />
+        <di:waypoint x="365" y="340" />
+        <di:waypoint x="308" y="340" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_timer_to_validate" bpmnElement="flow_timer_to_validate">
-        <di:waypoint x="200" y="322" />
-        <di:waypoint x="200" y="240" />
+        <di:waypoint x="272" y="340" />
+        <di:waypoint x="210" y="340" />
+        <di:waypoint x="210" y="200" />
+        <di:waypoint x="240" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_data_complete_yes" bpmnElement="flow_data_complete_yes">
-        <di:waypoint x="345" y="200" />
-        <di:waypoint x="400" y="200" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="364" y="175" width="18" height="14" />
-        </bpmndi:BPMNLabel>
+        <di:waypoint x="440" y="200" />
+        <di:waypoint x="496" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_assessment_to_gw" bpmnElement="flow_assessment_to_gw">
-        <di:waypoint x="1140" y="580" />
-        <di:waypoint x="1160" y="580" />
-        <di:waypoint x="1160" y="200" />
+        <di:waypoint x="1090" y="540" />
+        <di:waypoint x="1090" y="200" />
         <di:waypoint x="1190" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_reqs_met_no" bpmnElement="flow_reqs_met_no">
@@ -1566,24 +1558,22 @@
         <di:waypoint x="1290" y="200" />
         <di:waypoint x="1190" y="200" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_flow_discovery_to_notify" bpmnElement="flow_discovery_to_notify">
-        <di:waypoint x="500" y="200" />
-        <di:waypoint x="545" y="200" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_notify_discovery_to_hitl" bpmnElement="flow_notify_discovery_to_hitl">
-        <di:waypoint x="720" y="200" />
+        <di:waypoint x="690" y="60" />
+        <di:waypoint x="729" y="60" />
+        <di:waypoint x="729" y="200" />
         <di:waypoint x="768" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_hitl_to_notify_selected" bpmnElement="flow_hitl_to_notify_selected">
         <di:waypoint x="868" y="200" />
         <di:waypoint x="880" y="200" />
-        <di:waypoint x="880" y="110" />
+        <di:waypoint x="880" y="100" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_notify_selected_to_gw" bpmnElement="flow_notify_selected_to_gw">
-        <di:waypoint x="910" y="110" />
-        <di:waypoint x="910" y="135" />
-        <di:waypoint x="940" y="135" />
-        <di:waypoint x="940" y="160" />
+        <di:waypoint x="860" y="60" />
+        <di:waypoint x="758" y="60" />
+        <di:waypoint x="758" y="200" />
+        <di:waypoint x="596" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_analyze_to_notify" bpmnElement="flow_analyze_to_notify">
         <di:waypoint x="1950" y="200" />
@@ -1650,32 +1640,26 @@
         <di:waypoint x="5140" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_edge_start_event-task_receive_validatetHqFCU" bpmnElement="edge_start_event-task_receive_validatetHqFCU">
-        <di:waypoint x="90" y="182" />
-        <di:waypoint x="90" y="30" />
-        <di:waypoint x="200" y="30" />
-        <di:waypoint x="200" y="50" />
+        <di:waypoint x="146" y="182" />
+        <di:waypoint x="146" y="30" />
+        <di:waypoint x="290" y="30" />
+        <di:waypoint x="290" y="50" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_edge_IkSHqn" bpmnElement="edge_IkSHqn">
-        <di:waypoint x="200" y="130" />
-        <di:waypoint x="200" y="160" />
+        <di:waypoint x="290" y="130" />
+        <di:waypoint x="290" y="160" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_notify_no_grants_to_end" bpmnElement="flow_notify_no_grants_to_end">
-        <di:waypoint x="620" y="456" />
+        <di:waypoint x="715" y="456" />
         <di:waypoint x="848" y="456" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_gw_to_notify_no_grants" bpmnElement="flow_gw_to_notify_no_grants">
-        <di:waypoint x="570" y="225" />
-        <di:waypoint x="570" y="416" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="578" y="312" width="15" height="14" />
-        </bpmndi:BPMNLabel>
+        <di:waypoint x="665" y="225" />
+        <di:waypoint x="665" y="416" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_edge_gw_grants_found-task_farmer_selects_grant21CrM1" bpmnElement="edge_gw_grants_found-task_farmer_selects_grant21CrM1">
-        <di:waypoint x="595" y="200" />
-        <di:waypoint x="620" y="200" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="599" y="193" width="18" height="14" />
-        </bpmndi:BPMNLabel>
+        <di:waypoint x="690" y="200" />
+        <di:waypoint x="890" y="200" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

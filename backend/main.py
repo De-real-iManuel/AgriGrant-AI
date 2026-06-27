@@ -11,6 +11,7 @@ from api.profile import router as profile_router
 from api.farmer import router as farmer_router
 from api.hitl import router as hitl_router
 from api.webhooks import router as webhooks_router
+from api.documents import router as documents_router
 
 app = FastAPI(
     title="AgriGrant AI Backend",
@@ -53,6 +54,9 @@ v1.include_router(hitl_router)
 v1.include_router(webhooks_router)
 
 app.include_router(v1)
+
+# Add unversioned roots (like exact path for UiPath)
+app.include_router(documents_router)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=settings.PORT, reload=True)
