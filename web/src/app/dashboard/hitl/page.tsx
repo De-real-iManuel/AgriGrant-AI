@@ -445,12 +445,12 @@ export default function HitlSandboxPage() {
         hasBVN: formData.hasBVN,
         hasNoLoanDefault: formData.noLoanDefault,
         additionalNotes: '',
-        submissionMethod: 'online',
+        submissionMethod: 'online-portal',
         submissionPortalUrl: PORTAL_URL,
-        currentStatus: 'pending',
-        documentsChecklist: '',
-        agentAction: 'submit_application',
-        preferredLanguage: formData.preferredLanguage,
+        currentStatus: 'not-yet-submitted',
+        documentsChecklist: [],
+        agentAction: 'prepare-submission-package',
+        preferredLanguage: formData.preferredLanguage?.toLowerCase() === 'en' ? 'english' : (formData.preferredLanguage?.toLowerCase() || 'english'),
       };
 
       const res = await fetch(`${BACKEND}/api/pipeline/submit`, {
