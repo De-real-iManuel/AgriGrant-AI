@@ -28,6 +28,7 @@ import {
   Wifi,
   WifiOff,
 } from 'lucide-react';
+import { toast } from 'sonner';
 import AuthGuard from '@/components/ui/AuthGuard';
 import DashboardShell from '../Components/DashboardShell';
 
@@ -127,6 +128,29 @@ export default function HitlSandboxPage() {
   const [payloadError, setPayloadError] = useState<string | null>(null);
   const [showPayloadEditor, setShowPayloadEditor] = useState(false);
 
+  // ── PENDING HITL TASKS POLLING ───────────────────────────────
+  const [pendingTasks, setPendingTasks] = useState<any[]>([]);
+  const previousTasksCountRef = useRef(0);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const res = await fetch(`${BACKEND}/api/hitl/tasks?status=Pending`);
+        if (res.ok) {
+          const data = await res.json();
+          setPendingTasks(data.tasks || []);
+          if (data.count > previousTasksCountRef.current && data.tasks.length > 0) {
+            toast.info(`New UiPath task requires human input: ${data.tasks[0]?.title || 'Task'}`);
+          }
+          previousTasksCountRef.current = data.count;
+        }
+      } catch (err) {}
+    };
+    fetchTasks();
+    const iv = setInterval(fetchTasks, 10000); // Poll every 10 seconds
+    return () => clearInterval(iv);
+  }, []);
+
   // ── JOB TRACKING ─────────────────────────────────────────
   const [jobId, setJobId] = useState<string | null>(null);
   const [appRef, setAppRef] = useState<string | null>(null);
@@ -158,6 +182,17 @@ export default function HitlSandboxPage() {
   // ── SUBMISSION STATE ──────────────────────────────────────
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const markTaskCompleted = async (decision: string = 'approve') => {
+    if (jobId && jobId.includes('-')) {
+      await fetch(`${BACKEND}/api/hitl/tasks/backend/${jobId}/complete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ decision })
+      }).catch(() => {});
+      setPendingTasks(prev => prev.filter(t => t.task_id !== jobId));
+    }
+  };
 
   // ── INTAKE STEP ───────────────────────────────────────────
   const [intakeStep, setIntakeStep] = useState(1);
@@ -477,6 +512,9 @@ export default function HitlSandboxPage() {
         }),
       });
 
+      // Mark the task as completed in our DB
+      await markTaskCompleted('grant_selected');
+
       // UiPath returns 200/202; network errors throw
       if (!res.ok && res.status !== 202) {
         console.warn(`Portal responded with ${res.status} — continuing anyway.`);
@@ -537,6 +575,7 @@ export default function HitlSandboxPage() {
         }),
       }).catch(() => { /* portal may not ack */ });
 
+      await markTaskCompleted('documents_uploaded');
       setDocSubmitSuccess(true);
       setTimeout(() => setActiveTab(3), 1200);
     } catch (err: any) {
@@ -576,6 +615,8 @@ export default function HitlSandboxPage() {
           },
         }),
       }).catch(() => { /* portal may not ack */ });
+
+      await markTaskCompleted(proposalDecision);
 
       if (proposalDecision === 'approve') {
         setActiveTab(4);
@@ -633,6 +674,8 @@ export default function HitlSandboxPage() {
           },
         }),
       }).catch(() => { /* portal may not ack */ });
+
+      await markTaskCompleted(appealAction);
 
       setSseEvents(prev => [...prev, {
         type: `appeal_${appealAction}`,
@@ -732,6 +775,32 @@ export default function HitlSandboxPage() {
                 </button>
               </div>
             </div>
+
+            {/* ── PENDING TASKS NOTIFICATION ─────────────────────────── */}
+            {pendingTasks.length > 0 && (
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-2 animate-in fade-in">
+                <h4 className="text-amber-800 text-xs font-bold flex items-center gap-2 mb-2">
+                  <AlertTriangle size={14} /> Action Required: {pendingTasks.length} Pending UiPath Tasks
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {pendingTasks.map(task => (
+                    <button
+                      key={task.task_id}
+                      onClick={() => {
+                        setPayloadText(JSON.stringify(task.metadata || {}, null, 2));
+                        setLivePayload({ body: task.metadata?.body || task.metadata || {}, jobId: task.task_id });
+                        toast.success(`Loaded task: ${task.title}`);
+                      }}
+                      className="bg-white border border-amber-300 hover:border-amber-500 text-amber-900 text-[11px] px-3 py-1.5 rounded-md font-semibold transition-colors flex items-center gap-2 shadow-sm"
+                    >
+                      <User size={12} className="text-amber-600" />
+                      {task.title}
+                      <ArrowRight size={12} className="opacity-50" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {showPayloadEditor && (
               <div className="space-y-3 pt-2 animate-in slide-in-from-top-2 duration-150">

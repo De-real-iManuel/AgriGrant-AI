@@ -45,7 +45,7 @@ EXPOSE 8000
 # Use Python stdlib for the healthcheck — no extra apt packages needed
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
     CMD python -c "import urllib.request,sys,os; \
-        sys.exit(0 if urllib.request.urlopen(f'http://localhost:{os.getenv(\"PORT\",\"8000\")}/health',timeout=3).status==200 else 1)" \
+        sys.exit(0 if urllib.request.urlopen(f'http://localhost:{os.getenv(\"PORT\",\"8000\")}/v1/health',timeout=3).status==200 else 1)" \
         || exit 1
 
 # Single worker is intentional — event_broadcaster keeps SSE state in-process.

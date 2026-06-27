@@ -10,6 +10,7 @@ from api.health import router as health_router
 from api.profile import router as profile_router
 from api.farmer import router as farmer_router
 from api.hitl import router as hitl_router
+from api.webhooks import router as webhooks_router
 
 app = FastAPI(
     title="AgriGrant AI Backend",
@@ -49,6 +50,7 @@ v1.include_router(health_router)
 v1.include_router(profile_router)
 v1.include_router(farmer_router)
 v1.include_router(hitl_router)
+v1.include_router(webhooks_router)
 
 app.include_router(v1)
 
