@@ -1,4 +1,4 @@
-# AgriGrant AI 🌾🤖
+# AgriGrant AI
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![UiPath](https://img.shields.io/badge/UiPath-Automation_First-orange.svg)]()
@@ -7,74 +7,100 @@
 
 > **Submission for the UiPath AI Hackathon 2026**
 
-AgriGrant AI is an intelligent, end-to-end automation platform designed to bridge the funding gap for Nigerian smallholder farmers. By leveraging **UiPath RPA**, **Document Understanding**, and **Agentic AI**, we automate the extremely complex and bureaucratic process of finding, applying for, and securing agricultural grants.
+AgriGrant AI is an intelligent, end-to-end automation platform designed to bridge a critical funding gap in the developing world. By leveraging UiPath RPA, Document Understanding, and Agentic AI, we automate the highly bureaucratic process of discovering, qualifying for, and securing agricultural grants for smallholder farmers.
 
 ---
 
-## 🎯 The Problem
-In Nigeria, millions of smallholder farmers struggle to secure funding from Federal (e.g., CBN Anchor Borrowers), State, and Private/International (USAID, World Bank) programs. The barriers are immense:
-1. **Discoverability:** Farmers don't know which grants they qualify for.
-2. **Bureaucracy & Literacy:** Crafting a professional, high-quality business proposal is nearly impossible for a rural farmer.
-3. **Compliance:** 90% of applications fail due to missing compliance documents (CAC, NIN, Bank Statements) or poorly drafted budgets.
+## The Context: Why This Matters
 
-## 🚀 The AgriGrant Solution
-AgriGrant AI completely automates this lifecycle using a hybrid AI-RPA architecture with seamless Human-in-the-Loop (HITL) integration.
+To understand the impact of AgriGrant AI, one must understand the paradox of the African agricultural sector.
 
-1. **Intelligent Onboarding & Matching:** A farmer fills out a simple form. Our UiPath Agent cross-references their farm size, location, and crops against a live database of grants to find perfect matches.
-2. **AI Proposal Generation:** The system drafts a highly professional, tailored business proposal and budget breakdown based on the specific grant's strict requirements.
-3. **Document QA (Document Understanding):** UiPath inspects uploaded files (NIN, Bank Statements, CAC) to ensure they are valid and up-to-date before submission.
-4. **Human-in-the-Loop (HITL):** Before submitting the final application, the Orchestrator pauses. The drafted proposal and checklist are pushed to a beautiful React Dashboard where a grant specialist (or the farmer) reviews, edits, and approves the proposal with a single click.
-5. **Automated Submission & Appeals:** UiPath submits the application. If the grant provider rejects it, the AI Agent scrapes the rejection reason, evaluates the recoverability, and suggests grounds for a formal appeal.
+Smallholder farmers form the backbone of the Nigerian economy, producing over 80% of the nation's food. However, these farmers operate largely in the informal sector. They lack formal financial history, high digital literacy, and the structural organization typical of Western commercial farming.
+
+Simultaneously, billions of dollars in agricultural development grants are deployed annually by organizations such as the World Bank, USAID, and various Federal interventions (e.g., the Anchor Borrowers' Program). 
+
+**The Disconnect:** The farmers who desperately need this capital are the least equipped to navigate the complex application processes. They do not know these grants exist, they cannot synthesize the formal business proposals required by international donors, and they frequently fail compliance checks due to unstructured documentation. Consequently, the capital often fails to reach the grassroots level.
+
+AgriGrant AI solves this by acting as a highly intelligent, automated proxy between the rural farmer and the institutional donor.
 
 ---
 
-## 🏗️ System Architecture
+## The AgriGrant Solution
 
-AgriGrant AI is built on a scalable, secure, multi-tenant architecture:
+We utilize a hybrid AI-RPA architecture to completely abstract the complexity of grant applications away from the user.
 
-* **The Engine (UiPath Orchestrator & Studio):** Drives the BPMN pipeline, executes the AI Document Understanding, and orchestrates the web-scraping/submission bots.
-* **The Brain (FastAPI Python Backend):** Handles complex data routing, orchestrates secure webhooks between the React frontend and UiPath Orchestrator, and manages the Supabase PostgreSQL database.
-* **The Dashboard (Next.js & React):** A real-time, responsive web app featuring Server-Sent Events (SSE). It serves as the primary interface for the farmer and the Grant Specialist to interact with the UiPath HITL tasks.
-
----
-
-## 💻 Tech Stack
-
-| Component | Technologies Used |
-| :--- | :--- |
-| **Automation & AI** | UiPath Studio, UiPath Orchestrator, Document Understanding, BPMN |
-| **Backend API** | Python, FastAPI, Uvicorn, Pydantic |
-| **Frontend Web** | Next.js, React, Tailwind CSS, Server-Sent Events (SSE) |
-| **Database** | Supabase (PostgreSQL), Alembic (Migrations) |
-| **Infrastructure** | Docker, Vercel, Docker Hub |
+1. **Intelligent Onboarding & Matching:** A farmer completes a simplified, accessible intake form. A UiPath Agent cross-references their specific data (farm size, geographical location, crop type) against a live, constantly updated database of active grants to find perfect eligibility matches.
+2. **AI-Driven Proposal Generation:** The system drafts a comprehensive, highly professional business proposal and financial budget breakdown. This is tailored dynamically to meet the strict linguistic and structural requirements of the specific grant provider.
+3. **Document Verification (Document Understanding):** UiPath inspects unstructured uploaded files (identity documents, land ownership proofs, bank statements) to ensure compliance and validity before the application is ever submitted, drastically reducing technical rejection rates.
+4. **Human-in-the-Loop (HITL):** We recognize that high-stakes financial applications require human oversight. Before submission, Orchestrator pauses the pipeline. The drafted proposal and compliance checklist are pushed to a secure React Dashboard where a grant specialist reviews and approves the data with a single click.
+5. **Automated Submission & Strategic Appeals:** UiPath executes the final submission. If a grant provider rejects the application, our AI Agent scrapes the portal for the rejection rationale, evaluates the recoverability score, and formulates a strategy for a formal appeal.
 
 ---
 
-## 🔐 Security & Multi-Tenancy
-To ensure enterprise-grade security and privacy:
-- **Zero-Exposure Webhooks:** The React frontend never communicates directly with UiPath. All HITL approvals are securely proxied through the Python backend.
-- **Multi-Tenant Isolation:** The application strictly isolates task polling using uniquely generated `jobId` sessions. A farmer can absolutely never intercept or view another farmer's pipeline data.
+## System Architecture
+
+AgriGrant AI is built on a scalable, secure, multi-tenant architecture designed for enterprise-grade reliability.
+
+```mermaid
+graph TD
+    subgraph Frontend: Client Interface
+        A[Next.js React Dashboard] -->|Submits Intake Form| B(FastAPI Backend)
+        A -->|SSE Connection| B
+        A -->|Completes HITL Tasks| B
+    end
+
+    subgraph Backend: Core Engine
+        B -->|Saves State| C[(Supabase PostgreSQL)]
+        B -->|Triggers Pipeline| D[UiPath Orchestrator]
+        B -->|Secure Relay| D
+    end
+
+    subgraph Automation: UiPath Agents
+        D -->|Starts Job| E(Grant Matching Agent)
+        E --> F(Proposal Drafting Agent)
+        F --> G(Document Understanding Agent)
+        G -->|Suspends for HITL| H{Webhook to Backend}
+        H -.-> B
+        D -->|Resumes Job| I(Submission RPA Bot)
+        I -->|Scrapes Results| J(Appeals Agent)
+    end
+```
+
+* **The Engine (UiPath Orchestrator & Studio):** Drives the BPMN pipeline, executes the AI Document Understanding models, and orchestrates the web-scraping and submission bots.
+* **The Brain (FastAPI Python Backend):** Handles complex data routing, orchestrates zero-exposure webhooks between the React frontend and UiPath Orchestrator, and manages the Supabase PostgreSQL database.
+* **The Dashboard (Next.js & React):** A real-time, responsive web application serving as the primary interface for the farmer and the Grant Specialist to interact with the UiPath HITL tasks.
 
 ---
 
-## 🔮 Future Roadmap
-- **USSD/SMS Integration:** Allowing completely offline farmers to interact with the UiPath Agent via simple text messages.
-- **Local Language Translation:** Automatically translating the drafted proposals from English to Hausa, Yoruba, or Igbo for the farmer's review, while submitting in English.
-- **Micro-Lending Integration:** If a grant is rejected, automatically routing the farmer's profile to local micro-finance APIs for immediate alternative capital.
+## Technical Innovations
+
+To ensure enterprise-grade security and privacy, AgriGrant AI implements several advanced architectural patterns:
+
+- **Zero-Exposure Webhooks:** The React frontend never communicates directly with UiPath. All HITL approvals are securely proxied through the Python backend, preventing malicious actors from intercepting Orchestrator URLs.
+- **Strict Multi-Tenant Isolation:** The application isolates task polling using uniquely generated session identifiers. The backend dynamically filters webhook payloads, ensuring a user can absolutely never intercept or view another user's pipeline data or financial documents.
 
 ---
 
-## 🛠️ Local Setup & Deployment
+## Future Roadmap
+
+Our vision for AgriGrant AI extends beyond the initial web interface:
+
+- **USSD and SMS Integration:** Allowing completely offline farmers in deeply rural areas to interact with the UiPath Agent via basic cellular text messages, removing the requirement for internet access.
+- **Localized Language Translation:** Automatically translating the drafted proposals from English to native languages (Hausa, Yoruba, Igbo) for the farmer's comprehension during the review stage, while retaining the English format for the official submission.
+- **Micro-Lending Fallback Integration:** If an institutional grant is definitively rejected, automatically routing the farmer's verified profile to local micro-finance APIs to secure immediate, alternative capital.
+
+---
+
+## Local Setup & Deployment
 
 ### 1. Backend (Python/FastAPI)
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # Or `venv\Scripts\activate` on Windows
+source venv/bin/activate
 pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 ```
-*(Or use Docker: `docker build -t agrigrant-backend . && docker run -p 8000:8000 agrigrant-backend`)*
 
 ### 2. Frontend (Next.js)
 ```bash
@@ -86,9 +112,8 @@ npm run dev
 ### 3. UiPath
 - Open the `UiPath-automation` folder in UiPath Studio.
 - Configure your Orchestrator credentials and publish the process.
-- Map the webhooks to your live backend domain (e.g., `https://api.agrigrant.xyz`).
+- Map the webhooks to your live backend domain.
 
 ---
 
-### Developed for the 2026 UiPath AI Hackathon
-*Empowering the backbone of the African economy with automation.*
+*Developed for the 2026 UiPath AI Hackathon. Empowering the foundation of the global agricultural economy through intelligent automation.*
