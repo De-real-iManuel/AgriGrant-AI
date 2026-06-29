@@ -422,9 +422,10 @@ async def get_hitl_task_db(task_id: str) -> Optional[dict]:
 async def list_hitl_tasks_db(
     status_filter: Optional[str] = None,
     task_type: Optional[str] = None,
+    job_id: Optional[str] = None,
     limit: int = 50,
 ) -> list:
-    """List HITL tasks with optional filters."""
+    """List HITL tasks with optional filters. Multi-tenant safe via job_id."""
     if not supabase_client:
         return []
     try:
@@ -433,6 +434,10 @@ async def list_hitl_tasks_db(
             query = query.eq("status", status_filter)
         if task_type:
             query = query.eq("task_type", task_type)
+        if job_id:
+            # Assumes the UiPath payload includes jobId in the metadata
+            query = query.contains("metadata", {"jobId": job_id})
+            
         res = query.execute()
         return res.data or []
     except Exception as e:

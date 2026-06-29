@@ -222,10 +222,16 @@ async def create_hitl_task(request: HITLTaskCreateRequest):
 async def list_hitl_tasks(
     status_filter: Optional[str] = Query(None, alias="status"),
     task_type: Optional[str] = Query(None, alias="taskType"),
+    job_id: Optional[str] = Query(None, alias="jobId"),
     limit: int = Query(50, ge=1, le=200),
 ):
-    """List HITL tasks stored in the backend (from Supabase)."""
-    tasks = await list_hitl_tasks_db(status_filter=status_filter, task_type=task_type, limit=limit)
+    """List HITL tasks stored in the backend (from Supabase). Isolates tasks by jobId for multi-tenant safety."""
+    tasks = await list_hitl_tasks_db(
+        status_filter=status_filter, 
+        task_type=task_type, 
+        job_id=job_id,
+        limit=limit
+    )
     return {"success": True, "count": len(tasks), "tasks": tasks}
 
 

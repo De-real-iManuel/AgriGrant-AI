@@ -55,7 +55,7 @@ const NIGERIAN_STATES = [
 ];
 
 const LGA_MAPPING: Record<string, string[]> = {
-  'Rivers': ['Port-Harcourt', 'Obio-Akpor', 'Okrika', 'Ogu-Bolo', 'Eleme', 'Tai', 'Gokana', 'Khana'],
+  'Rivers': ['Port-Harcourt', 'Omoku', 'Obio-Akpor', 'Okrika', 'Ogu-Bolo', 'Eleme', 'Tai', 'Gokana', 'Khana'],
   'Lagos': ['Ikeja', 'Alimosho', 'Oshodi-Isolo', 'Surulere', 'Epe', 'Ikorodu', 'Lagos Island'],
   'Benue': ['Makurdi', 'Gboko', 'Otukpo', 'Katsina-Ala', 'Vandeikya', 'Gwer East', 'Ogbadibo'],
   'FCT (Abuja)': ['Abuja Municipal', 'Bwari', 'Gwagwalada', 'Kuje', 'Kwali', 'Abaji'],
@@ -141,8 +141,12 @@ export default function HitlSandboxPage() {
 
   useEffect(() => {
     const fetchTasks = async () => {
+      // In production, we strictly isolate polling to the farmer's current jobId
+      // If no jobId exists yet (they haven't submitted the onboarding form), we don't fetch anyone else's tasks!
+      if (!jobId) return; 
+
       try {
-        const res = await fetch(`${BACKEND}/api/hitl/tasks?status=Pending`);
+        const res = await fetch(`${BACKEND}/api/hitl/tasks?status=Pending&jobId=${jobId}`);
         if (res.ok) {
           const data = await res.json();
           setPendingTasks(data.tasks || []);
@@ -156,7 +160,7 @@ export default function HitlSandboxPage() {
     fetchTasks();
     const iv = setInterval(fetchTasks, 10000); // Poll every 10 seconds
     return () => clearInterval(iv);
-  }, []);
+  }, [jobId]);
 
   // ── JOB TRACKING ─────────────────────────────────────────
   const [jobId, setJobId] = useState<string | null>(null);
