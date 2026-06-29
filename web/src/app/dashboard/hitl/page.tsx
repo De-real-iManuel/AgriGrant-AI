@@ -502,6 +502,19 @@ export default function HitlSandboxPage() {
     const selectedGrant = matchedGrants.find(g => g.grantName === selectedGrantId);
     const sessionId = safeStr(bodyData.sessionId || bodyData.sessionId2 || livePayload?.sessionId);
 
+    let ownershipStatus = 'other';
+    if (formData.hasLandDoc) {
+      if (formData.landDocType?.includes('Lease')) {
+        ownershipStatus = 'leasehold';
+      } else if (formData.landDocType?.includes('Family')) {
+        ownershipStatus = 'family land';
+      } else if (formData.landDocType?.includes('Certificate') || formData.landDocType?.includes('Right')) {
+        ownershipStatus = 'owner';
+      }
+    } else if (formData.isCooperativeMember) {
+      ownershipStatus = 'cooperative member';
+    }
+
     try {
       const uipathPayload = {
         authentication: 'manual',
@@ -516,6 +529,10 @@ export default function HitlSandboxPage() {
           targetGrant: selectedGrantId,
           currentStatus: 'grant_selected',
           vCQgnY8KC: 'grant_selected',
+          selectedGrant: selectedGrant || null,
+          hasBVN: formData.hasBVN || false,
+          hasExistingLoanDefault: !formData.noLoanDefault,
+          ownershipStatus,
         },
       };
 
