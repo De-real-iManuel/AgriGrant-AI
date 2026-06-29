@@ -31,6 +31,11 @@ import {
 import { toast } from 'sonner';
 import AuthGuard from '@/components/ui/AuthGuard';
 import DashboardShell from '../Components/DashboardShell';
+import PayloadPanel from './components/PayloadPanel';
+import GrantSelectionScreen from './components/GrantSelectionScreen';
+import DocumentTopUpScreen from './components/DocumentTopUpScreen';
+import ProposalReviewScreen from './components/ProposalReviewScreen';
+import AppealScreen from './components/AppealScreen';
 
 // ──────────────────────────────────────────────────────────────
 // CONFIG — reads from .env
@@ -112,7 +117,9 @@ function safeStr(v: any, fallback = '') {
 }
 
 function safeArr(v: any): any[] {
-  return Array.isArray(v) ? v : [];
+  if (Array.isArray(v)) return v;
+  if (typeof v === 'string' && v.trim() !== '') return v.split(',').map(s => s.trim());
+  return [];
 }
 
 // ──────────────────────────────────────────────────────────────
@@ -183,12 +190,13 @@ export default function HitlSandboxPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const markTaskCompleted = async (decision: string = 'approve') => {
+  const markTaskCompleted = async (decision: string = 'approve', formData: any = null) => {
     if (jobId && jobId.includes('-')) {
+      const payload = formData ? { decision, formData } : { decision };
       await fetch(`${BACKEND}/api/hitl/tasks/backend/${jobId}/complete`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ decision })
+        body: JSON.stringify(payload)
       }).catch(() => {});
       setPendingTasks(prev => prev.filter(t => t.task_id !== jobId));
     }
@@ -491,38 +499,26 @@ export default function HitlSandboxPage() {
     const sessionId = safeStr(bodyData.sessionId || bodyData.sessionId2 || livePayload?.sessionId);
 
     try {
-      // POST the farmer's grant selection back to the UiPath portal webhook
-      const res = await fetch(PORTAL_URL, {
+      const uipathPayload = {
+        authentication: 'manual',
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          authentication: 'manual',
-          method: 'POST',
-          url: PORTAL_URL,
-          body: {
-            ...bodyData,
-            sessionId,
-            grantName2: selectedGrantId,
-            agentAction: 'grant_selected',
-            agentAction4: 'prepare-submission-package',
-            targetGrant: selectedGrantId,
-            currentStatus: 'grant_selected',
-            vCQgnY8KC: 'grant_selected',
-          },
-        }),
-      });
+        url: PORTAL_URL,
+        body: {
+          ...bodyData,
+          sessionId,
+          grantName2: selectedGrantId,
+          agentAction: 'grant_selected',
+          agentAction4: 'prepare-submission-package',
+          targetGrant: selectedGrantId,
+          currentStatus: 'grant_selected',
+          vCQgnY8KC: 'grant_selected',
+        },
+      };
 
-      // Mark the task as completed in our DB
-      await markTaskCompleted('grant_selected');
-
-      // UiPath returns 200/202; network errors throw
-      if (!res.ok && res.status !== 202) {
-        console.warn(`Portal responded with ${res.status} — continuing anyway.`);
-      }
-
+      await markTaskCompleted('grant_selected', uipathPayload);
       setActiveTab(2); // Move to Document Top-up
     } catch (err: any) {
-      console.warn('Grant confirm portal call failed (proceeding):', err.message);
+      console.warn('Grant confirm failed (proceeding):', err.message);
       setActiveTab(2);
     } finally {
       setIsConfirmingGrant(false);
@@ -558,24 +554,20 @@ export default function HitlSandboxPage() {
 
       // Notify the UiPath portal that docs are ready
       const sessionId = safeStr(bodyData.sessionId);
-      await fetch(PORTAL_URL, {
+      const uipathPayload = {
+        authentication: 'manual',
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          authentication: 'manual',
-          method: 'POST',
-          url: PORTAL_URL,
-          body: {
-            ...bodyData,
-            sessionId,
-            agentAction: 'documents_uploaded',
-            currentStatus: 'documents_ready',
-            vCQgnY8KC: 'documents_ready',
-          },
-        }),
-      }).catch(() => { /* portal may not ack */ });
+        url: PORTAL_URL,
+        body: {
+          ...bodyData,
+          sessionId,
+          agentAction: 'documents_uploaded',
+          currentStatus: 'documents_ready',
+          vCQgnY8KC: 'documents_ready',
+        },
+      };
 
-      await markTaskCompleted('documents_uploaded');
+      await markTaskCompleted('documents_uploaded', uipathPayload);
       setDocSubmitSuccess(true);
       setTimeout(() => setActiveTab(3), 1200);
     } catch (err: any) {
@@ -596,27 +588,23 @@ export default function HitlSandboxPage() {
     const statusMap = { approve: 'proposal_approved', revisions: 'proposal_revisions', reject: 'proposal_rejected' };
 
     try {
-      await fetch(PORTAL_URL, {
+      const uipathPayload = {
+        authentication: 'manual',
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          authentication: 'manual',
-          method: 'POST',
-          url: PORTAL_URL,
-          body: {
-            ...bodyData,
-            sessionId,
-            agentAction: proposalDecision === 'approve' ? 'submit_application' : `request_${proposalDecision}`,
-            comment: proposalComments,
-            currentStatus: statusMap[proposalDecision],
-            vCQgnY8KC: statusMap[proposalDecision],
-            // Also pass back the QA checklist
-            qualityChecks: checklist,
-          },
-        }),
-      }).catch(() => { /* portal may not ack */ });
+        url: PORTAL_URL,
+        body: {
+          ...bodyData,
+          sessionId,
+          agentAction: proposalDecision === 'approve' ? 'submit_application' : `request_${proposalDecision}`,
+          comment: proposalComments,
+          currentStatus: statusMap[proposalDecision],
+          vCQgnY8KC: statusMap[proposalDecision],
+          // Also pass back the QA checklist
+          qualityChecks: checklist,
+        },
+      };
 
-      await markTaskCompleted(proposalDecision);
+      await markTaskCompleted(proposalDecision, uipathPayload);
 
       if (proposalDecision === 'approve') {
         setActiveTab(4);
@@ -657,25 +645,21 @@ export default function HitlSandboxPage() {
     };
 
     try {
-      await fetch(PORTAL_URL, {
+      const uipathPayload = {
+        authentication: 'manual',
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          authentication: 'manual',
-          method: 'POST',
-          url: PORTAL_URL,
-          body: {
-            ...bodyData,
-            sessionId,
-            agentAction: actionMap[appealAction],
-            comment: appealNotes,
-            currentStatus: actionMap[appealAction],
-            vCQgnY8KC: actionMap[appealAction],
-          },
-        }),
-      }).catch(() => { /* portal may not ack */ });
+        url: PORTAL_URL,
+        body: {
+          ...bodyData,
+          sessionId,
+          agentAction: actionMap[appealAction],
+          comment: appealNotes,
+          currentStatus: actionMap[appealAction],
+          vCQgnY8KC: actionMap[appealAction],
+        },
+      };
 
-      await markTaskCompleted(appealAction);
+      await markTaskCompleted(appealAction, uipathPayload);
 
       setSseEvents(prev => [...prev, {
         type: `appeal_${appealAction}`,
@@ -746,106 +730,22 @@ export default function HitlSandboxPage() {
         <div className="flex flex-col gap-6">
 
           {/* ── LIVE PAYLOAD PANEL ─────────────────────────────── */}
-          <div className="card-elevated border-b p-4 space-y-3" style={{ borderColor: 'var(--border)' }}>
-            <div className="flex items-center justify-between flex-wrap gap-3">
-              <button
-                onClick={() => setShowPayloadEditor(!showPayloadEditor)}
-                className="flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-emerald-700 transition-colors"
-              >
-                <Code size={16} className="text-emerald-600" />
-                {showPayloadEditor ? 'Hide Payload Editor' : 'Paste / Edit UiPath JSON Payload'}
-                <span className="bg-emerald-50 px-2 py-0.5 rounded text-[10px] text-emerald-800 font-mono">
-                  {matchedGrants.length} Grants Loaded
-                </span>
-              </button>
-
-              <div className="flex items-center gap-3">
-                <SseBadge />
-                {jobId && (
-                  <span className="text-[10px] font-mono text-slate-500">
-                    Job: <strong>{jobId}</strong>
-                    {appRef ? ` · Ref: ${appRef}` : ''}
-                  </span>
-                )}
-                <button
-                  onClick={handleClearPayload}
-                  className="text-[10px] font-bold text-slate-500 hover:text-red-500 flex items-center gap-1"
-                >
-                  <RefreshCw size={11} /> Clear
-                </button>
-              </div>
-            </div>
-
-            {/* ── PENDING TASKS NOTIFICATION ─────────────────────────── */}
-            {pendingTasks.length > 0 && (
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-2 animate-in fade-in">
-                <h4 className="text-amber-800 text-xs font-bold flex items-center gap-2 mb-2">
-                  <AlertTriangle size={14} /> Action Required: {pendingTasks.length} Pending UiPath Tasks
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {pendingTasks.map(task => (
-                    <button
-                      key={task.task_id}
-                      onClick={() => {
-                        setPayloadText(JSON.stringify(task.metadata || {}, null, 2));
-                        setLivePayload({ body: task.metadata?.body || task.metadata || {}, jobId: task.task_id });
-                        toast.success(`Loaded task: ${task.title}`);
-                      }}
-                      className="bg-white border border-amber-300 hover:border-amber-500 text-amber-900 text-[11px] px-3 py-1.5 rounded-md font-semibold transition-colors flex items-center gap-2 shadow-sm"
-                    >
-                      <User size={12} className="text-amber-600" />
-                      {task.title}
-                      <ArrowRight size={12} className="opacity-50" />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {showPayloadEditor && (
-              <div className="space-y-3 pt-2 animate-in slide-in-from-top-2 duration-150">
-                <p className="text-xs text-muted-foreground">
-                  Paste the JSON body from your UiPath pipeline output. The grant cards and form fields will self-populate instantly.
-                  Supports both <code className="bg-slate-100 px-1 rounded font-mono text-[10px]">{'{ body: {...} }'}</code> and raw body objects.
-                </p>
-                <textarea
-                  className="w-full h-64 p-3 font-mono text-xs border rounded-lg bg-slate-50 dark:bg-slate-900"
-                  style={{ borderColor: 'var(--border)' }}
-                  placeholder={`{\n  "body": {\n    "matchedGrants2": [...],\n    "farmerName6": "Your Name",\n    ...\n  }\n}`}
-                  value={payloadText}
-                  onChange={e => setPayloadText(e.target.value)}
-                />
-                {payloadError && (
-                  <div className="p-2 rounded text-xs bg-red-50 text-red-600 font-semibold flex items-center gap-1.5">
-                    <XCircle size={14} /> Parse Error: {payloadError}
-                  </div>
-                )}
-                <div className="flex justify-end gap-2">
-                  <button onClick={() => setShowPayloadEditor(false)} className="px-3 py-1.5 border rounded-lg text-xs font-semibold hover:bg-slate-100">
-                    Cancel
-                  </button>
-                  <button onClick={handleLoadPayload} className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-sm">
-                    Load Payload & Refresh UI
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* SSE Event Feed */}
-            {sseEvents.length > 0 && (
-              <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-3 max-h-32 overflow-y-auto space-y-1">
-                {[...sseEvents].reverse().map((ev, i) => (
-                  <div key={i} className="flex items-start gap-2 text-[11px]">
-                    <span className="text-slate-400 font-mono shrink-0">{ev.time}</span>
-                    <span className={`font-bold shrink-0 ${ev.type.includes('fail') || ev.type.includes('error') || ev.type.includes('reject') ? 'text-red-600' : ev.type.includes('complete') || ev.type.includes('approve') ? 'text-emerald-600' : 'text-blue-600'}`}>
-                      [{ev.type}]
-                    </span>
-                    <span className="text-slate-600 dark:text-slate-300">{ev.message}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <PayloadPanel
+            showPayloadEditor={showPayloadEditor}
+            setShowPayloadEditor={setShowPayloadEditor}
+            matchedGrants={matchedGrants}
+            sseStatus={sseStatus}
+            jobId={jobId}
+            appRef={appRef}
+            handleClearPayload={handleClearPayload}
+            pendingTasks={pendingTasks}
+            setPayloadText={setPayloadText}
+            setLivePayload={setLivePayload}
+            payloadText={payloadText}
+            payloadError={payloadError}
+            handleLoadPayload={handleLoadPayload}
+            sseEvents={sseEvents}
+          />
 
           {/* ── STAGE NAVIGATOR ───────────────────────────────── */}
           <div className="w-full card-elevated p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b" style={{ borderColor: 'var(--border)' }}>
@@ -1257,527 +1157,77 @@ export default function HitlSandboxPage() {
               SCREEN 1 — GRANT SELECTION (task_farmer_selects_grant)
           ══════════════════════════════════════════════════ */}
           {activeTab === 1 && (
-            <div className="max-w-6xl mx-auto space-y-6">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800">
-                    Screen 1 — Grant Selection
-                  </span>
-                  <h2 className="text-xl font-bold mt-1">
-                    {matchedGrants.length > 0
-                      ? `We found ${matchedGrants.length} grants you may qualify for, ${formData.fullName || 'Farmer'} 🌱`
-                      : 'Awaiting grant results from pipeline…'}
-                  </h2>
-                  <p className="text-sm text-muted-foreground">
-                    BPMN: <code className="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-xs font-mono">task_farmer_selects_grant</code>
-                  </p>
-                </div>
-                {selectedGrantId && (
-                  <button
-                    onClick={handleGrantConfirm}
-                    disabled={isConfirmingGrant}
-                    className={`px-5 py-2.5 rounded-lg text-xs font-bold text-white flex items-center gap-2 shadow-md ${isConfirmingGrant ? 'bg-blue-400 cursor-wait' : 'bg-blue-600 hover:bg-blue-700'}`}
-                  >
-                    {isConfirmingGrant ? <><Loader2 size={14} className="animate-spin" /> Confirming…</> : <>Confirm Grant & Continue <ArrowRight size={13} /></>}
-                  </button>
-                )}
-              </div>
-
-              {matchedGrants.length === 0 ? (
-                <div className="text-center p-12 bg-slate-50 border rounded-xl">
-                  <Loader2 size={32} className="animate-spin mx-auto text-slate-300 mb-3" />
-                  <p className="text-sm font-semibold text-slate-500">Waiting for pipeline to return matched grants…</p>
-                  <p className="text-xs text-slate-400 mt-1">Paste a JSON payload above or submit the onboarding form.</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                  {/* Filters */}
-                  <div className="lg:col-span-1 card-elevated p-5 space-y-5 h-fit">
-                    <div className="flex items-center gap-2 border-b pb-2" style={{ borderColor: 'var(--border)' }}>
-                      <Sliders size={16} className="text-blue-600" />
-                      <h4 className="font-bold text-xs uppercase tracking-wider">Filter Matches</h4>
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="text-[11px] font-bold text-muted-foreground uppercase" htmlFor="search">Search</label>
-                      <input id="search" type="text" placeholder="e.g. Tony, USAID…" className="input-base text-xs" value={grantFilters.search} onChange={e => setGrantFilters({ ...grantFilters, search: e.target.value })} />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-[11px] font-bold text-muted-foreground uppercase block">Category</label>
-                      <div className="space-y-1.5">
-                        {['All', 'private', 'state', 'federal', 'international', 'development-bank'].map(cat => (
-                          <label key={cat} className="flex items-center gap-2 text-xs font-semibold cursor-pointer select-none">
-                            <input type="radio" name="grantCat" checked={grantFilters.category === cat} onChange={() => setGrantFilters({ ...grantFilters, category: cat })} />
-                            {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Grant Cards */}
-                  <div className="lg:col-span-3 space-y-4">
-                    {matchedGrants
-                      .filter(g => {
-                        if (!g) return false;
-                        if (grantFilters.category !== 'All' && g.grantCategory !== grantFilters.category) return false;
-                        if (grantFilters.search && !(g.grantName || '').toLowerCase().includes(grantFilters.search.toLowerCase())) return false;
-                        return true;
-                      })
-                      .map((grant, idx) => {
-                        const isSelected = selectedGrantId === grant.grantName;
-                        return (
-                          <div key={idx} className={`card-elevated p-5 border transition-all relative overflow-hidden ${isSelected ? 'border-blue-500 shadow-md ring-2 ring-blue-500/20' : 'hover:border-slate-300'}`}>
-                            <div className="absolute top-0 right-0 w-24 h-24 overflow-hidden pointer-events-none">
-                              <div className="absolute top-4 -right-8 w-28 bg-emerald-600 text-white text-[10px] font-bold text-center py-1 rotate-45">
-                                {grant.matchScore}% Match
-                              </div>
-                            </div>
-                            <div className="flex flex-col gap-4">
-                              <div>
-                                <span className="inline-block text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-slate-100 text-slate-800">{grant.grantCategory}</span>
-                                <h3 className="font-bold text-base mt-1" style={{ color: 'var(--foreground)' }}>🏛️ {grant.grantName}</h3>
-                                <p className="text-xs text-slate-500 mt-0.5">By {grant.grantingOrganization}</p>
-                              </div>
-                              <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">{grant.description}</p>
-                              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs border-t pt-3" style={{ borderColor: 'var(--border)' }}>
-                                <div>
-                                  <span className="text-muted-foreground block text-[10px] uppercase font-bold">Funding Range</span>
-                                  <span className="font-bold text-blue-600">{grant.fundingAmountRange}</span>
-                                </div>
-                                <div>
-                                  <span className="text-muted-foreground block text-[10px] uppercase font-bold">Deadline</span>
-                                  <span className="font-bold">{grant.applicationDeadline || 'Verify'}</span>
-                                </div>
-                                <div>
-                                  <span className="text-muted-foreground block text-[10px] uppercase font-bold">Scope</span>
-                                  <span className="font-bold capitalize">{grant.geographicScope || 'Nigeria'}</span>
-                                </div>
-                              </div>
-                              <div className="p-3 bg-muted/30 rounded-lg text-xs leading-relaxed" style={{ color: 'var(--muted-foreground)' }}>
-                                <strong>Why this matches:</strong> {grant.matchReason}
-                              </div>
-                              {Array.isArray(grant.requiredDocuments) && (
-                                <div className="space-y-1">
-                                  <span className="text-[10px] font-bold uppercase text-muted-foreground block">Required Documents:</span>
-                                  <div className="flex flex-wrap gap-1.5 pt-1">
-                                    {grant.requiredDocuments.map((doc, i) => (
-                                      <span key={i} className="inline-flex items-center gap-1 bg-slate-50 border px-2 py-0.5 rounded text-[10px] text-slate-700">
-                                        <Check size={9} className="text-emerald-600" /> {doc}
-                                      </span>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
-                              <div className="flex items-center justify-between border-t pt-3 mt-1" style={{ borderColor: 'var(--border)' }}>
-                                <a href={grant.applicationUrl || '#'} target="_blank" rel="noreferrer" className="text-xs font-semibold text-blue-600 hover:text-blue-800">
-                                  [ Link to Portal ↗ ]
-                                </a>
-                                <button
-                                  type="button"
-                                  onClick={() => setSelectedGrantId(grant.grantName || '')}
-                                  className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${isSelected ? 'bg-blue-600 text-white shadow-sm' : 'bg-muted/60 text-muted-foreground hover:bg-muted'}`}
-                                >
-                                  {isSelected ? '✓ Grant Selected' : 'Select This Grant'}
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                  </div>
-                </div>
-              )}
-            </div>
+            <GrantSelectionScreen
+              matchedGrants={matchedGrants}
+              formData={formData}
+              selectedGrantId={selectedGrantId}
+              setSelectedGrantId={setSelectedGrantId}
+              handleGrantConfirm={handleGrantConfirm}
+              isConfirmingGrant={isConfirmingGrant}
+              grantFilters={grantFilters}
+              setGrantFilters={setGrantFilters}
+            />
           )}
 
           {/* ══════════════════════════════════════════════════
               SCREEN 2 — DOCUMENT TOP-UP (task_farmer_uploads_docs)
           ══════════════════════════════════════════════════ */}
           {activeTab === 2 && (
-            <div className="max-w-5xl mx-auto space-y-6">
-              <div>
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 animate-pulse">
-                  Screen 2 — Document Upload Top-up
-                </span>
-                <h2 className="text-xl font-bold mt-1">
-                  We need a few more documents for your <strong>{selectedGrantId || 'selected grant'}</strong> application
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  BPMN: <code className="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-xs font-mono">task_farmer_uploads_docs</code> — uploads go to <code className="bg-slate-100 px-1 rounded font-mono text-[10px]">{BACKEND}/api/profile/upload-documents</code>
-                </p>
-              </div>
-
-              {docSubmitError && (
-                <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg flex items-center gap-2">
-                  <XCircle size={14} /> {docSubmitError}
-                </div>
-              )}
-              {docSubmitSuccess && (
-                <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs rounded-lg flex items-center gap-2">
-                  <CheckCircle2 size={14} /> Documents submitted! Moving to Proposal Review…
-                </div>
-              )}
-
-              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                {/* Left: checklist status */}
-                <div className="lg:col-span-1 card-elevated p-5 space-y-4 h-fit">
-                  <h4 className="font-bold text-xs uppercase tracking-wider pb-2 border-b" style={{ borderColor: 'var(--border)' }}>
-                    Trust Vault Status
-                  </h4>
-                  <div className="space-y-3">
-                    {payloadChecklist.length === 0 ? (
-                      <p className="text-[11px] text-muted-foreground italic">No checklist from Document Understanding Agent yet.</p>
-                    ) : (
-                      payloadChecklist.map((doc, idx) => {
-                        const isMissing = derivedMissing.some(m => typeof m === 'string' && m.toLowerCase().includes(String(doc).toLowerCase().slice(0, 10)));
-                        return (
-                          <div key={idx} className={`flex items-center gap-2 text-xs font-medium ${isMissing ? 'text-amber-600' : 'text-emerald-700'}`}>
-                            {isMissing ? <AlertTriangle size={14} className="flex-shrink-0" /> : <CheckCircle2 size={14} className="flex-shrink-0" />}
-                            <span className="truncate" title={doc}>{doc} {isMissing ? '(Needs Update)' : '(Verified)'}</span>
-                          </div>
-                        );
-                      })
-                    )}
-                  </div>
-                </div>
-
-                {/* Right: upload slots */}
-                <div className="lg:col-span-3 space-y-4">
-                  <div className="card-elevated p-6 space-y-4">
-                    <h3 className="font-bold text-sm text-amber-700">Required Document Uploads</h3>
-                    <p className="text-xs text-muted-foreground">
-                      Upload any flagged or missing documents below. Accepted: PDF, JPG, PNG, DOC.
-                    </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <FileUploadSlot label="🏦 Updated Bank Statement (last 6 months) *" fileKey="bankStatement" file={topupFiles.bankStatement || null} onSet={f => setTopupFiles(p => ({ ...p, bankStatement: f }))} onClear={() => setTopupFiles(p => ({ ...p, bankStatement: null }))} />
-                      <FileUploadSlot label="🆔 NIN / Identity Document" fileKey="ninDoc" file={topupFiles.ninDoc || null} onSet={f => setTopupFiles(p => ({ ...p, ninDoc: f }))} onClear={() => setTopupFiles(p => ({ ...p, ninDoc: null }))} />
-                      <FileUploadSlot label="📜 Land Document (updated)" fileKey="landDoc" file={topupFiles.landDoc || null} onSet={f => setTopupFiles(p => ({ ...p, landDoc: f }))} onClear={() => setTopupFiles(p => ({ ...p, landDoc: null }))} />
-                      <FileUploadSlot label="📸 Farm Photo" fileKey="farmPhoto" file={topupFiles.farmPhoto || null} onSet={f => setTopupFiles(p => ({ ...p, farmPhoto: f }))} onClear={() => setTopupFiles(p => ({ ...p, farmPhoto: null }))} />
-                      {formData.hasCAC && <FileUploadSlot label="🏢 CAC Certificate" fileKey="cac" file={topupFiles.cac || null} onSet={f => setTopupFiles(p => ({ ...p, cac: f }))} onClear={() => setTopupFiles(p => ({ ...p, cac: null }))} />}
-                    </div>
-                  </div>
-
-                  <div className="flex justify-between items-center border-t pt-4" style={{ borderColor: 'var(--border)' }}>
-                    <button type="button" onClick={() => setActiveTab(1)} className="px-4 py-2 border rounded-lg text-xs font-semibold hover:bg-muted" style={{ borderColor: 'var(--border)' }}>
-                      Back to Selection
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleDocTopupSubmit}
-                      disabled={isSubmittingDocs || docSubmitSuccess}
-                      className={`px-5 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-white ${isSubmittingDocs ? 'bg-emerald-400 cursor-wait' : 'bg-emerald-600 hover:bg-emerald-700 shadow-md active:scale-95'}`}
-                    >
-                      {isSubmittingDocs ? <><Loader2 size={14} className="animate-spin" /> Uploading…</> : <>Submit Documents <ArrowRight size={13} /></>}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <DocumentTopUpScreen
+              selectedGrantId={selectedGrantId}
+              docSubmitError={docSubmitError}
+              docSubmitSuccess={docSubmitSuccess}
+              payloadChecklist={payloadChecklist}
+              derivedMissing={derivedMissing}
+              topupFiles={topupFiles}
+              setTopupFiles={setTopupFiles}
+              formData={formData}
+              setActiveTab={setActiveTab}
+              handleDocTopupSubmit={handleDocTopupSubmit}
+              isSubmittingDocs={isSubmittingDocs}
+            />
           )}
 
           {/* ══════════════════════════════════════════════════
               SCREEN 3 — PROPOSAL REVIEW (task_proposal_review_hitl)
           ══════════════════════════════════════════════════ */}
           {activeTab === 3 && (
-            <div className="max-w-7xl mx-auto space-y-6">
-              <div>
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-100 text-orange-800">
-                  Screen 3 — Proposal Review (Internal Specialist)
-                </span>
-                <h2 className="text-xl font-bold mt-1">Proposal Quality Review Dashboard</h2>
-                <p className="text-sm text-muted-foreground">
-                  BPMN: <code className="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-xs font-mono">task_proposal_review_hitl</code> — decision POSTs to <code className="bg-slate-100 px-1 rounded font-mono text-[10px]">{PORTAL_URL}</code>
-                </p>
-              </div>
-
-              {reviewError && (
-                <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg flex items-center gap-2">
-                  <XCircle size={14} /> {reviewError}
-                </div>
-              )}
-
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                {/* Left: Proposal Document */}
-                <div className="lg:col-span-7 card-elevated p-6 bg-slate-50 dark:bg-slate-900 border-2 border-slate-300 min-h-[500px] max-h-[650px] overflow-y-auto font-serif relative">
-                  <div className="flex border-b font-sans text-xs mb-6 overflow-x-auto" style={{ borderColor: 'var(--border)' }}>
-                    {[
-                      { id: 'cover', label: '1. Cover Page' },
-                      { id: 'letter', label: '2. Application Letter' },
-                      { id: 'description', label: '3. Project Description' },
-                      { id: 'budget', label: '4. Budget' },
-                      { id: 'annexures', label: '5. Annexures' },
-                    ].map(sec => (
-                      <button key={sec.id} type="button" onClick={() => setActiveProposalSection(sec.id as any)}
-                        className={`px-3 py-2 border-b-2 font-semibold transition-all whitespace-nowrap ${activeProposalSection === sec.id ? 'border-emerald-600 text-emerald-700 bg-white dark:bg-slate-800' : 'border-transparent text-muted-foreground hover:bg-muted/40'}`}>
-                        {sec.label}
-                      </button>
-                    ))}
-                  </div>
-
-                  <div className="space-y-4 text-slate-800 dark:text-slate-200">
-                    {activeProposalSection === 'cover' && (
-                      <div className="text-center py-10 space-y-6">
-                        <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto text-2xl">🏛️</div>
-                        <div className="space-y-2">
-                          <p className="text-xs font-bold uppercase tracking-widest text-slate-500 font-sans">Business Proposal Document</p>
-                          <h1 className="text-2xl font-extrabold tracking-tight font-sans text-emerald-800 dark:text-emerald-500">
-                            {formData.projectTitle || safeStr(bodyData.projectTittle) || '—'}
-                          </h1>
-                          <p className="text-sm font-sans italic text-slate-600">Submitted for {selectedGrantId || '—'}</p>
-                        </div>
-                        <div className="pt-8 text-xs space-y-1 font-sans text-slate-500 text-left max-w-sm mx-auto border-t font-semibold">
-                          <p><strong>Applicant:</strong> {formData.fullName || safeStr(bodyData.farmerName6)}</p>
-                          <p><strong>Farm Type:</strong> {formData.farmType || safeStr(bodyData.farmType)}</p>
-                          <p><strong>Location:</strong> {formData.farmAddress || safeStr(bodyData.vtZKCiqUt)}</p>
-                          <p><strong>Requested Funding:</strong> ₦{(parseInt(formData.requestedAmount || '0') || 0).toLocaleString()}</p>
-                          <p><strong>Date Generated:</strong> {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-                        </div>
-                      </div>
-                    )}
-                    {activeProposalSection === 'letter' && (
-                      <div className="space-y-4 text-xs font-sans text-slate-700 dark:text-slate-300 px-4">
-                        <div className="text-right">
-                          <p>{formData.fullName || safeStr(bodyData.farmerName6)}</p>
-                          <p>{formData.farmAddress || safeStr(bodyData.vtZKCiqUt)}</p>
-                          <p>{new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-                        </div>
-                        <div className="text-left font-bold">
-                          <p>To: The Coordinator,</p>
-                          <p>{selectedGrantId || '—'},</p>
-                          <p>{formData.stateOfResidence || safeStr(bodyData.stateOfResidence)} State Regional Office.</p>
-                        </div>
-                        <p className="font-bold text-center border-b pb-1">
-                          SUBJECT: APPLICATION FOR FUNDING — '{(formData.projectTitle || '').toUpperCase()}'
-                        </p>
-                        <p>Dear Sir/Ma,</p>
-                        <p className="leading-relaxed">
-                          I am writing to formally submit our application under the {selectedGrantId || '—'}. As a smallholder crop farmer operating {formData.farmSize || '—'} hectares in {formData.lgaOfResidence || '—'} LGA, {formData.stateOfResidence || '—'} State, my farm specialises in {formData.cropsOrLivestock.join(', ') || safeArr(bodyData.vvf8WstMO).join(', ')}.
-                        </p>
-                        <p className="leading-relaxed">
-                          The primary purpose of this request is for <strong>{formData.fundingPurpose || '—'}</strong> to scale production and expand operations.
-                        </p>
-                        <p className="pt-4">Yours Faithfully,</p>
-                        <p className="font-bold underline">{formData.fullName || safeStr(bodyData.farmerName6)}</p>
-                      </div>
-                    )}
-                    {activeProposalSection === 'description' && (
-                      <div className="space-y-4 text-xs leading-relaxed px-4">
-                        <h4 className="font-sans font-bold text-sm text-emerald-800">1. Project Intent & Scope</h4>
-                        <p>{formData.projectDescription || safeStr(bodyData.summary2) || '—'}</p>
-                        <h4 className="font-sans font-bold text-sm text-emerald-800 mt-4">2. Operations Challenges Addressed</h4>
-                        <p>{formData.challenges || safeStr(bodyData.farmingChallenges) || '—'}</p>
-                      </div>
-                    )}
-                    {activeProposalSection === 'budget' && (
-                      <div className="space-y-4 px-4">
-                        <h4 className="font-sans font-bold text-sm text-emerald-800">Project Financial Breakdown</h4>
-                        <table className="w-full text-left text-xs font-sans border-collapse">
-                          <thead>
-                            <tr className="border-b bg-slate-100">
-                              <th className="p-2 font-bold">Item</th>
-                              <th className="p-2 font-bold">Qty</th>
-                              <th className="p-2 font-bold text-right">Cost (NGN)</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {[
-                              { item: 'Production Inputs & Aggregates', qty: 'Bulk', pct: 0.4 },
-                              { item: 'Equipment Infrastructure', qty: 'Units', pct: 0.4 },
-                              { item: 'Transport & Logistics', qty: 'Aggregate', pct: 0.2 },
-                            ].map(({ item, qty, pct }) => (
-                              <tr key={item} className="border-b">
-                                <td className="p-2">{item}</td>
-                                <td className="p-2">{qty}</td>
-                                <td className="p-2 text-right">₦{Math.round((parseInt(formData.requestedAmount || '0') || 0) * pct).toLocaleString()}</td>
-                              </tr>
-                            ))}
-                            <tr className="font-bold">
-                              <td className="p-2" colSpan={2}>Total Estimated Project Cost</td>
-                              <td className="p-2 text-right text-emerald-700">₦{(parseInt(formData.requestedAmount || '0') || 0).toLocaleString()}</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-                    {activeProposalSection === 'annexures' && (
-                      <div className="space-y-4 text-xs font-sans px-4">
-                        <h4 className="font-sans font-bold text-sm text-emerald-800">Verified Payload Annexures</h4>
-                        <div className="space-y-2">
-                          {[
-                            { label: 'NIN Identity Document', value: formData.ninFile?.name },
-                            { label: 'Bank Statement (Updated)', value: topupFiles.bankStatement?.name || formData.bankStatementFile?.name },
-                            { label: 'Land Document', value: topupFiles.landDoc?.name || formData.landDocFile?.name },
-                            { label: 'Farm Photo', value: topupFiles.farmPhoto?.name || formData.farmPhotoFile?.name },
-                          ].map(({ label, value }) => (
-                            <div key={label} className="p-2 rounded border flex items-center justify-between">
-                              <span className="font-semibold text-slate-700">{label}</span>
-                              <span className={`text-[10px] font-bold px-2 py-0.5 rounded font-mono ${value ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-400'}`}>
-                                {value || 'Not uploaded'}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Right: Reviewer Controls */}
-                <div className="lg:col-span-5 card-elevated p-6 space-y-5">
-                  <div>
-                    <h4 className="font-bold text-xs uppercase tracking-wider pb-2 border-b" style={{ borderColor: 'var(--border)' }}>
-                      QA Checks (AI-Assisted)
-                    </h4>
-                    <p className="text-[10px] text-muted-foreground mt-1">Pre-analyzed by the Validation Agent. Toggle to override.</p>
-                  </div>
-                  <div className="space-y-2.5">
-                    {[
-                      { key: 'alignmentClear', label: 'Grant Alignment Clear' },
-                      { key: 'budgetRealistic', label: 'Budget Realistic & Justified' },
-                      { key: 'languageProfessional', label: 'Language & Grammar Professional' },
-                      { key: 'annexuresListed', label: 'All Supporting Annexures Present' },
-                      { key: 'noFabricatedFacts', label: 'No Fabricated Facts / Hallucinations' },
-                    ].map(chk => (
-                      <label key={chk.key} className="flex items-center justify-between p-2 rounded-lg border text-xs font-semibold cursor-pointer hover:bg-muted/30 select-none">
-                        <span>{chk.label}</span>
-                        <input type="checkbox" checked={(checklist as any)[chk.key]} onChange={() => setChecklist(p => ({ ...p, [chk.key]: !(p as any)[chk.key] }))} className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer" />
-                      </label>
-                    ))}
-                  </div>
-                  <div className="space-y-2 pt-2">
-                    <label className="text-[11px] font-bold text-muted-foreground uppercase block">Decision Action</label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {[
-                        { id: 'approve', label: 'Approve', icon: <CheckCircle2 size={16} className="text-emerald-600" />, color: 'border-emerald-500 bg-emerald-50/50 text-emerald-800' },
-                        { id: 'revisions', label: 'Revisions', icon: <FileSignature size={16} className="text-amber-600" />, color: 'border-amber-500 bg-amber-50/50 text-amber-800' },
-                        { id: 'reject', label: 'Reject', icon: <XCircle size={16} className="text-red-600" />, color: 'border-red-500 bg-red-50/50 text-red-800' },
-                      ].map(opt => (
-                        <button key={opt.id} type="button" onClick={() => setProposalDecision(opt.id as any)}
-                          className={`p-2.5 border rounded-lg text-center flex flex-col items-center justify-center gap-1 transition-all ${proposalDecision === opt.id ? `${opt.color} shadow-sm ring-1 ring-current/20` : 'hover:bg-muted/40'}`}>
-                          {opt.icon}
-                          <span className="text-[10px] font-bold">{opt.label}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-bold text-muted-foreground uppercase" htmlFor="comments">Reviewer Comments</label>
-                    <textarea id="comments" rows={3} className="input-base text-xs" value={proposalComments} onChange={e => setProposalComments(e.target.value)} placeholder="Add your review notes here…" />
-                  </div>
-                  <button type="button" onClick={handleProposalReview} disabled={isSubmittingReview}
-                    className={`w-full py-2.5 rounded-lg text-xs font-bold text-white transition-all shadow-md flex items-center justify-center gap-1.5 ${
-                      isSubmittingReview ? 'bg-slate-400 cursor-wait' :
-                      proposalDecision === 'approve' ? 'bg-emerald-600 hover:bg-emerald-700' :
-                      proposalDecision === 'revisions' ? 'bg-amber-600 hover:bg-amber-700' :
-                      'bg-red-600 hover:bg-red-700'}`}>
-                    {isSubmittingReview ? <><Loader2 size={14} className="animate-spin" /> Submitting…</> : <>Submit Review Decision <ArrowRight size={13} /></>}
-                  </button>
-                </div>
-              </div>
-            </div>
+            <ProposalReviewScreen
+              reviewError={reviewError}
+              activeProposalSection={activeProposalSection}
+              setActiveProposalSection={setActiveProposalSection}
+              formData={formData}
+              bodyData={bodyData}
+              selectedGrantId={selectedGrantId}
+              topupFiles={topupFiles}
+              checklist={checklist}
+              setChecklist={setChecklist}
+              proposalDecision={proposalDecision}
+              setProposalDecision={setProposalDecision}
+              proposalComments={proposalComments}
+              setProposalComments={setProposalComments}
+              handleProposalReview={handleProposalReview}
+              isSubmittingReview={isSubmittingReview}
+            />
           )}
 
           {/* ══════════════════════════════════════════════════
               SCREEN 4 — REJECTION & APPEAL (task_specialist_reviews_rejection)
           ══════════════════════════════════════════════════ */}
           {activeTab === 4 && (
-            <div className="max-w-5xl mx-auto space-y-6">
-              <div>
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-800 animate-pulse">
-                  Screen 4 — Rejection & Appeal
-                </span>
-                <h2 className="text-xl font-bold mt-1">Application Rejected by Portal</h2>
-                <p className="text-sm text-muted-foreground">
-                  BPMN: <code className="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-xs font-mono">task_specialist_reviews_rejection</code> — decision POSTs to <code className="bg-slate-100 px-1 rounded font-mono text-[10px]">{PORTAL_URL}</code>
-                </p>
-              </div>
-
-              {appealError && (
-                <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg flex items-center gap-2">
-                  <XCircle size={14} /> {appealError}
-                </div>
-              )}
-
-              {/* Rejection Summary */}
-              <div className="card-elevated p-6 border-l-4 border-red-500 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-red-600 font-mono">RPA Portal Log Scraper Output</span>
-                    <h3 className="font-bold text-base mt-1" style={{ color: 'var(--foreground)' }}>
-                      {selectedGrantId || (matchedGrants[0]?.grantName) || 'Selected Grant'}
-                    </h3>
-                    <p className="text-xs text-muted-foreground">
-                      Rejection Reference: <span className="font-mono font-bold">REJ-{safeStr(bodyData.jobId) || appRef || 'pending'}</span>
-                    </p>
-                  </div>
-                  <div className="p-3 bg-red-50 text-red-700 rounded-lg flex flex-col items-center font-semibold">
-                    <span className="text-2xl font-bold font-mono">
-                      {bodyData.recommendations?.recoverabilityScore ?? bodyData.overallEligibilityScore ?? '—'} / 10
-                    </span>
-                    <span className="text-[9px] uppercase font-bold tracking-wider text-red-600">Recoverability</span>
-                  </div>
-                </div>
-                <div className="p-3.5 bg-red-50/50 text-red-800 text-xs rounded-lg border border-red-200 leading-relaxed font-mono">
-                  <strong>RPA Scraped Reason:</strong> "{safeStr(bodyData.rejectionResponse || bodyData.analystNarrative) || 'No rejection reason captured by the RPA scraper yet.'}"
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* AI Recommendation */}
-                <div className="card-elevated p-5 space-y-4">
-                  <h4 className="font-bold text-xs uppercase tracking-wider pb-2 border-b flex items-center gap-1.5" style={{ borderColor: 'var(--border)' }}>
-                    <Sparkles size={14} className="text-emerald-600" /> AI Appeal Recommendation
-                  </h4>
-                  <div className="space-y-3 text-xs leading-relaxed text-slate-700 dark:text-slate-300">
-                    <p>{safeStr(bodyData.analystNarrative) || 'The Validation Agent has assessed the rejection. Review the suggested grounds below before deciding whether to file an appeal.'}</p>
-                    <div className="space-y-1.5 font-semibold">
-                      <strong className="block text-slate-600">Profile gaps (from pipeline):</strong>
-                      {safeArr(bodyData.profileGaps2).length > 0 ? (
-                        <ul className="list-disc pl-5 space-y-1">
-                          {safeArr(bodyData.profileGaps2).map((gap: string, i: number) => <li key={i}>{gap}</li>)}
-                        </ul>
-                      ) : (
-                        <p className="italic text-muted-foreground font-normal">No profile gaps surfaced.</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Specialist Action */}
-                <div className="card-elevated p-5 space-y-4">
-                  <h4 className="font-bold text-xs uppercase tracking-wider pb-2 border-b" style={{ borderColor: 'var(--border)' }}>
-                    Specialist Action Panel
-                  </h4>
-                  <div className="space-y-2">
-                    {[
-                      { id: 'appeal', label: 'File Appeal', sub: 'Routes to task_prepare_appeal' },
-                      { id: 'retry', label: 'Accept Rejection, Try Different Grant', sub: 'Loops back to task_present_options' },
-                      { id: 'close', label: 'Accept Rejection, Close Application', sub: 'Ends pipeline execution' },
-                    ].map(opt => (
-                      <label key={opt.id} className="flex items-center gap-2.5 p-3 rounded-lg border text-xs font-semibold cursor-pointer hover:bg-muted/30 select-none">
-                        <input type="radio" name="appealAction" checked={appealAction === opt.id as any} onChange={() => setAppealAction(opt.id as any)} />
-                        <div>
-                          <span className="block">{opt.label}</span>
-                          <span className="text-[10px] text-muted-foreground font-normal">{opt.sub}</span>
-                        </div>
-                      </label>
-                    ))}
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[11px] font-bold text-muted-foreground uppercase" htmlFor="actionNotes">Notes / Directives</label>
-                    <textarea id="actionNotes" rows={3} className="input-base text-xs" value={appealNotes} onChange={e => setAppealNotes(e.target.value)} placeholder="Add specialist directives here…" />
-                  </div>
-                  <button type="button" onClick={handleAppealDecision} disabled={isSubmittingAppeal}
-                    className={`w-full py-2.5 rounded-lg text-xs font-bold text-white transition-all shadow-md flex items-center justify-center gap-1.5 ${
-                      isSubmittingAppeal ? 'bg-slate-400 cursor-wait' :
-                      appealAction === 'appeal' ? 'bg-blue-600 hover:bg-blue-700' :
-                      appealAction === 'retry' ? 'bg-amber-600 hover:bg-amber-700' :
-                      'bg-red-600 hover:bg-red-700'}`}>
-                    {isSubmittingAppeal ? <><Loader2 size={14} className="animate-spin" /> Submitting…</> : <>Submit Decision <ArrowRight size={13} /></>}
-                  </button>
-                </div>
-              </div>
-            </div>
+            <AppealScreen
+              appealError={appealError}
+              selectedGrantId={selectedGrantId}
+              matchedGrants={matchedGrants}
+              bodyData={bodyData}
+              appRef={appRef}
+              appealAction={appealAction}
+              setAppealAction={setAppealAction}
+              appealNotes={appealNotes}
+              setAppealNotes={setAppealNotes}
+              handleAppealDecision={handleAppealDecision}
+              isSubmittingAppeal={isSubmittingAppeal}
+            />
           )}
 
         </div>
