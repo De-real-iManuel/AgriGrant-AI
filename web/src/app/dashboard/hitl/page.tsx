@@ -18,7 +18,7 @@ import {
   RefreshCw,
   Trash2,
   User,
-  Map,
+  Map as MapIcon,
   Shield,
   Briefcase,
   Code,
@@ -909,7 +909,7 @@ export default function HitlSandboxPage() {
                 {intakeStep === 2 && (
                   <div className="space-y-4 animate-in fade-in duration-200">
                     <h3 className="text-base font-bold flex items-center gap-2 pb-2 border-b text-emerald-800" style={{ borderColor: 'var(--border)' }}>
-                      <Map size={18} /> Step 2: Farm Information
+                      <MapIcon size={18} /> Step 2: Farm Information
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
