@@ -37,38 +37,45 @@ We utilize a hybrid AI-RPA architecture to completely abstract the complexity of
 
 ---
 
-## System Architecture
+## System Architecture: The 5-Stage Pipeline
 
-AgriGrant AI is built on a scalable, secure, multi-tenant architecture designed for enterprise-grade reliability.
+AgriGrant AI is built on a scalable, secure, multi-tenant architecture designed for enterprise-grade reliability. The architecture follows a strict **5-Stage Pipeline** across **3 Swimlanes** (Farmer, AI & Automation, and Human Specialist).
 
 ```mermaid
-graph TD
-    subgraph Frontend: Client Interface
-        A[Next.js React Dashboard] -->|Submits Intake Form| B(FastAPI Backend)
-        A -->|SSE Connection| B
-        A -->|Completes HITL Tasks| B
-    end
+sequenceDiagram
+    participant F as 👨‍🌾 Farmer (Next.js Dashboard)
+    participant AI as 🤖 UiPath AI & Automation
+    participant S as 👩‍💼 Human Specialist (HITL Portal)
 
-    subgraph Backend: Core Engine
-        B -->|Saves State| C[(Supabase PostgreSQL)]
-        B -->|Triggers Pipeline| D[UiPath Orchestrator]
-        B -->|Secure Relay| D
-    end
+    Note over F, S: STAGE 1: Discover & Match
+    F->>AI: Submits Farm Profile
+    AI-->>F: Grant Discovery Agent (Scores & Ranks Grants)
+    
+    Note over F, S: STAGE 2: Trust Vault (Document Upload)
+    F->>AI: Uploads NIN, CAC, Bank Statements
+    AI-->>AI: Document Understanding + Eligibility Agent (Extract & Validate)
+    AI-->>F: Updates Trust Score (e.g., 720/1000)
 
-    subgraph Automation: UiPath Agents
-        D -->|Starts Job| E(Grant Matching Agent)
-        E --> F(Proposal Drafting Agent)
-        F --> G(Document Understanding Agent)
-        G -->|Suspends for HITL| H{Webhook to Backend}
-        H -.-> B
-        D -->|Resumes Job| I(Submission RPA Bot)
-        I -->|Scrapes Results| J(Appeals Agent)
-    end
+    Note over F, S: STAGE 3: Proposal Draft
+    AI-->>AI: Proposal Generation Agent (LLM drafts structured proposal)
+    
+    Note over F, S: STAGE 4: Human Review (BPMN HITL)
+    AI->>S: Routes drafted proposal via secure Webhook
+    S->>S: QA Checklist (Grant Alignment, Budget Justification)
+    S-->>AI: Approves / Requests Revisions / Rejects
+
+    Note over F, S: STAGE 5: Submit & Track
+    AI->>AI: Submission & Follow-up Agent (RPA Web Automation)
+    AI-->>F: Updates Live Tracking (Submitted / Under Review / Awarded)
 ```
 
-* **The Engine (UiPath Orchestrator & Studio):** Drives the BPMN pipeline, executes the AI Document Understanding models, and orchestrates the web-scraping and submission bots.
-* **The Brain (FastAPI Python Backend):** Handles complex data routing, orchestrates zero-exposure webhooks between the React frontend and UiPath Orchestrator, and manages the Supabase PostgreSQL database.
-* **The Dashboard (Next.js & React):** A real-time, responsive web application serving as the primary interface for the farmer and the Grant Specialist to interact with the UiPath HITL tasks.
+### The UiPath Brain (`/UiPath-automation`)
+Our automation logic is divided into specialized, modular UiPath Agents:
+1. **Grant Discovery & Matching Agent:** Parses natural language queries and cross-references farmer data against active grant databases.
+2. **Document Understanding Agent:** Extracts and validates compliance data from unstructured PDFs and images (Trust Vault).
+3. **Proposal Generation Agent:** Uses LLMs to structure professional narratives and financial budgets.
+4. **Nigerian AgriGrant Pipeline (BPMN):** The core Orchestrator workflow that manages state and suspends execution to wait for Human-in-the-Loop approvals from the React frontend.
+5. **Submission & Follow-up Agent:** A headless RPA bot that navigates institutional funding portals to automatically fill out forms and upload annexures.
 
 ---
 
