@@ -141,17 +141,26 @@ export default function HitlSandboxPage() {
 
   useEffect(() => {
     const fetchTasks = async () => {
-      // In production, we strictly isolate polling to the farmer's current jobId
-      // If no jobId exists yet (they haven't submitted the onboarding form), we don't fetch anyone else's tasks!
-      if (!jobId) return; 
-
       try {
-        const res = await fetch(`${BACKEND}/api/hitl/tasks?status=Pending&jobId=${jobId}`);
+        const url = jobId 
+          ? `${BACKEND}/api/hitl/actioncenter/pending?tag=${encodeURIComponent(jobId)}`
+          : `${BACKEND}/api/hitl/actioncenter/pending`;
+        const res = await fetch(url);
         if (res.ok) {
           const data = await res.json();
           setPendingTasks(data.tasks || []);
           if (data.count > previousTasksCountRef.current && data.tasks.length > 0) {
             toast.info(`New UiPath task requires human input: ${data.tasks[0]?.title || 'Task'}`);
+            // Auto-jump to the right tab when a new HITL task arrives
+            const TYPE_TO_TAB: Record<string, number> = {
+              'grant-selection': 1,
+              'document-topup': 2,
+              'proposal-review': 3,
+              'appeal': 4,
+            };
+            const newest = data.tasks[0];
+            const targetTab = TYPE_TO_TAB[String(newest?.task_type || '').toLowerCase()];
+            if (targetTab != null) setActiveTab(targetTab);
           }
           previousTasksCountRef.current = data.count;
         }
@@ -194,15 +203,51 @@ export default function HitlSandboxPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const markTaskCompleted = async (decision: string = 'approve', formData: any = null) => {
-    if (jobId && jobId.includes('-')) {
-      const payload = formData ? { decision, formData } : { decision };
-      await fetch(`${BACKEND}/api/hitl/tasks/backend/${jobId}/complete`, {
+  const markTaskCompleted = async (
+    taskType: 'grant-selection' | 'document-topup' | 'proposal-review' | 'appeal',
+    decision: string = 'approve',
+    relayPayload: any = null,
+  ) => {
+    // Find the pending HITL task of this type for the current jobId.
+    // The backend stored task_id as a UUID at /v1/{slug} time and we polled it
+    // into `pendingTasks`. We complete THAT task — not the jobId.
+    const match = pendingTasks.find((t: any) => {
+      const ttype = String(t?.task_type || '').toLowerCase();
+      return ttype === taskType;
+    });
+    const realTaskId = match?.task_id;
+    if (!realTaskId) {
+      console.warn(`[HITL] no pending task of type=${taskType} found — frontend-only step.`);
+      return { ok: false, reason: 'no-pending-task' };
+    }
+    try {
+      // Map our domain decisions to SimpleApprovalApp outcomes.
+      // The Maestro Create App Task node's `action` output reads this value;
+      // anything that isn't a clean rejection is treated as approval downstream.
+      const REJECT_DECISIONS = new Set(['reject', 'close']);
+      const action = REJECT_DECISIONS.has(String(decision).toLowerCase()) ? 'Rejected' : 'Approved';
+      const res = await fetch(`${BACKEND}/api/hitl/actioncenter/complete`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      }).catch(() => {});
-      setPendingTasks(prev => prev.filter(t => t.task_id !== jobId));
+        body: JSON.stringify({
+          taskId: Number(realTaskId),
+          action,
+          // `data` becomes the App outputs in Maestro — populates the variables
+          // you mapped on the Create App Task node (selectedGrantName, uploadedDocumentsJson,
+          // proposalDecision, appealDecision, etc.)
+          data: {
+            taskType,
+            decision,
+            ...(relayPayload || {}),
+          },
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      setPendingTasks(prev => prev.filter((t: any) => t.task_id !== realTaskId));
+      return { ok: res.ok, response: json };
+    } catch (e: any) {
+      console.warn(`[HITL] complete relay failed for ${taskType}:`, e?.message);
+      return { ok: false, error: e?.message };
     }
   };
 
@@ -536,7 +581,7 @@ export default function HitlSandboxPage() {
         },
       };
 
-      await markTaskCompleted('grant_selected', uipathPayload);
+      await markTaskCompleted('grant-selection', 'grant_selected', uipathPayload);
       setActiveTab(2); // Move to Document Top-up
     } catch (err: any) {
       console.warn('Grant confirm failed (proceeding):', err.message);
@@ -588,7 +633,7 @@ export default function HitlSandboxPage() {
         },
       };
 
-      await markTaskCompleted('documents_uploaded', uipathPayload);
+      await markTaskCompleted('document-topup', 'documents_uploaded', uipathPayload);
       setDocSubmitSuccess(true);
       setTimeout(() => setActiveTab(3), 1200);
     } catch (err: any) {
@@ -625,7 +670,7 @@ export default function HitlSandboxPage() {
         },
       };
 
-      await markTaskCompleted(proposalDecision, uipathPayload);
+      await markTaskCompleted('proposal-review', proposalDecision, uipathPayload);
 
       if (proposalDecision === 'approve') {
         setActiveTab(4);
@@ -680,7 +725,7 @@ export default function HitlSandboxPage() {
         },
       };
 
-      await markTaskCompleted(appealAction, uipathPayload);
+      await markTaskCompleted('appeal', appealAction, uipathPayload);
 
       setSseEvents(prev => [...prev, {
         type: `appeal_${appealAction}`,
