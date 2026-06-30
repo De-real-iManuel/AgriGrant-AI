@@ -1,45 +1,109 @@
-# AgriGrant AI - FastAPI Backend
+# AgriGrant AI — FastAPI Backend
 
-This directory contains the Python FastAPI backend for the AgriGrant AI platform, acting as the critical orchestration layer between the Next.js frontend and the UiPath automation pipeline.
+This directory contains the Python FastAPI backend for the AgriGrant AI platform — the secure orchestration layer between the Next.js frontend and the UiPath Maestro pipeline.
 
 ## Purpose and Context
 
-In the context of the AgriGrant AI architecture, the backend serves as the "Brain." While the UiPath agents execute the heavy lifting of document analysis and web automation, they require a secure, reliable intermediary to communicate with the human grant specialists.
+In the AgriGrant AI architecture, the backend is the **PAT-gated proxy** that lets the browser see and act on UiPath Action Center tasks **without ever holding a UiPath credential**.
 
 **Why is this layer necessary?**
-Directly connecting a web frontend to enterprise RPA endpoints (like UiPath Orchestrator) exposes sensitive webhook URLs and pipeline configurations to the public internet. Furthermore, the frontend is stateless and cannot reliably track the asynchronous progress of long-running automation jobs.
+A web frontend should never carry an Orchestrator Personal Access Token. If it did, anyone inspecting the browser could list, mutate, or complete tasks across the entire tenant. By keeping the PAT and `OrganizationUnitId` strictly server-side, this backend:
 
-This backend solves these issues by:
-1. **Providing Zero-Exposure Webhooks:** The frontend communicates only with this backend. The backend securely signs and proxies these requests to UiPath, entirely abstracting the Orchestrator infrastructure.
-2. **Managing State:** It utilizes a Supabase PostgreSQL database to persist pipeline metadata, ensuring that if a user loses connection, their grant application state is perfectly preserved.
-3. **Enforcing Multi-Tenancy:** It dynamically filters incoming webhooks and assigns them to specific session identifiers, guaranteeing that farmers and specialists only access the data assigned to their specific pipeline execution.
+1. **Gates every Orchestrator call** with the right tenant credential.
+2. **Filters tasks by `ExternalTag`** so a farmer only ever sees their own pending HITLs (multi-tenant isolation by design).
+3. **Reshapes the Orchestrator OData responses** into a clean, frontend-friendly envelope (`task_id`, `task_type`, `payload`).
+4. **Persists pipeline metadata** in Supabase (job state, document references, farmer profile) so a dropped browser session never loses context.
 
 ## Core Modules
 
-* `api/hitl.py`: Manages the Human-in-the-Loop tasks. It receives payloads from UiPath when an agent suspends a job, stores the task, and serves it to the frontend via Server-Sent Events (SSE).
-* `api/documents.py`: Handles secure document uploads, acting as a proxy for the UiPath Document Understanding models to ingest farmer compliance files.
-* `services/database_service.py`: Interfaces with the Supabase PostgreSQL instance to manage user profiles, application state, and task metadata.
+```
+backend/
+├── api/
+│   ├── hitl.py          # Action Center proxy — list pending, get one, complete
+│   ├── pipeline.py      # POST /pipeline/submit (validates + triggers Maestro)
+│   ├── documents.py     # Document upload → Supabase storage
+│   ├── chat.py          # LLM advisor (OpenRouter) for farmer Q&A
+│   ├── farmer.py        # Farmer profile CRUD
+│   └── health.py        # Liveness + Orchestrator connectivity probe
+├── uipath/
+│   ├── auth.py          # PAT-as-bearer (no OAuth dance for hackathon speed)
+│   ├── orchestrator.py  # Job triggering, Tasks API client
+│   └── agents.py        # Per-agent input/output schemas
+├── services/
+│   ├── database_service.py   # Supabase persistence layer
+│   ├── pipeline_service.py   # Composes agent calls + Maestro triggers
+│   └── event_broadcaster.py  # SSE for live pipeline progress
+└── main.py              # FastAPI app, /v1 router mount, CORS
+```
+
+### `api/hitl.py` — the Action Center proxy
+
+Four routes, all under `/v1/api/hitl`:
+
+| Method | Path | What it does |
+|---|---|---|
+| `GET` | `/actioncenter/pending?tag={jobId}` | Lists Unassigned/Pending Action Center tasks where `ExternalTag = {jobId}`. Reshapes each into `{task_id, task_type, payload, …}` so the frontend doesn't need to parse OData. |
+| `GET` | `/actioncenter/task/{id}` | Fetches one task by Orchestrator Id — used for deep-links and debugging. |
+| `POST` | `/actioncenter/complete` | Body: `{taskId, action, data}`. Calls Orchestrator's `tasks/AppTasks/CompleteAppTask` — Maestro auto-resumes the moment this succeeds. |
+| `GET` | `/health` | Hits `/odata/Tasks?$top=1` with the PAT — proves the credential is alive. |
+
+**No webhook receivers, no Supabase HITL table, no SSE for HITL.** Maestro Action Center is the truth source; this proxy is stateless with respect to HITL.
 
 ## Technical Stack
 
-* **Framework:** FastAPI (Python 3.10+)
-* **Database:** Supabase (PostgreSQL)
-* **Migrations:** Alembic
-* **Server:** Uvicorn
+| Concern | Choice |
+|---|---|
+| Framework | FastAPI (Python 3.11+) |
+| HTTP client | `httpx` async |
+| Database | Supabase (Postgres) for pipeline state, document refs, farmer profile |
+| LLM | OpenRouter (`google/gemini-2.0-flash`) for the chat advisor |
+| Real-time | Server-Sent Events for pipeline progress (not for HITL — HITL is poll-based) |
+| Auth | PAT bearer + `X-UIPATH-OrganizationUnitId` header (server-side only) |
+| Server | Uvicorn |
+
+## Environment Variables
+
+Required in `.env` (see `.env.example`):
+
+```env
+# UiPath Orchestrator
+UIPATH_PAT=rt_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+UIPATH_ORGANIZATION=hackathon26_384
+UIPATH_TENANT=DefaultTenant
+UIPATH_FOLDER_ID=3081039
+UIPATH_APPROVAL_APP_KEY=132cc7bb-f01c-47fa-8f5e-b77961d33ca2
+
+# Supabase
+SUPABASE_URL=https://xxxxx.supabase.co
+SUPABASE_SERVICE_KEY=eyJhbGc...
+
+# OpenRouter (chat advisor)
+OPENROUTER_API_KEY=sk-or-v1-xxxxxxxx
+```
 
 ## Setup Instructions
 
-1. Create a virtual environment:
+1. **Create a virtual environment**
    ```bash
    python -m venv venv
-   source venv/bin/activate
+   source venv/bin/activate          # Windows: .\venv\Scripts\activate
    ```
-2. Install dependencies:
+2. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    ```
-3. Configure environment variables in a `.env` file (Supabase credentials, UiPath webhook keys).
-4. Run the development server:
+3. **Configure environment variables**
+   Copy `.env.example` → `.env` and fill in the values above.
+4. **Run the development server**
    ```bash
    uvicorn main:app --reload --port 8000
    ```
+5. **Probe Orchestrator connectivity**
+   ```bash
+   curl http://localhost:8000/v1/api/hitl/health
+   # → {"ok": true, "orchestrator_status": 200, ...}
+   ```
+
+## How a HITL roundtrip works (one paragraph)
+
+The Maestro process hits a `Create App Task` node and pauses. The task lands in Action Center tagged with the farmer's `jobId`. The frontend polls `GET /v1/api/hitl/actioncenter/pending?tag={jobId}` every 10s and renders the appropriate screen based on the task's `taskType` field. When the farmer submits a decision, the frontend POSTs `/v1/api/hitl/actioncenter/complete` with `{taskId, action: "Approved"|"Rejected", data: {…}}`. The backend forwards this to Orchestrator's `CompleteAppTask` endpoint. Maestro's blocked instance resumes within seconds, and the App outputs populate the downstream variables the next agent reads.
