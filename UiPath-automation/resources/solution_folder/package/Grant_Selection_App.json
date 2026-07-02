@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Grant Selection App",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "90512d0f-8577-4e6e-aefc-97dbb9232092",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "Grant Selection App",
+      "description": null
+    },
+    "locks": [],
+    "key": "7584d0e4-34c0-431d-bb5c-bcb53c10eabe"
+  }
+}

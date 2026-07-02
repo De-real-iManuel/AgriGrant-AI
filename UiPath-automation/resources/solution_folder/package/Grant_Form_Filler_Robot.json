@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Grant Form Filler Robot",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "44838a6e-9f3b-468f-929f-7b54641e38c6",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "Grant Form Filler Robot",
+      "description": null
+    },
+    "locks": [],
+    "key": "f7c69ee2-efff-4367-a03f-ef59197d21ae"
+  }
+}

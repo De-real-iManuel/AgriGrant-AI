@@ -1,0 +1,45 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Grant Discovery \u0026 Matching Agent",
+    "kind": "process",
+    "type": "agent",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "c1e56a84-99a0-4189-85fc-fe0579ec01ca",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "name": "Grant Discovery \u0026 Matching Agent",
+        "kind": "package"
+      }
+    ],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "type": "Agent",
+      "name": "Grant Discovery \u0026 Matching Agent",
+      "package": {
+        "key": "3fbd883c-8452-4e86-83bf-7f6ed17ea1be"
+      },
+      "packageName": "Solution.1.agent.Grant.Discovery._.Matching.Agent",
+      "inputArguments": "{}",
+      "hiddenForAttendedUser": false,
+      "alwaysRunning": false,
+      "autoStartProcess": false,
+      "targetFrameworkValue": "Portable",
+      "agentMemory": false,
+      "retentionAction": "Delete",
+      "retentionPeriod": 30,
+      "staleRetentionAction": "Delete",
+      "staleRetentionPeriod": 180,
+      "tags": []
+    },
+    "locks": [],
+    "key": "39c8b0e4-969e-497f-9c1d-539b313cb0d8"
+  }
+}

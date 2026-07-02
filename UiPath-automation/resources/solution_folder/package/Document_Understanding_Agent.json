@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Document Understanding Agent",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "5a156755-7fa2-4329-9a3a-d1294e326746",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "Document Understanding Agent"
+    },
+    "locks": [],
+    "key": "7feed342-ed86-4f19-bc2c-b3fe8c66d5e6"
+  }
+}

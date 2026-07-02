@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "MemorySpace",
+    "kind": "memorySpace",
+    "apiVersion": "ecs.uipath.com/v2",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "MemorySpace",
+      "description": null
+    },
+    "locks": [],
+    "key": "1aafcc07-52df-428b-b519-9d566e2a7d78"
+  }
+}

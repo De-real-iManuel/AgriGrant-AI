@@ -1,0 +1,45 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Document Understanding Agent",
+    "kind": "process",
+    "type": "agent",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "5a156755-7fa2-4329-9a3a-d1294e326746",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "name": "Document Understanding Agent",
+        "kind": "package"
+      }
+    ],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "type": "Agent",
+      "name": "Document Understanding Agent",
+      "package": {
+        "key": "7feed342-ed86-4f19-bc2c-b3fe8c66d5e6"
+      },
+      "packageName": "Solution.1.agent.Document.Understanding.Agent",
+      "inputArguments": "{}",
+      "hiddenForAttendedUser": false,
+      "alwaysRunning": false,
+      "autoStartProcess": false,
+      "targetFrameworkValue": "Portable",
+      "agentMemory": false,
+      "retentionAction": "Delete",
+      "retentionPeriod": 30,
+      "staleRetentionAction": "Delete",
+      "staleRetentionPeriod": 180,
+      "tags": []
+    },
+    "locks": [],
+    "key": "78a854f0-a25d-41d3-bd68-977922dddc72"
+  }
+}

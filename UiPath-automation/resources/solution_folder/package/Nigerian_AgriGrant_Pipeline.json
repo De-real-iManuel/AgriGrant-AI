@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Nigerian AgriGrant Pipeline",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "d19ee504-5572-4f9d-805a-3ec5e35c2b32",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "Nigerian AgriGrant Pipeline"
+    },
+    "locks": [],
+    "key": "14a0b38d-fad6-41aa-b963-3e85150f13f9"
+  }
+}

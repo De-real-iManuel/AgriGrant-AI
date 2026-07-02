@@ -1,0 +1,63 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "AgriGrant API",
+    "kind": "process",
+    "type": "api",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "990dbee8-3d5f-4307-ba89-2aa5f6559421",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "name": "AgriGrant API",
+        "kind": "package"
+      }
+    ],
+    "runtimeDependencies": [
+      {
+        "bindingType": "Connection",
+        "bindingKey": "",
+        "bindingValues": {
+          "connectionId": {
+            "defaultValue": "",
+            "isExpression": false
+          }
+        },
+        "bindingMetadata": {
+          "activityName": "Send confirmation email via SendGrid",
+          "bindingsVersion": "2.2",
+          "solutionsSupport": "true",
+          "isSolutionResource": true
+        },
+        "resourceKind": "Connection",
+        "resourceType": "uipath-uipath-http"
+      }
+    ],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "type": "Api",
+      "name": "AgriGrant API",
+      "package": {
+        "key": "01ba962e-2f25-46b1-8cc8-51aea81261b0"
+      },
+      "packageName": "Solution.1.api.AgriGrant.API",
+      "inputArguments": "{}",
+      "hiddenForAttendedUser": false,
+      "alwaysRunning": false,
+      "autoStartProcess": false,
+      "targetFrameworkValue": "Portable",
+      "retentionAction": "Delete",
+      "retentionPeriod": 30,
+      "staleRetentionAction": "Delete",
+      "staleRetentionPeriod": 180,
+      "tags": []
+    },
+    "locks": [],
+    "key": "8e1d6dfa-4cbd-4e89-8ced-9bf5abfd1f4a"
+  }
+}

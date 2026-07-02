@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Submission \u0026 Follow-up Agent",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "47d5dd08-472c-4b6c-af02-58275cea617b",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "Submission \u0026 Follow-up Agent"
+    },
+    "locks": [],
+    "key": "f7422314-9d62-4862-b7c2-87ac3ae55f63"
+  }
+}

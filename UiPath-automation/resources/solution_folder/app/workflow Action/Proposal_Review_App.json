@@ -1,0 +1,45 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Proposal Review App",
+    "kind": "app",
+    "type": "workflow Action",
+    "apiVersion": "apps.uipath.com/v1",
+    "projectKey": "b4886c90-964d-4e83-ac80-08550108dfc2",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "name": "Proposal Review App",
+        "kind": "appVersion"
+      },
+      {
+        "name": "Proposal Review App",
+        "kind": "process"
+      }
+    ],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "Proposal Review App",
+      "description": null,
+      "type": "workflow Action",
+      "version": null,
+      "appSystemName": null,
+      "appVersionRef": {
+        "key": "bb117204-b9c2-4995-bc91-4153a391a22b"
+      },
+      "codeBehindProcess": {
+        "key": "4955c99c-611e-48f2-b309-35bad4cdefbe"
+      },
+      "actionSchema": null,
+      "manualActivationActions": null
+    },
+    "locks": [],
+    "key": "fea769c8-c7de-492d-b076-778a7e659fe1"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "SendGrid",
+    "kind": "connection",
+    "type": "uipath-twilio-sendgrid",
+    "apiVersion": "integrationservice.uipath.com/v1",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "connectorName": "SendGrid",
+      "name": "SendGrid",
+      "description": null,
+      "authenticationType": "AuthenticateAfterDeployment",
+      "connectorVersion": "1.1.132",
+      "connectorKey": "uipath-twilio-sendgrid",
+      "pollingInterval": 5
+    },
+    "locks": [],
+    "key": "2e4db73f-c2f3-44cd-882e-503032b65556"
+  }
+}

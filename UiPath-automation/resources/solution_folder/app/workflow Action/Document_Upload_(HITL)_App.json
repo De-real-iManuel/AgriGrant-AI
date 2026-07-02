@@ -1,0 +1,45 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Document Upload (HITL) App",
+    "kind": "app",
+    "type": "workflow Action",
+    "apiVersion": "apps.uipath.com/v1",
+    "projectKey": "ef3a1a4d-7b05-43ec-83a9-35a760acee4a",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "name": "Document Upload (HITL) App",
+        "kind": "appVersion"
+      },
+      {
+        "name": "Document Upload (HITL) App",
+        "kind": "process"
+      }
+    ],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "Document Upload (HITL) App",
+      "description": "",
+      "type": "workflow Action",
+      "version": null,
+      "appSystemName": null,
+      "appVersionRef": {
+        "key": "20f90983-e34d-45b5-ad9e-46d6ac3ae105"
+      },
+      "codeBehindProcess": {
+        "key": "055c79a3-7a09-4983-aff1-e174cf67e72a"
+      },
+      "actionSchema": null,
+      "manualActivationActions": null
+    },
+    "locks": [],
+    "key": "e39258b6-6b51-4c03-873d-047706857a31"
+  }
+}

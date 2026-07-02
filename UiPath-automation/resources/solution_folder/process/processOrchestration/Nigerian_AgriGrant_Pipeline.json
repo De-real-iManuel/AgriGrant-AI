@@ -1,0 +1,44 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Nigerian AgriGrant Pipeline",
+    "kind": "process",
+    "type": "processOrchestration",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "d19ee504-5572-4f9d-805a-3ec5e35c2b32",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "name": "Nigerian AgriGrant Pipeline",
+        "kind": "package"
+      }
+    ],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "type": "ProcessOrchestration",
+      "name": "Nigerian AgriGrant Pipeline",
+      "package": {
+        "key": "14a0b38d-fad6-41aa-b963-3e85150f13f9"
+      },
+      "packageName": "Solution.1.agentic.Nigerian.AgriGrant.Pipeline",
+      "inputArguments": "{}",
+      "hiddenForAttendedUser": false,
+      "alwaysRunning": false,
+      "autoStartProcess": false,
+      "targetFrameworkValue": "Portable",
+      "retentionAction": "Delete",
+      "retentionPeriod": 30,
+      "staleRetentionAction": "Delete",
+      "staleRetentionPeriod": 180,
+      "tags": []
+    },
+    "locks": [],
+    "key": "865c2645-7e1f-46b7-9081-fb762449addc"
+  }
+}

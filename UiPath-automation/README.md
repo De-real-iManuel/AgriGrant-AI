@@ -1,8 +1,8 @@
-# The UiPath Brain: A Nine-Project Maestro Solution
+# The UiPath Brain: An Eleven-Project Maestro Solution
 
-This directory is the heart of AgriGrant AI. Every reasoning step, every state transition, every human pause-point, every screen-level interaction with an external portal happens here. The Python backend and the Next.js frontend are deliberately thin — they exist to ferry traffic to and from the UiPath platform, not to carry the business logic. **The business logic lives in this folder.**
+This directory is the heart of AgriGrant AI. Every reasoning step, every state transition, every human pause-point, every screen-level interaction with an external portal happens here. The Python backend and the Next.js frontend are deliberately thin — they exist to ferry traffic to and from the UiPath platform. **The core orchestration, automation, and reasoning logic lives in this folder.**
 
-The solution comprises **nine distinct UiPath projects**, each chosen as the correct primitive for its responsibility. We did not bend any of them. A Maestro process orchestrates because that is what Maestro is for. An Agent reasons because that is what Agents are for. The cross-platform RPA bot fills web forms because that is what unattended automation is for. The decisions are conscious.
+The solution comprises **eleven distinct UiPath projects**, each chosen as the correct primitive for its responsibility. We did not bend any of them. A Maestro process orchestrates because that is what Maestro is for. An Agent reasons because that is what Agents are for. The cross-platform RPA bot fills web forms because that is what unattended automation is for. The decisions are conscious.
 
 ---
 
@@ -10,17 +10,19 @@ The solution comprises **nine distinct UiPath projects**, each chosen as the cor
 
 | # | Project | Type | Role in one sentence |
 |---|---|---|---|
-| 1 | **Nigerian AgriGrant Pipeline** | `ProcessOrchestration` (Maestro BPMN) | The conductor — the only project that knows how the other eight connect. |
+| 1 | **Nigerian AgriGrant Pipeline** | `ProcessOrchestration` (Maestro BPMN) | The conductor — the only project that knows how the other ten connect. |
 | 2 | **Grant Discovery & Matching Agent** | `Agent` (Coded Agent) | Ranks live Nigerian grants against the farmer's profile and emits matchScore + matchReason per grant. |
 | 3 | **Eligibility & Risk Assessment Agent** | `Agent` (Coded Agent) | Scores the farmer's compliance posture for the *selected* grant and emits a missing-documents list. |
 | 4 | **Document Understanding Agent** | `Agent` (Coded Agent) | Extracts entities from uploaded NIN, CAC, bank statement, land doc — and cross-validates them. |
 | 5 | **Proposal Generation Agent** | `Agent` (Coded Agent) | Drafts a full institutional-grade business proposal in the donor's preferred linguistic register. |
 | 6 | **Submission & Follow-up Agent** | `Agent` (Coded Agent) | Plans the submission, drafts farmer-facing notifications, and on rejection drafts the appeal package. |
 | 7 | **Grant Form Filler Robot** | `Process` (CrossPlatform, Unattended) | Headless RPA bot — 35 input arguments — that physically fills the institutional portal form. |
-| 8 | **SimpleApprovalApp** | `WebApp` (UiPath Apps) | The Action Center carrier app for all four HITL checkpoints. |
-| 9 | **AgriGrant API** | `Api` (UiPath API Project) | Internal API surface exposing pipeline + agent operations to the external FastAPI backend. |
+| 8 | **Grant Selection App** | `WebApp` (UiPath Apps) | Action Center app for HITL #1 — farmer selects which grant to pursue. |
+| 9 | **Document Upload (HITL) App** | `WebApp` (UiPath Apps) | Action Center app for HITL #2 — farmer uploads missing compliance documents. |
+| 10 | **Proposal Review App** | `WebApp` (UiPath Apps) | Action Center app for HITL #3 — farmer approves, revises, or rejects the drafted proposal. |
+| 11 | **AgriGrant API** | `Api` (UiPath API Project) | Internal API surface exposing pipeline + agent operations to the external FastAPI backend. |
 
-All nine deploy to a single Orchestrator folder on tenant `hackathon26_384/DefaultTenant`.
+All eleven deploy to a single Orchestrator folder on tenant `hackathon26_384/DefaultTenant`.
 
 ---
 
@@ -38,14 +40,14 @@ flowchart TB
     Start([Start: Farmer profile received]) --> Init[Initialize: vars.jobId, vars.sessionId]
     Init --> Discovery["Grant Discovery & Matching Agent<br/>output: matchedGrants[]"]
     Discovery --> NotifyDiscovery[Notify backend: Discovery done]
-    NotifyDiscovery --> HITL1{"🔒 HITL #1<br/>Create App Task: Grant Selection<br/>SimpleApprovalApp + ExternalTag=jobId"}
+    NotifyDiscovery --> HITL1{"🔒 HITL #1<br/>Create App Task: Grant Selection<br/>Grant Selection App + ExternalTag=jobId"}
     HITL1 --> Eligibility["Eligibility & Risk Assessment Agent<br/>input: selectedGrantName<br/>output: missingDocuments[], riskScore"]
     Eligibility --> CheckDocs{Missing docs?}
-    CheckDocs -->|Yes| HITL2{"🔒 HITL #2<br/>Create App Task: Document Top-up"}
+    CheckDocs -->|Yes| HITL2{"🔒 HITL #2<br/>Create App Task: Document Top-up<br/>Document Upload (HITL) App"}
     CheckDocs -->|No| DocUnderstanding["Document Understanding Agent<br/>extracts NIN/CAC/Bank/Land"]
     HITL2 --> DocUnderstanding
     DocUnderstanding --> Proposal["Proposal Generation Agent<br/>output: proposalDraft, budget"]
-    Proposal --> HITL3{"🔒 HITL #3<br/>Create App Task: Proposal Review"}
+    Proposal --> HITL3{"🔒 HITL #3<br/>Create App Task: Proposal Review<br/>Proposal Review App"}
     HITL3 --> Decision{Proposal decision?}
     Decision -->|Revise| Proposal
     Decision -->|Reject| EndRejected([End: Rejected by reviewer])
@@ -65,7 +67,7 @@ flowchart TB
 |---|---|
 | All four HITLs use **native `Actions.HITL` activities** (Create App Task), not SendTask + CatchEvent | A SendTask is fire-and-forget — it does not block the instance. `Actions.HITL` genuinely suspends the Maestro instance, verifiable in the Instances view. This is the single biggest difference between a real orchestration and a demo. |
 | **`ExternalTag = vars.jobId`** on every HITL | Lets the FastAPI backend filter pending tasks per-farmer with `?tag={jobId}`, achieving multi-tenant isolation at the platform level rather than the app level. |
-| All HITLs bind to **one Action Center app** (SimpleApprovalApp), differentiated by `taskType` input | Avoids building four near-identical Apps. The Next.js dashboard dispatches to the right screen based on `taskType`. |
+| **Three dedicated Action Center apps** — one per major HITL checkpoint | Each app is tailored to its decision type (grant selection, document upload, proposal review). The Next.js dashboard dispatches to the correct screen based on the app invoked. |
 | **Mixed compute** — Agents and Robot side-by-side as activities | The BPMN does not care whether the next step is a reasoning model or a screen-scraper. Maestro abstracts the compute type away from the workflow. |
 | **Variables carry state across pauses** — `selectedGrantName`, `missingDocuments`, `proposalDraft`, `appealDecision` | Each HITL's `CompleteAppTask` data merges back into the BPMN variable scope. The downstream agent reads from `vars.*` without knowing a pause happened. |
 
@@ -175,7 +177,7 @@ flowchart TB
 
 ### Input arguments (35 total — comprehensive)
 
-The robot is parameterised against the *entire* farmer profile so that one bot serves every grant portal we onboard:
+The robot is parameterised against the *entire* farmer profile for the configured target portal:
 
 | Group | Arguments |
 |---|---|
@@ -196,44 +198,71 @@ The robot is parameterised against the *entire* farmer profile so that one bot s
 | `out_screenshotPath` | Path to the success-page screenshot for audit |
 | `out_errorMessage` | Populated on failure for HITL #4 escalation |
 
-The robot navigates the configured `in_targetPortalURL`, completes a multi-page form, uploads the four document files, accepts the declaration, submits, captures the success page, and emits the reference number.
+The robot navigates the configured `in_targetPortalURL`, completes a multi-page form, uploads the four document files, accepts the declaration, submits, captures the success page, and emits the reference number. Each new portal requires portal-specific adapter logic (selectors, field mapping, upload rules, authentication handling).
 
 ---
 
-## 8. SimpleApprovalApp (Action Center Web App)
+## 8. Grant Selection App (Action Center Web App)
 
 * **Type:** `WebApp` (UiPath Apps)
-* **Role:** The blocker. The carrier. The queue.
+* **Role:** HITL #1 — the farmer chooses which grant to pursue.
 
-This app is deliberately minimal because the rich UI lives in the farmer's Next.js dashboard. SimpleApprovalApp's only responsibilities are:
+This app is deliberately minimal because the rich UI lives in the farmer's Next.js dashboard. Its responsibilities are:
 
 1. **Block the Maestro instance** when invoked from `Actions.HITL`.
-2. **Carry inputs** that the web frontend reads to know what kind of decision to render.
-3. **Emit outputs** that the BPMN reads to drive the next branch.
+2. **Carry inputs** (`matchedGrants[]`, `matchScores`, `matchReasons`) that the web frontend reads to render grant-selection cards.
+3. **Emit outputs** (`selectedGrantName`) that the BPMN reads to drive the next branch.
 
 ### App contract
 
-| App Input | Type | Set by BPMN to |
+| App Input | Type | Set by BPMN |
 |---|---|---|
 | `sessionId` / `jobId` | string | `=vars.jobId` |
-| `taskType` | string | literal — one of `grant-selection`, `document-topup`, `proposal-review`, `appeal` |
-| `payload` | string (JSON) | `JSON.stringify` of the variables that screen needs |
+| `payload` | string (JSON) | `JSON.stringify` of `matchedGrants[]` |
 
 | App Output | Mapped to BPMN variable |
 |---|---|
-| `selectedGrantName` | `vars.selectedGrantName` (HITL #1) |
-| `uploadedDocumentsJson` | `vars.uploadedDocumentsJson` (HITL #2) |
-| `proposalDecision` | `vars.proposalDecision` (HITL #3) — `approve` / `revise` / `reject` |
-| `appealDecision` | `vars.appealDecision` (HITL #4) — `appeal` / `close` |
-
-| App Outcome | When |
-|---|---|
-| `Approved` | Farmer/specialist submits a positive decision |
-| `Rejected` | Farmer/specialist explicitly rejects |
+| `selectedGrantName` | `vars.selectedGrantName` |
 
 ---
 
-## 9. AgriGrant API (UiPath API Project)
+## 9. Document Upload (HITL) App (Action Center Web App)
+
+* **Type:** `WebApp` (UiPath Apps)
+* **Role:** HITL #2 — the farmer uploads missing compliance documents.
+
+### App contract
+
+| App Input | Type | Set by BPMN |
+|---|---|---|
+| `sessionId` / `jobId` | string | `=vars.jobId` |
+| `payload` | string (JSON) | `JSON.stringify` of `missingDocuments[]` |
+
+| App Output | Mapped to BPMN variable |
+|---|---|
+| `uploadedDocumentsJson` | `vars.uploadedDocumentsJson` |
+
+---
+
+## 10. Proposal Review App (Action Center Web App)
+
+* **Type:** `WebApp` (UiPath Apps)
+* **Role:** HITL #3 — the farmer approves, revises, or rejects the drafted proposal.
+
+### App contract
+
+| App Input | Type | Set by BPMN |
+|---|---|---|
+| `sessionId` / `jobId` | string | `=vars.jobId` |
+| `payload` | string (JSON) | `JSON.stringify` of `proposalDraft` + `budgetBreakdown` |
+
+| App Output | Mapped to BPMN variable |
+|---|---|
+| `proposalDecision` | `vars.proposalDecision` — `approve` / `revise` / `reject` |
+
+---
+
+## 11. AgriGrant API (UiPath API Project)
 
 * **Type:** `Api`
 * **Role:** Internal API surface that the external FastAPI backend can call as a structured contract — rather than hand-rolling Orchestrator OData calls.
@@ -244,12 +273,12 @@ This is the project that lets us evolve the orchestration internals (rename a va
 
 ## The Four HITL Checkpoints, Summarised
 
-| # | Where | Decision required | Inputs to the human | Output back to pipeline |
-|---|---|---|---|---|
-| 1 | After Grant Discovery | Which grant should we pursue? | `matchedGrants[]` with scores and reasons | `selectedGrantName` |
-| 2 | After Eligibility | Upload the missing documents | `missingDocuments[]` | `uploadedDocumentsJson` |
-| 3 | After Proposal Generation | Approve / revise / reject the draft | `proposalDraft`, `budgetBreakdown` | `proposalDecision` |
-| 4 | After Donor Rejection (conditional) | File an appeal or close the application | `rejectionReason`, `appealRecommendation` | `appealDecision` |
+| # | App Used | Where | Decision required | Inputs to the human | Output back to pipeline |
+|---|---|---|---|---|---|
+| 1 | **Grant Selection App** | After Grant Discovery | Which grant should we pursue? | `matchedGrants[]` with scores and reasons | `selectedGrantName` |
+| 2 | **Document Upload (HITL) App** | After Eligibility | Upload the missing documents | `missingDocuments[]` | `uploadedDocumentsJson` |
+| 3 | **Proposal Review App** | After Proposal Generation | Approve / revise / reject the draft | `proposalDraft`, `budgetBreakdown` | `proposalDecision` |
+| 4 | *(conditional — app TBD)* | After Donor Rejection | File an appeal or close the application | `rejectionReason`, `appealRecommendation` | `appealDecision` |
 
 Every checkpoint pauses the Maestro instance with `Actions.HITL`. None of them is a webhook. All four are visible as paused instances in the Maestro Instances view — the cleanest possible proof to a judge that the orchestration is real.
 
@@ -258,15 +287,18 @@ Every checkpoint pauses the Maestro instance with `Actions.HITL`. None of them i
 ## Deployment
 
 1. **Open the solution** (`Solution1`) in UiPath Studio Desktop or Studio Web.
-2. **Publish each of the nine projects** to the target Orchestrator tenant. Bump the package version on each publish so judges can see release history.
-3. **Confirm the BPMN's four `Create App Task` activities** all reference `SimpleApprovalApp` with:
-   * **Task Title** — descriptive (e.g. `Grant Selection for {{vars.farmerName}}`)
-   * **External Tag** — `=vars.jobId`
-   * **App Inputs** — `sessionId`, `taskType` (literal per node), `payload` (JSON.stringify of needed vars)
+2. **Publish each of the eleven projects** to the target Orchestrator tenant. Bump the package version on each publish so judges can see release history.
+3. **Confirm the BPMN's `Create App Task` activities** reference the correct apps:
+   * **HITL #1** → **Grant Selection App**
+   * **HITL #2** → **Document Upload (HITL) App**
+   * **HITL #3** → **Proposal Review App**
+   * **HITL #4** → *(conditional — app TBD or handled via backend)*
+   * **External Tag** — `=vars.jobId` on all tasks
+   * **App Inputs** — `sessionId`, `payload` (JSON.stringify of needed vars)
    * **App Outputs** — mapped to the correct downstream `vars.*`
 4. **Configure the Robot's target portal URL** as a default argument or asset (`in_targetPortalURL`).
 5. **From the backend host, probe connectivity:**
    ```bash
    curl http://localhost:8000/v1/api/hitl/health
    ```
-6. **Run a test farmer through the pipeline.** Watch the Maestro Instances view — you will see four genuine pause-points where the process waits for a human. That visual is the demo.
+6. **Run a test farmer through the pipeline.** Watch the Maestro Instances view — you will see genuine pause-points where the process waits for a human. That visual is the demo.

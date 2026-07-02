@@ -1,0 +1,45 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Grant Selection App",
+    "kind": "app",
+    "type": "workflow Action",
+    "apiVersion": "apps.uipath.com/v1",
+    "projectKey": "90512d0f-8577-4e6e-aefc-97dbb9232092",
+    "isOverridable": true,
+    "dependencies": [
+      {
+        "name": "Grant Selection App",
+        "kind": "appVersion"
+      },
+      {
+        "name": "Grant Selection App",
+        "kind": "process"
+      }
+    ],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "Grant Selection App",
+      "description": null,
+      "type": "workflow Action",
+      "version": null,
+      "appSystemName": null,
+      "appVersionRef": {
+        "key": "920c6ce5-03bd-46b6-89e3-e8c7b51b8695"
+      },
+      "codeBehindProcess": {
+        "key": "0fa25641-05f2-4dc3-8bd5-8ef44e9df5c5"
+      },
+      "actionSchema": null,
+      "manualActivationActions": null
+    },
+    "locks": [],
+    "key": "7e39c69a-65ae-4436-a377-2272f757e9c3"
+  }
+}

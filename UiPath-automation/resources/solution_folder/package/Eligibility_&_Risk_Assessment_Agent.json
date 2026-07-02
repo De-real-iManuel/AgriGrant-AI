@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Eligibility \u0026 Risk Assessment Agent",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "b1cd8009-fd48-4f6e-a7e6-e828466e9900",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "Eligibility \u0026 Risk Assessment Agent"
+    },
+    "locks": [],
+    "key": "5157b61b-4a64-4f89-b60e-f4379fd78acd"
+  }
+}

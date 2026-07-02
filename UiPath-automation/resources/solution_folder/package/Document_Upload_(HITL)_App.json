@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Document Upload (HITL) App",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "ef3a1a4d-7b05-43ec-83a9-35a760acee4a",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "Document Upload (HITL) App",
+      "description": null
+    },
+    "locks": [],
+    "key": "181520f1-1863-40f1-8d1b-ec02c0f8ed9c"
+  }
+}

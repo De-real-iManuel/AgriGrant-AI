@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "AgriGrant API",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "990dbee8-3d5f-4307-ba89-2aa5f6559421",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "AgriGrant API"
+    },
+    "locks": [],
+    "key": "01ba962e-2f25-46b1-8cc8-51aea81261b0"
+  }
+}

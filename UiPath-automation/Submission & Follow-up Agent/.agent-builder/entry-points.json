@@ -1,0 +1,655 @@
+{
+  "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+  "$id": "entry-points.json",
+  "entryPoints": [
+    {
+      "filePath": "/content/agent.json",
+      "type": "agent",
+      "uniqueId": "c033223a-b219-4ecb-ae26-3d3b39c8aea7",
+      "input": {
+        "type": "object",
+        "required": [
+          "farmerName",
+          "farmerPhone",
+          "stateOfResidence",
+          "grantName",
+          "grantingOrganization",
+          "projectTitle",
+          "requestedAmountNGN",
+          "submissionDeadline",
+          "submissionMethod",
+          "currentStatus",
+          "documentsChecklist",
+          "agentAction",
+          "preferredLanguage"
+        ],
+        "properties": {
+          "farmerName": {
+            "type": "string",
+            "description": "Full name of the Nigerian farmer. Used to personalize all messages and notifications."
+          },
+          "farmerPhone": {
+            "type": "string",
+            "description": "Nigerian mobile phone number of the farmer (e.g., '+2348012345678')."
+          },
+          "farmerEmail": {
+            "type": "string",
+            "description": "Optional: Farmer's email address. Used for milestone emails only. Omit if not available."
+          },
+          "stateOfResidence": {
+            "type": "string",
+            "description": "Nigerian state where the farmer is based. Used to tailor submission office addresses."
+          },
+          "grantName": {
+            "type": "string",
+            "description": "Official name of the grant being submitted (e.g., 'CBN Anchor Borrowers Programme')."
+          },
+          "grantingOrganization": {
+            "type": "string",
+            "description": "Full name of the granting organization."
+          },
+          "projectTitle": {
+            "type": "string",
+            "description": "Title of the grant project as written in the proposal."
+          },
+          "requestedAmountNGN": {
+            "type": "number",
+            "description": "Total grant amount requested in NGN.",
+            "minimum": 0
+          },
+          "submissionDeadline": {
+            "type": "string",
+            "description": "Application deadline in ISO format or descriptive (e.g., '2026-07-31' or 'Rolling')."
+          },
+          "submissionMethod": {
+            "type": "string",
+            "description": "How the application is submitted.",
+            "enum": [
+              "online-portal",
+              "email",
+              "physical-office",
+              "bank-branch",
+              "cooperative-office",
+              "mixed"
+            ]
+          },
+          "submissionPortalUrl": {
+            "type": "string",
+            "description": "Optional: URL of the online submission portal."
+          },
+          "submissionOfficeAddress": {
+            "type": "string",
+            "description": "Optional: Physical address of the submission office."
+          },
+          "submissionContactEmail": {
+            "type": "string",
+            "description": "Optional: Official email to submit to or follow up with."
+          },
+          "submissionContactPhone": {
+            "type": "string",
+            "description": "Optional: Phone number of the grant office."
+          },
+          "applicationReferenceNumber": {
+            "type": "string",
+            "description": "Optional: Tracking number received after submission."
+          },
+          "submissionDate": {
+            "type": "string",
+            "description": "Optional: Date the application was submitted (YYYY-MM-DD)."
+          },
+          "currentStatus": {
+            "type": "string",
+            "description": "Current status of the grant application.",
+            "enum": [
+              "not-yet-submitted",
+              "submitted-awaiting-acknowledgement",
+              "acknowledged",
+              "under-review",
+              "additional-info-requested",
+              "approved",
+              "rejected",
+              "on-hold"
+            ]
+          },
+          "documentsChecklist": {
+            "type": "array",
+            "description": "List of all documents prepared for submission.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "missingDocuments": {
+            "type": "array",
+            "description": "Optional: Documents that are missing or incomplete.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "agentAction": {
+            "type": "string",
+            "description": "The primary task to perform. 'respond-to-farmer-chat' = natural language conversation with farmer in the web app (NEVER triggers email).",
+            "enum": [
+              "prepare-submission-package",
+              "generate-confirmation",
+              "set-reminders",
+              "track-and-follow-up",
+              "handle-additional-info-request",
+              "generate-rejection-response",
+              "respond-to-farmer-chat"
+            ]
+          },
+          "chatMessage": {
+            "type": "string",
+            "description": "The farmer's natural language message when agentAction is 'respond-to-farmer-chat'. This is what the farmer typed in the web app chat interface (e.g., 'What stage is my grant at?', 'When will I hear back?', 'What documents do I still need?'). Omit for all other actions."
+          },
+          "chatHistory": {
+            "type": "array",
+            "description": "Optional: Previous chat messages for conversation context when agentAction is 'respond-to-farmer-chat'. Each item is an object with 'role' (farmer/agent) and 'message'. Omit for first message or other actions.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "type": "string",
+                  "enum": [
+                    "farmer",
+                    "agent"
+                  ]
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalInfoRequested": {
+            "type": "string",
+            "description": "Optional: Details of additional info requested by grantor. Required when agentAction is 'handle-additional-info-request'."
+          },
+          "rejectionReason": {
+            "type": "string",
+            "description": "Optional: Reason for rejection. Required when agentAction is 'generate-rejection-response'."
+          },
+          "preferredLanguage": {
+            "type": "string",
+            "description": "Language tone for farmer-facing messages.",
+            "enum": [
+              "english",
+              "pidgin-english",
+              "bilingual-english-pidgin"
+            ]
+          },
+          "additionalNotes": {
+            "type": "string",
+            "description": "Optional: Extra context (e.g., 'Farmer has limited literacy', 'This is a second application')."
+          }
+        },
+        "title": "Inputs"
+      },
+      "output": {
+        "type": "object",
+        "required": [
+          "farmerName",
+          "grantName",
+          "agentAction",
+          "currentStatus",
+          "webAppNotification",
+          "farmerFacingMessagePrimary",
+          "emailPayload",
+          "agentSummary",
+          "technicalAlert"
+        ],
+        "properties": {
+          "farmerName": {
+            "type": "string",
+            "description": "Full name of the farmer, echoed from input."
+          },
+          "grantName": {
+            "type": "string",
+            "description": "Name of the grant, echoed from input."
+          },
+          "agentAction": {
+            "type": "string",
+            "description": "Action performed, echoed from input."
+          },
+          "currentStatus": {
+            "type": "string",
+            "description": "Current application status, echoed from input."
+          },
+          "webAppNotification": {
+            "type": "object",
+            "description": "ALWAYS required. Notification pushed to the farmer's web app dashboard. This is the PRIMARY communication channel for Tier 1 (farmer-facing) alerts.",
+            "required": [
+              "type",
+              "title",
+              "message",
+              "actionRequired",
+              "timestamp"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "Notification category for the web app UI.",
+                "enum": [
+                  "info",
+                  "action-required",
+                  "milestone",
+                  "warning",
+                  "chat-response",
+                  "celebration"
+                ]
+              },
+              "title": {
+                "type": "string",
+                "description": "Short notification title (max 60 chars)."
+              },
+              "message": {
+                "type": "string",
+                "description": "Notification body (max 200 words). Clear, friendly, matches preferredLanguage. NEVER contains technical jargon, error codes, or system details."
+              },
+              "actionRequired": {
+                "type": "boolean",
+                "description": "True if the farmer needs to do something. False for informational updates."
+              },
+              "actionUrl": {
+                "type": "string",
+                "description": "Optional: Deep link for farmer action (e.g., '/upload-documents', '/chat')."
+              },
+              "timestamp": {
+                "type": "string",
+                "description": "ISO timestamp when notification was generated."
+              },
+              "stage": {
+                "type": "string",
+                "description": "Current pipeline stage for progress tracker UI.",
+                "enum": [
+                  "discovery",
+                  "eligibility",
+                  "documents",
+                  "proposal",
+                  "review",
+                  "submission",
+                  "monitoring",
+                  "completed",
+                  "rejected"
+                ]
+              }
+            }
+          },
+          "technicalAlert": {
+            "type": "object",
+            "description": "ALWAYS required. Tier 2 alert for developers/technical team. The farmer NEVER sees this. Used when the system encounters portal issues, API failures, selector failures, or unexpected errors. If no technical issue occurred, set triggered=false and leave other fields empty.",
+            "required": [
+              "triggered",
+              "alertLevel",
+              "alertType",
+              "technicalDetails",
+              "farmerFacingMessage",
+              "autoRetryInMinutes",
+              "requiresDeveloperAction"
+            ],
+            "properties": {
+              "triggered": {
+                "type": "boolean",
+                "description": "True if a technical issue was detected that requires developer attention. False if everything ran smoothly (normal operation)."
+              },
+              "alertLevel": {
+                "type": "string",
+                "description": "Severity of the technical issue. 'low' = minor, auto-recoverable. 'medium' = needs attention within hours. 'high' = blocking farmer journey, needs attention within 30 min. 'critical' = complete system failure, immediate action required.",
+                "enum": [
+                  "none",
+                  "low",
+                  "medium",
+                  "high",
+                  "critical"
+                ]
+              },
+              "alertType": {
+                "type": "string",
+                "description": "Category of technical issue for developer dashboard routing.",
+                "enum": [
+                  "none",
+                  "portal-down",
+                  "portal-layout-changed",
+                  "selector-failed",
+                  "api-error",
+                  "timeout",
+                  "authentication-failed",
+                  "file-upload-failed",
+                  "unexpected-popup",
+                  "captcha-detected",
+                  "network-error",
+                  "unknown"
+                ]
+              },
+              "technicalDetails": {
+                "type": "string",
+                "description": "Developer-only technical details. Include: error type, affected component, attempted action, failure point, stack context. This is for the technical dashboard ONLY — farmer never sees this. Empty string if triggered=false."
+              },
+              "farmerFacingMessage": {
+                "type": "string",
+                "description": "The friendly, non-technical message shown to the farmer when a technical issue occurs. Must be warm, reassuring, and give no technical details. Example: 'We are doing a quick update on the portal. Your application will resume automatically in a few minutes. Nothing to worry about! 🌱'. Empty string if triggered=false."
+              },
+              "autoRetryInMinutes": {
+                "type": "integer",
+                "description": "How many minutes before the system should auto-retry the failed operation. 0 = no auto-retry (requires manual developer intervention). Typical values: 2 for portal issues, 5 for API errors, 0 for critical failures.",
+                "minimum": 0
+              },
+              "requiresDeveloperAction": {
+                "type": "boolean",
+                "description": "True if a developer must manually intervene (e.g., update selectors, fix API keys, resolve portal changes). False if the system can auto-recover."
+              },
+              "suggestedFix": {
+                "type": "string",
+                "description": "Optional: Suggested technical fix for the developer (e.g., 'Update selector for #farm-address input', 'Renew API token', 'Portal redesigned — needs full selector remapping'). Empty string if not applicable."
+              }
+            }
+          },
+          "chatResponse": {
+            "type": "string",
+            "description": "Present ONLY when agentAction is 'respond-to-farmer-chat'. Natural language response to farmer's chat message. Conversational, warm, under 200 words. Empty string for all other actions."
+          },
+          "emailPayload": {
+            "type": "object",
+            "description": "Email notification structure. ALWAYS present. sendEmail controls delivery.",
+            "required": [
+              "to",
+              "subject",
+              "htmlBody",
+              "plainTextBody",
+              "sendEmail",
+              "emailType"
+            ],
+            "properties": {
+              "to": {
+                "type": "string",
+                "description": "Farmer's email. Empty string if not provided."
+              },
+              "subject": {
+                "type": "string",
+                "description": "Email subject personalized with farmer name."
+              },
+              "htmlBody": {
+                "type": "string",
+                "description": "HTML email body. Only populated when sendEmail is true."
+              },
+              "plainTextBody": {
+                "type": "string",
+                "description": "Plain text version. Only populated when sendEmail is true."
+              },
+              "sendEmail": {
+                "type": "boolean",
+                "description": "TRUE = milestone, send email. FALSE = skip email."
+              },
+              "emailType": {
+                "type": "string",
+                "enum": [
+                  "prepare-submission-package",
+                  "generate-confirmation",
+                  "set-reminders",
+                  "track-and-follow-up",
+                  "handle-additional-info-request",
+                  "generate-rejection-response",
+                  "respond-to-farmer-chat"
+                ]
+              }
+            }
+          },
+          "submissionPackage": {
+            "type": "object",
+            "description": "Present only when agentAction is 'prepare-submission-package'.",
+            "properties": {
+              "readinessAssessment": {
+                "type": "string",
+                "enum": [
+                  "Ready to Submit",
+                  "Almost Ready — Minor Issues",
+                  "Not Ready — Critical Items Missing"
+                ]
+              },
+              "coverLetter": {
+                "type": "string"
+              },
+              "documentsChecklistVerified": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "document": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "Ready",
+                        "Missing",
+                        "Needs Update"
+                      ]
+                    },
+                    "note": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "submissionGuide": {
+                "type": "string"
+              },
+              "criticalWarnings": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "submissionTips": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "confirmationPackage": {
+            "type": "object",
+            "description": "Present only when agentAction is 'generate-confirmation'.",
+            "properties": {
+              "congratulatoryMessage": {
+                "type": "string"
+              },
+              "smsMessage": {
+                "type": "string"
+              },
+              "whatsappMessage": {
+                "type": "string"
+              },
+              "submissionSummaryCard": {
+                "type": "object",
+                "properties": {
+                  "farmerName": {
+                    "type": "string"
+                  },
+                  "grantName": {
+                    "type": "string"
+                  },
+                  "projectTitle": {
+                    "type": "string"
+                  },
+                  "amountRequested": {
+                    "type": "string"
+                  },
+                  "submissionDate": {
+                    "type": "string"
+                  },
+                  "referenceNumber": {
+                    "type": "string"
+                  },
+                  "expectedResponseTime": {
+                    "type": "string"
+                  },
+                  "nextStep": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "reminderSchedule": {
+            "type": "object",
+            "description": "Present only when agentAction is 'set-reminders'.",
+            "properties": {
+              "totalReminders": {
+                "type": "integer"
+              },
+              "reminders": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "reminderNumber": {
+                      "type": "integer"
+                    },
+                    "triggerEvent": {
+                      "type": "string"
+                    },
+                    "suggestedDate": {
+                      "type": "string"
+                    },
+                    "channel": {
+                      "type": "string",
+                      "enum": [
+                        "push-notification",
+                        "SMS",
+                        "WhatsApp",
+                        "Email"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "actionRequired": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "calendarSummary": {
+                "type": "string"
+              }
+            }
+          },
+          "trackingAndFollowUp": {
+            "type": "object",
+            "description": "Present only when agentAction is 'track-and-follow-up'.",
+            "properties": {
+              "statusAssessment": {
+                "type": "string"
+              },
+              "urgencyLevel": {
+                "type": "string",
+                "enum": [
+                  "Routine",
+                  "Follow-Up Due",
+                  "Action Required",
+                  "Urgent"
+                ]
+              },
+              "followUpEmailDraft": {
+                "type": "string"
+              },
+              "followUpWhatsappMessage": {
+                "type": "string"
+              },
+              "phoneScriptForFollowUp": {
+                "type": "string"
+              },
+              "nextActions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "action": {
+                      "type": "string"
+                    },
+                    "timeline": {
+                      "type": "string"
+                    },
+                    "channel": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "additionalInfoResponse": {
+            "type": "object",
+            "description": "Present only when agentAction is 'handle-additional-info-request'.",
+            "properties": {
+              "acknowledgementLetter": {
+                "type": "string"
+              },
+              "itemsToProvide": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "type": "string"
+                    },
+                    "howToObtain": {
+                      "type": "string"
+                    },
+                    "estimatedTimeToObtain": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "farmerInstructions": {
+                "type": "string"
+              },
+              "responseDeadlineSuggestion": {
+                "type": "string"
+              }
+            }
+          },
+          "rejectionResponse": {
+            "type": "object",
+            "description": "Present only when agentAction is 'generate-rejection-response'.",
+            "properties": {
+              "farmerSupportMessage": {
+                "type": "string"
+              },
+              "rejectionAnalysis": {
+                "type": "string"
+              },
+              "appealLetter": {
+                "type": "string"
+              },
+              "improvementPlan": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "alternativeOptions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "farmerFacingMessagePrimary": {
+            "type": "string",
+            "description": "ALWAYS populated. The single most important message for the farmer. Max 150 words. Matches preferredLanguage. Ends with one clear next action. NEVER contains technical details."
+          },
+          "agentSummary": {
+            "type": "string",
+            "description": "ALWAYS populated. Internal professional summary (100–150 words) for pipeline logging."
+          }
+        },
+        "title": "Outputs"
+      }
+    }
+  ]
+}

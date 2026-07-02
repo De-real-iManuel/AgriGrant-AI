@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Proposal Generation Agent",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "56573e1c-baad-41d2-95e9-29b531e6d2a0",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "Proposal Generation Agent"
+    },
+    "locks": [],
+    "key": "5c60af66-bd46-45b7-928a-78d01c33f9ff"
+  }
+}

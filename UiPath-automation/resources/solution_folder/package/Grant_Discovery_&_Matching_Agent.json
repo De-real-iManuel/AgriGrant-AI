@@ -1,0 +1,23 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Grant Discovery \u0026 Matching Agent",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "c1e56a84-99a0-4189-85fc-fe0579ec01ca",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "name": "Grant Discovery \u0026 Matching Agent"
+    },
+    "locks": [],
+    "key": "3fbd883c-8452-4e86-83bf-7f6ed17ea1be"
+  }
+}

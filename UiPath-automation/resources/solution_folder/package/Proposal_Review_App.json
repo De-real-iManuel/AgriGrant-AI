@@ -1,0 +1,26 @@
+{
+  "docVersion": "1.0.0",
+  "resource": {
+    "name": "Proposal Review App",
+    "kind": "package",
+    "apiVersion": "orchestrator.uipath.com/v1",
+    "projectKey": "b4886c90-964d-4e83-ac80-08550108dfc2",
+    "isOverridable": true,
+    "dependencies": [],
+    "runtimeDependencies": [],
+    "files": [],
+    "folders": [
+      {
+        "fullyQualifiedName": "solution_folder"
+      }
+    ],
+    "spec": {
+      "fileName": null,
+      "fileReference": null,
+      "name": "Proposal Review App",
+      "description": null
+    },
+    "locks": [],
+    "key": "246f1c7e-1f6a-462a-9a9e-ca37b6ca46fb"
+  }
+}
