@@ -1,16 +1,1 @@
-{
-  "agentPosition": {
-    "x": 0,
-    "y": 0
-  },
-  "resourceNodes": [
-    {
-      "id": "agent=>Web Search:827cd061-6657-4a83-af34-2c8b3bed5fe1",
-      "position": {
-        "x": 256,
-        "y": 384
-      }
-    }
-  ],
-  "zoom": 1.05
-}
+{"agentPosition":{"x":0,"y":0},"resourceNodes":[{"id":"agent=>New tool:placeholder-tool-1782051734088","position":{"x":384,"y":288}}],"zoom":1.06}

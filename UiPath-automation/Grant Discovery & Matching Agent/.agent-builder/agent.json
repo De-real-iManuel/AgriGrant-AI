@@ -1,0 +1,761 @@
+{
+  "version": "1.1.0",
+  "settings": {
+    "model": "gpt-5.4",
+    "maxTokens": 65535,
+    "temperature": 0.85,
+    "engine": "basic-v2",
+    "maxIterations": 25,
+    "mode": "standard"
+  },
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "farmerName",
+      "stateOfResidence",
+      "farmType",
+      "fundingPurpose",
+      "isSmallholderFarmer",
+      "isYouthFarmer",
+      "isWomanFarmer"
+    ],
+    "properties": {
+      "farmerName": {
+        "type": "string",
+        "description": "Full name of the farmer or agribusiness name. Used to personalize results and cross-reference documents."
+      },
+      "stateOfResidence": {
+        "type": "string",
+        "description": "Nigerian state where the farmer operates (e.g., 'Kano', 'Ogun', 'Benue', 'Rivers', 'FCT'). Used to match state-specific and geographically targeted grants."
+      },
+      "lga": {
+        "type": "string",
+        "description": "Optional: Local Government Area within the state. Helps identify hyper-local or LGA-targeted programs. Omit if unknown."
+      },
+      "farmType": {
+        "type": "string",
+        "description": "Primary type of farming or agribusiness operation. Allowed values: 'crop', 'livestock', 'poultry', 'fishery/aquaculture', 'mixed', 'horticulture', 'agro-processing', 'cooperative', 'agribusiness', 'other'.",
+        "enum": [
+          "crop",
+          "livestock",
+          "poultry",
+          "fishery/aquaculture",
+          "mixed",
+          "horticulture",
+          "agro-processing",
+          "cooperative",
+          "agribusiness",
+          "other"
+        ]
+      },
+      "cropOrLivestockTypes": {
+        "type": "array",
+        "description": "List of specific crops grown or livestock/fish raised (e.g., ['cassava', 'maize', 'rice'] or ['cattle', 'poultry', 'catfish']). Used to match commodity-specific programs like CBN Anchor Borrowers or NIRSAL value chain schemes.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "farmSizeHectares": {
+        "type": "number",
+        "description": "Total farm area in hectares. Used to classify as smallholder (under 5 ha) or medium/large scale, which affects eligibility for most Nigerian grant schemes.",
+        "minimum": 0
+      },
+      "annualRevenueNGN": {
+        "type": "number",
+        "description": "Approximate annual farm revenue in Nigerian Naira (NGN). Used for income-based eligibility thresholds in BOA, NIRSAL, and microfinance-linked programs.",
+        "minimum": 0
+      },
+      "farmingExperienceYears": {
+        "type": "integer",
+        "description": "Number of years the farmer has been actively farming. Used to determine eligibility for youth agripreneurship programs (typically under 35 years old and under 5 years farming).",
+        "minimum": 0
+      },
+      "isSmallholderFarmer": {
+        "type": "boolean",
+        "description": "True if the farmer is a smallholder (typically farms under 5 hectares). Enables matching with NIRSAL, CBN Anchor Borrowers, IFAD, and FAO smallholder-specific programs."
+      },
+      "isYouthFarmer": {
+        "type": "boolean",
+        "description": "True if the farmer is aged 18–35. Enables matching with NASC, Youth in Agriculture programs, Agric-YES, and international youth-focused grants."
+      },
+      "isWomanFarmer": {
+        "type": "boolean",
+        "description": "True if the farmer is a woman or the farm is woman-led. Enables matching with IFAD women programs, GIZ She Feeds the World, and state women-in-agric initiatives."
+      },
+      "hasCACRegistration": {
+        "type": "boolean",
+        "description": "True if the farmer has a registered business or cooperative with the Corporate Affairs Commission (CAC). Many federal and international grants require formal registration."
+      },
+      "hasLandDocument": {
+        "type": "boolean",
+        "description": "True if the farmer has a formal land document (C of O, R of O, or Survey Plan). Required for most BOA loan-linked grants and land-improvement programs."
+      },
+      "isMemberOfCooperative": {
+        "type": "boolean",
+        "description": "True if the farmer is a registered member of a cooperative society. Cooperative membership is often required for CBN Anchor Borrowers Programme and group-based schemes."
+      },
+      "fundingPurpose": {
+        "type": "string",
+        "description": "What the farmer needs funding for (e.g., 'irrigation infrastructure', 'farm inputs and seeds', 'processing equipment', 'storage/silo construction', 'land clearing', 'market linkage', 'value chain development', 'livestock vaccination', 'fish pond construction'). This is the primary driver of grant matching."
+      },
+      "additionalNotes": {
+        "type": "string",
+        "description": "Optional: Any extra context (e.g., 'already applied for Anchor Borrowers', 'operates in conflict-affected area', 'has existing CBN loan', 'part of a cluster farm'). Omit if not applicable."
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "farmerName",
+      "stateOfResidence",
+      "totalMatchesFound",
+      "matchedGrants",
+      "profileGaps",
+      "topRecommendation",
+      "summary",
+      "disclaimer",
+      "submissionMethod",
+      "currentStatus",
+      "documentsChecklist",
+      "agentAction"
+    ],
+    "properties": {
+      "farmerName": {
+        "type": "string",
+        "description": "Full name of the farmer or agribusiness as provided in input, echoed for report identification."
+      },
+      "stateOfResidence": {
+        "type": "string",
+        "description": "Nigerian state of the farmer, echoed from input."
+      },
+      "totalMatchesFound": {
+        "type": "integer",
+        "description": "Total number of FREE grant opportunities matched to the farmer's profile. Only count grants that require zero repayment."
+      },
+      "matchedGrants": {
+        "type": "array",
+        "description": "Ranked list of matched FREE grant opportunities sorted by matchScore descending. Every entry must be a free grant — no loans, no credit facilities, no repayment-based programs.",
+        "items": {
+          "type": "object",
+          "required": [
+            "grantName",
+            "grantingOrganization",
+            "grantCategory",
+            "fundingBody",
+            "description",
+            "matchScore",
+            "matchReason",
+            "eligibilityCriteria",
+            "requiredDocuments",
+            "applicationProcess",
+            "applicationDeadline",
+            "geographicScope",
+            "applicationUrl",
+            "contactInformation"
+          ],
+          "properties": {
+            "grantName": {
+              "type": "string",
+              "description": "Official name of the FREE grant program. Must be a grant — never a loan."
+            },
+            "grantingOrganization": {
+              "type": "string",
+              "description": "Full name of the organization providing the FREE grant."
+            },
+            "grantCategory": {
+              "type": "string",
+              "description": "Category of grant source.",
+              "enum": [
+                "federal",
+                "state",
+                "NGO",
+                "international",
+                "development-bank",
+                "private"
+              ]
+            },
+            "fundingBody": {
+              "type": "string",
+              "description": "Specific body or programme window providing the free grant."
+            },
+            "description": {
+              "type": "string",
+              "description": "2 to 3 sentence description of what the FREE grant funds, its objectives, and target beneficiaries."
+            },
+            "fundingAmountRange": {
+              "type": "string",
+              "description": "Estimated FREE grant funding range in NGN or USD."
+            },
+            "currency": {
+              "type": "string",
+              "description": "Primary currency of the grant disbursement.",
+              "enum": [
+                "NGN",
+                "USD",
+                "EUR",
+                "GBP",
+                "Mixed"
+              ]
+            },
+            "matchScore": {
+              "type": "integer",
+              "description": "Match score 0 to 100 indicating how well the FREE grant fits this farmer's profile.",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "matchReason": {
+              "type": "string",
+              "description": "Specific explanation of why this FREE grant matches the farmer."
+            },
+            "eligibilityCriteria": {
+              "type": "string",
+              "description": "Key eligibility requirements the farmer must meet for this FREE grant."
+            },
+            "requiredDocuments": {
+              "type": "array",
+              "description": "List of key documents typically required to apply for this grant.",
+              "items": {
+                "type": "string"
+              }
+            },
+            "applicationProcess": {
+              "type": "string",
+              "description": "Brief description of how to apply for this FREE grant."
+            },
+            "applicationDeadline": {
+              "type": "string",
+              "description": "Application deadline or cycle."
+            },
+            "geographicScope": {
+              "type": "string",
+              "description": "Geographic coverage of the grant."
+            },
+            "applicationUrl": {
+              "type": "string",
+              "description": "Official URL for the grant page, portal, or organization homepage."
+            },
+            "contactInformation": {
+              "type": "string",
+              "description": "Relevant contact details if available."
+            }
+          }
+        }
+      },
+      "profileGaps": {
+        "type": "array",
+        "description": "Specific profile gaps or missing registrations limiting the farmer's access to FREE grants.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "topRecommendation": {
+        "type": "string",
+        "description": "The single best FREE grant opportunity for this farmer based on their profile."
+      },
+      "summary": {
+        "type": "string",
+        "description": "3 to 5 sentence professional summary covering: total FREE grants found, the most relevant programs, the farmer's strongest eligibility angle, and recommended immediate next steps."
+      },
+      "disclaimer": {
+        "type": "string",
+        "description": "Standard disclaimer."
+      },
+      "submissionMethod": {
+        "type": "string",
+        "description": "The recommended method for submitting the application for the top recommended grant.",
+        "enum": [
+          "online-portal",
+          "email",
+          "physical-office",
+          "bank-branch",
+          "cooperative-office",
+          "mixed"
+        ]
+      },
+      "currentStatus": {
+        "type": "string",
+        "description": "The current status of the application. Must be 'not-yet-submitted' at this discovery stage.",
+        "enum": [
+          "not-yet-submitted",
+          "submitted-awaiting-acknowledgement",
+          "acknowledged",
+          "under-review",
+          "additional-info-requested",
+          "approved",
+          "rejected",
+          "on-hold"
+        ]
+      },
+      "documentsChecklist": {
+        "type": "array",
+        "description": "A list of required documents for the top recommended grant. Must be an array of strings.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "agentAction": {
+        "type": "string",
+        "description": "The action the downstream agent should take. Usually 'prepare-submission-package'.",
+        "enum": [
+          "prepare-submission-package",
+          "generate-confirmation",
+          "set-reminders",
+          "track-and-follow-up",
+          "handle-additional-info-request",
+          "generate-rejection-response",
+          "respond-to-farmer-chat"
+        ]
+      }
+    }
+  },
+  "metadata": {
+    "storageVersion": "50.0.0",
+    "isConversational": false,
+    "targetRuntime": "pythonAgent",
+    "showProjectCreationExperience": false
+  },
+  "type": "lowCode",
+  "messages": [
+    {
+      "role": "system",
+      "content": "## Role\nYou are an expert Nigerian Agricultural Grant Discovery Specialist for AgriGrant AI. Your PRIMARY GOAL is to help farmers discover and secure FREE GRANTS — not loans, not credit facilities, not debt-based financing. You search for grants from International organizations, NGOs, Development Banks (grant windows only), and Nigerian government grant programs.\n\n**CRITICAL RULE: NEVER recommend loans, credit facilities, or debt-based financing. If a program requires repayment, it is NOT a grant — exclude it completely.**\n\n---\n\n## Tool Rules\n\n### Web Search\n- **Always use Web Search** to find current, active FREE grant programs.\n- Run a **minimum of 5 targeted searches** covering:\n  1. **International grants for Nigerian farmers**\n  2. **NGO grants**\n  3. **Development bank grant windows (NOT loans)**\n  4. **Nigerian government FREE grants (NOT loans)**\n  5. **Crop/livestock-specific grants**\n- **Never fabricate grant details or URLs.**\n- If a search returns loan programs, SKIP them entirely.\n\n### What to EXCLUDE (These are LOANS, not grants):\n- ❌ CBN Anchor Borrowers Programme (it's a LOAN requiring repayment)\n- ❌ NIRSAL AGSMEIS (it's a LOAN at 5% interest)\n- ❌ NIRSAL AMSMES (it's a LOAN)\n- ❌ Bank of Agriculture (BOA) loans (ALL BOA products are loans)\n- ❌ ACGSF — Agricultural Credit Guarantee Scheme (LOAN guarantee)\n- ❌ CACS — Commercial Agriculture Credit Scheme (LOAN)\n- ❌ Any program that charges interest or requires repayment\n- ❌ Microfinance loans disguised as \"support\"\n\n### What to INCLUDE (These are FREE GRANTS):\n- ✅ USAID Feed the Future Nigeria grants\n- ✅ Bill & Melinda Gates Foundation agricultural grants\n- ✅ AGRA (Alliance for a Green Revolution in Africa) grants\n- ✅ World Bank APPEALS Project (grant component)\n- ✅ World Bank CARES Project (grant component)\n- ✅ IFAD VCDP (grant/subsidy component for smallholders)\n- ✅ FAO emergency agricultural input grants\n- ✅ GIZ agricultural development grants\n- ✅ AfDB grant programs (ENABLE Youth, TAAT)\n- ✅ Mastercard Foundation young Africa works\n- ✅ TechnoServe agribusiness grants\n- ✅ One Acre Fund input support (non-repayable)\n- ✅ Heifer International livestock grants\n- ✅ ActionAid women farmer grants\n- ✅ FMARD free input distribution programs\n- ✅ State government free agricultural grants and input subsidies\n- ✅ Tony Elumelu Foundation grants\n- ✅ Leventis Foundation agricultural grants\n\n### Tool Failure\n- If Web Search fails, retry with simplified query. After two failures, proceed with available results.\n\n---\n\n## Work Steps\n\n1. **Profile Analysis**: Review farmer's state, farm type, crops/livestock, size, demographics, and funding purpose.\n2. **Run 5+ Targeted Web Searches** — include \"grant\" (not \"loan\"). Do not overly restrict by year if it causes you to find zero grants; active rolling grants are perfectly fine.\n3. **Filter results STRICTLY**: Remove ANY result that involves repayment, interest, or credit. Only include 100% free grants.\n4. **Score each grant (0–100)** based on: farm type match (+25), location eligibility (+20), demographic fit (+20), funding purpose alignment (+25), registration readiness (+10).\n5. **Filter**: Include the best matches you find. Do not discard valid grants just because the score is slightly low. If you find grants, INCLUDE THEM.\n6. **Rank** by matchScore descending.\n7. **Identify profile gaps** blocking access to better grants.\n8. **Select top recommendation** — best-fit FREE grant with immediate action steps.\n9. **Write summary** — 3–5 sentences.\n10. **Assemble JSON output** matching outputSchema.\n\n---\n\n## Output Rules\n- Return ONLY JSON matching outputSchema exactly. No markdown. No extra text.\n- `matchedGrants` sorted by `matchScore` descending.\n- EVERY grant in the list must be FREE (no repayment required).\n- `applicationUrl`: only URLs found in search results. Empty string if not found.\n- `applicationDeadline`: \"Rolling\", specific date, or \"Verify current status\". Never guess.\n- `disclaimer` must always read: \"Grant information is based on real-time web search results and is subject to change. Program availability, funding windows, and eligibility criteria should be verified directly with the issuing organization before applying. This analysis does not constitute financial or legal advice. All recommended programs are free grants — no loans or credit facilities are included.\"\n\n**CRITICAL DOWNSTREAM FORMATTING RULES:**\nTo ensure the next agent in the workflow does not crash, you MUST provide these exact fields:\n1. `submissionMethod`: MUST be exactly one of: 'online-portal', 'email', 'physical-office', 'bank-branch', 'cooperative-office', or 'mixed'. Choose the best fit for the top recommendation.\n2. `currentStatus`: MUST be exactly 'not-yet-submitted'.\n3. `documentsChecklist`: MUST be a JSON array of strings (e.g., [\"ID\", \"Bank Statement\", \"Farm Photo\"]). Extract this from the top recommendation's required documents.\n4. `agentAction`: MUST be exactly 'prepare-submission-package'.\n\n---\n\n## Final Reminder\nSearch for FREE GRANTS ONLY. Never include loans. If you find valid grants, DO NOT discard them—include them in the output. Ensure the downstream fields (`submissionMethod`, `currentStatus`, `documentsChecklist`, `agentAction`) are formatted exactly as requested to prevent system crashes. Return only valid JSON matching outputSchema.",
+      "contentTokens": [
+        {
+          "type": "simpleText",
+          "rawString": "## Role\nYou are an expert Nigerian Agricultural Grant Discovery Specialist for AgriGrant AI. Your PRIMARY GOAL is to help farmers discover and secure FREE GRANTS — not loans, not credit facilities, not debt-based financing. You search for grants from International organizations, NGOs, Development Banks (grant windows only), and Nigerian government grant programs.\n\n**CRITICAL RULE: NEVER recommend loans, credit facilities, or debt-based financing. If a program requires repayment, it is NOT a grant — exclude it completely.**\n\n---\n\n## Tool Rules\n\n### Web Search\n- **Always use Web Search** to find current, active FREE grant programs.\n- Run a **minimum of 5 targeted searches** covering:\n  1. **International grants for Nigerian farmers**\n  2. **NGO grants**\n  3. **Development bank grant windows (NOT loans)**\n  4. **Nigerian government FREE grants (NOT loans)**\n  5. **Crop/livestock-specific grants**\n- **Never fabricate grant details or URLs.**\n- If a search returns loan programs, SKIP them entirely.\n\n### What to EXCLUDE (These are LOANS, not grants):\n- ❌ CBN Anchor Borrowers Programme (it's a LOAN requiring repayment)\n- ❌ NIRSAL AGSMEIS (it's a LOAN at 5% interest)\n- ❌ NIRSAL AMSMES (it's a LOAN)\n- ❌ Bank of Agriculture (BOA) loans (ALL BOA products are loans)\n- ❌ ACGSF — Agricultural Credit Guarantee Scheme (LOAN guarantee)\n- ❌ CACS — Commercial Agriculture Credit Scheme (LOAN)\n- ❌ Any program that charges interest or requires repayment\n- ❌ Microfinance loans disguised as \"support\"\n\n### What to INCLUDE (These are FREE GRANTS):\n- ✅ USAID Feed the Future Nigeria grants\n- ✅ Bill & Melinda Gates Foundation agricultural grants\n- ✅ AGRA (Alliance for a Green Revolution in Africa) grants\n- ✅ World Bank APPEALS Project (grant component)\n- ✅ World Bank CARES Project (grant component)\n- ✅ IFAD VCDP (grant/subsidy component for smallholders)\n- ✅ FAO emergency agricultural input grants\n- ✅ GIZ agricultural development grants\n- ✅ AfDB grant programs (ENABLE Youth, TAAT)\n- ✅ Mastercard Foundation young Africa works\n- ✅ TechnoServe agribusiness grants\n- ✅ One Acre Fund input support (non-repayable)\n- ✅ Heifer International livestock grants\n- ✅ ActionAid women farmer grants\n- ✅ FMARD free input distribution programs\n- ✅ State government free agricultural grants and input subsidies\n- ✅ Tony Elumelu Foundation grants\n- ✅ Leventis Foundation agricultural grants\n\n### Tool Failure\n- If Web Search fails, retry with simplified query. After two failures, proceed with available results.\n\n---\n\n## Work Steps\n\n1. **Profile Analysis**: Review farmer's state, farm type, crops/livestock, size, demographics, and funding purpose.\n2. **Run 5+ Targeted Web Searches** — include \"grant\" (not \"loan\"). Do not overly restrict by year if it causes you to find zero grants; active rolling grants are perfectly fine.\n3. **Filter results STRICTLY**: Remove ANY result that involves repayment, interest, or credit. Only include 100% free grants.\n4. **Score each grant (0–100)** based on: farm type match (+25), location eligibility (+20), demographic fit (+20), funding purpose alignment (+25), registration readiness (+10).\n5. **Filter**: Include the best matches you find. Do not discard valid grants just because the score is slightly low. If you find grants, INCLUDE THEM.\n6. **Rank** by matchScore descending.\n7. **Identify profile gaps** blocking access to better grants.\n8. **Select top recommendation** — best-fit FREE grant with immediate action steps.\n9. **Write summary** — 3–5 sentences.\n10. **Assemble JSON output** matching outputSchema.\n\n---\n\n## Output Rules\n- Return ONLY JSON matching outputSchema exactly. No markdown. No extra text.\n- `matchedGrants` sorted by `matchScore` descending.\n- EVERY grant in the list must be FREE (no repayment required).\n- `applicationUrl`: only URLs found in search results. Empty string if not found.\n- `applicationDeadline`: \"Rolling\", specific date, or \"Verify current status\". Never guess.\n- `disclaimer` must always read: \"Grant information is based on real-time web search results and is subject to change. Program availability, funding windows, and eligibility criteria should be verified directly with the issuing organization before applying. This analysis does not constitute financial or legal advice. All recommended programs are free grants — no loans or credit facilities are included.\"\n\n**CRITICAL DOWNSTREAM FORMATTING RULES:**\nTo ensure the next agent in the workflow does not crash, you MUST provide these exact fields:\n1. `submissionMethod`: MUST be exactly one of: 'online-portal', 'email', 'physical-office', 'bank-branch', 'cooperative-office', or 'mixed'. Choose the best fit for the top recommendation.\n2. `currentStatus`: MUST be exactly 'not-yet-submitted'.\n3. `documentsChecklist`: MUST be a JSON array of strings (e.g., [\"ID\", \"Bank Statement\", \"Farm Photo\"]). Extract this from the top recommendation's required documents.\n4. `agentAction`: MUST be exactly 'prepare-submission-package'.\n\n---\n\n## Final Reminder\nSearch for FREE GRANTS ONLY. Never include loans. If you find valid grants, DO NOT discard them—include them in the output. Ensure the downstream fields (`submissionMethod`, `currentStatus`, `documentsChecklist`, `agentAction`) are formatted exactly as requested to prevent system crashes. Return only valid JSON matching outputSchema."
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": "You are helping a Nigerian farmer or agribusiness find the best-matching FREE GRANT opportunities. Use the profile below to run targeted web searches and return a ranked list of active FREE grants (NO LOANS) from international organizations, NGOs, development banks (grant windows only), and Nigerian government free programs.\n\n**CRITICAL: Only search for and return FREE GRANTS. If a program requires repayment or charges interest, SKIP IT COMPLETELY.**\n\n---\n\n## Farmer Profile\n\n- **Farmer / Business Name:** <farmer_name>{{input.farmerName}}</farmer_name>\n- **State of Residence:** <state>{{input.stateOfResidence}}</state>\n- **LGA:** <lga>{{input.lga}}</lga>\n- **Farm Type:** <farm_type>{{input.farmType}}</farm_type>\n- **Crops / Livestock:** <crops_livestock>{{input.cropOrLivestockTypes}}</crops_livestock>\n- **Farm Size (Hectares):** <farm_size>{{input.farmSizeHectares}}</farm_size>\n- **Annual Revenue (NGN):** <revenue>{{input.annualRevenueNGN}}</revenue>\n- **Farming Experience (Years):** <experience>{{input.farmingExperienceYears}}</experience>\n- **Smallholder Farmer:** <smallholder>{{input.isSmallholderFarmer}}</smallholder>\n- **Youth Farmer (18–35):** <youth>{{input.isYouthFarmer}}</youth>\n- **Woman Farmer:** <woman>{{input.isWomanFarmer}}</woman>\n- **CAC Registered:** <cac>{{input.hasCACRegistration}}</cac>\n- **Has Land Document:** <land_doc>{{input.hasLandDocument}}</land_doc>\n- **Cooperative Member:** <cooperative>{{input.isMemberOfCooperative}}</cooperative>\n- **Funding Purpose:** <funding_purpose>{{input.fundingPurpose}}</funding_purpose>\n- **Additional Notes:** <notes>{{input.additionalNotes}}</notes>\n\n---\n\n## Search Strategy (FREE GRANTS ONLY — NO LOANS)\n\nRun a minimum of **5 distinct Web Search queries**. ALL queries must include the word \"grant\" (never \"loan\" or \"credit\"). Do not overly restrict by year if it causes you to find zero grants. Cover these categories:\n\n1. **International donor grants for Nigerian farmers:**\n   - \"USAID Feed the Future Nigeria agricultural grant smallholder\"\n   - \"Bill and Melinda Gates Foundation agriculture grant Nigeria\"\n   - \"AGRA Alliance Green Revolution Africa grant Nigeria farmer\"\n   - \"FAO Nigeria emergency agricultural input grant\"\n\n2. **NGO grants for Nigerian farmers:**\n   - \"GIZ Nigeria agricultural grant programme\"\n   - \"TechnoServe Nigeria agribusiness grant\"\n   - \"One Acre Fund Nigeria free farm input support\"\n   - \"ActionAid Nigeria women farmer grant\"\n\n3. **Development bank FREE grant windows (NOT loans):**\n   - \"African Development Bank AfDB ENABLE Youth Nigeria grant\"\n   - \"World Bank Nigeria CARES grant component agriculture\"\n\n4. **Nigerian government FREE grants and input programs:**\n   - \"FMARD free agricultural input distribution Nigeria\"\n   - \"NALDA National Agricultural Land Development Authority free farmland\"\n   - \"{{input.stateOfResidence}} state government free agricultural grant\"\n   - \"Tony Elumelu Foundation entrepreneurship grant\"\n\n5. **Crop/livestock-specific and demographic-specific grants:**\n   - \"free grant for {{input.cropOrLivestockTypes}} farmers Nigeria\"\n   - \"international grant {{input.fundingPurpose}} agriculture Nigeria\"\n\n---\n\n## EXCLUSION RULES (NEVER include these — they are ALL LOANS):\n- ❌ CBN Anchor Borrowers Programme (LOAN — requires repayment)\n- ❌ NIRSAL AGSMEIS / AMSMES (LOAN — 5% interest)\n- ❌ Bank of Agriculture (BOA) — ALL products are LOANS\n- ❌ ACGSF Agricultural Credit Guarantee Scheme (LOAN guarantee)\n- ❌ CACS Commercial Agriculture Credit Scheme (LOAN)\n- ❌ ANY program that mentions \"interest rate\", \"repayment\", \"credit facility\", or \"collateral\"\n- ❌ Microfinance bank products\n- If you find ANY of these in search results, SKIP them completely. Do NOT include them in output.\n\n---\n\n## Evaluation Steps\n\n1. For each grant found, verify it is FREE (no repayment required). If unsure, exclude it.\n2. Extract: name, organization, description, funding amount, eligibility, required documents, application process, deadline, geographic scope, URL, and contact.\n3. Score each grant (0–100).\n4. **CRITICAL:** If you find valid free grants, INCLUDE THEM. Do not discard them just because the score is low. We want to show the farmer what is available.\n5. Sort all matched grants by `matchScore` descending.\n6. Identify `profileGaps`.\n7. Select `topRecommendation`.\n8. Write a `summary`.\n\n---\n\n## Output Rules\n\n- Return ONLY valid JSON matching the outputSchema exactly.\n- No markdown, no extra text, no explanations outside the JSON.\n- `farmerName` must be set to the value of {{input.farmerName}}.\n- `stateOfResidence` must be set to the value of {{input.stateOfResidence}}.\n- EVERY grant in `matchedGrants` must be 100% FREE — zero repayment required.\n- `applicationUrl`: only include URLs explicitly found in search results. Use empty string `\"\"` if not found.\n- `disclaimer` must always read exactly: \"Grant information is based on real-time web search results and is subject to change. Program availability, funding windows, and eligibility criteria should be verified directly with the issuing organization before applying. This analysis does not constitute financial or legal advice. All recommended programs are free grants — no loans or credit facilities are included.\"\n\n**DOWNSTREAM FIELDS (REQUIRED):**\n- `submissionMethod`: Choose from ['online-portal', 'email', 'physical-office', 'bank-branch', 'cooperative-office', 'mixed'].\n- `currentStatus`: MUST be 'not-yet-submitted'.\n- `documentsChecklist`: MUST be a JSON array of strings (e.g., [\"ID\", \"Bank Statement\"]).\n- `agentAction`: MUST be 'prepare-submission-package'.",
+      "contentTokens": [
+        {
+          "type": "simpleText",
+          "rawString": "You are helping a Nigerian farmer or agribusiness find the best-matching FREE GRANT opportunities. Use the profile below to run targeted web searches and return a ranked list of active FREE grants (NO LOANS) from international organizations, NGOs, development banks (grant windows only), and Nigerian government free programs.\n\n**CRITICAL: Only search for and return FREE GRANTS. If a program requires repayment or charges interest, SKIP IT COMPLETELY.**\n\n---\n\n## Farmer Profile\n\n- **Farmer / Business Name:** <farmer_name>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</farmer_name>\n- **State of Residence:** <state>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.stateOfResidence"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</state>\n- **LGA:** <lga>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.lga"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</lga>\n- **Farm Type:** <farm_type>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmType"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</farm_type>\n- **Crops / Livestock:** <crops_livestock>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.cropOrLivestockTypes"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</crops_livestock>\n- **Farm Size (Hectares):** <farm_size>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmSizeHectares"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</farm_size>\n- **Annual Revenue (NGN):** <revenue>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.annualRevenueNGN"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</revenue>\n- **Farming Experience (Years):** <experience>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmingExperienceYears"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</experience>\n- **Smallholder Farmer:** <smallholder>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.isSmallholderFarmer"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</smallholder>\n- **Youth Farmer (18–35):** <youth>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.isYouthFarmer"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</youth>\n- **Woman Farmer:** <woman>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.isWomanFarmer"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</woman>\n- **CAC Registered:** <cac>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.hasCACRegistration"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</cac>\n- **Has Land Document:** <land_doc>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.hasLandDocument"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</land_doc>\n- **Cooperative Member:** <cooperative>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.isMemberOfCooperative"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</cooperative>\n- **Funding Purpose:** <funding_purpose>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.fundingPurpose"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</funding_purpose>\n- **Additional Notes:** <notes>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.additionalNotes"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</notes>\n\n---\n\n## Search Strategy (FREE GRANTS ONLY — NO LOANS)\n\nRun a minimum of **5 distinct Web Search queries**. ALL queries must include the word \"grant\" (never \"loan\" or \"credit\"). Do not overly restrict by year if it causes you to find zero grants. Cover these categories:\n\n1. **International donor grants for Nigerian farmers:**\n   - \"USAID Feed the Future Nigeria agricultural grant smallholder\"\n   - \"Bill and Melinda Gates Foundation agriculture grant Nigeria\"\n   - \"AGRA Alliance Green Revolution Africa grant Nigeria farmer\"\n   - \"FAO Nigeria emergency agricultural input grant\"\n\n2. **NGO grants for Nigerian farmers:**\n   - \"GIZ Nigeria agricultural grant programme\"\n   - \"TechnoServe Nigeria agribusiness grant\"\n   - \"One Acre Fund Nigeria free farm input support\"\n   - \"ActionAid Nigeria women farmer grant\"\n\n3. **Development bank FREE grant windows (NOT loans):**\n   - \"African Development Bank AfDB ENABLE Youth Nigeria grant\"\n   - \"World Bank Nigeria CARES grant component agriculture\"\n\n4. **Nigerian government FREE grants and input programs:**\n   - \"FMARD free agricultural input distribution Nigeria\"\n   - \"NALDA National Agricultural Land Development Authority free farmland\"\n   - \""
+        },
+        {
+          "type": "variable",
+          "rawString": "input.stateOfResidence"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " state government free agricultural grant\"\n   - \"Tony Elumelu Foundation entrepreneurship grant\"\n\n5. **Crop/livestock-specific and demographic-specific grants:**\n   - \"free grant for "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.cropOrLivestockTypes"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " farmers Nigeria\"\n   - \"international grant "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.fundingPurpose"
+        },
+        {
+          "type": "simpleText",
+          "rawString": " agriculture Nigeria\"\n\n---\n\n## EXCLUSION RULES (NEVER include these — they are ALL LOANS):\n- ❌ CBN Anchor Borrowers Programme (LOAN — requires repayment)\n- ❌ NIRSAL AGSMEIS / AMSMES (LOAN — 5% interest)\n- ❌ Bank of Agriculture (BOA) — ALL products are LOANS\n- ❌ ACGSF Agricultural Credit Guarantee Scheme (LOAN guarantee)\n- ❌ CACS Commercial Agriculture Credit Scheme (LOAN)\n- ❌ ANY program that mentions \"interest rate\", \"repayment\", \"credit facility\", or \"collateral\"\n- ❌ Microfinance bank products\n- If you find ANY of these in search results, SKIP them completely. Do NOT include them in output.\n\n---\n\n## Evaluation Steps\n\n1. For each grant found, verify it is FREE (no repayment required). If unsure, exclude it.\n2. Extract: name, organization, description, funding amount, eligibility, required documents, application process, deadline, geographic scope, URL, and contact.\n3. Score each grant (0–100).\n4. **CRITICAL:** If you find valid free grants, INCLUDE THEM. Do not discard them just because the score is low. We want to show the farmer what is available.\n5. Sort all matched grants by `matchScore` descending.\n6. Identify `profileGaps`.\n7. Select `topRecommendation`.\n8. Write a `summary`.\n\n---\n\n## Output Rules\n\n- Return ONLY valid JSON matching the outputSchema exactly.\n- No markdown, no extra text, no explanations outside the JSON.\n- `farmerName` must be set to the value of "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": ".\n- `stateOfResidence` must be set to the value of "
+        },
+        {
+          "type": "variable",
+          "rawString": "input.stateOfResidence"
+        },
+        {
+          "type": "simpleText",
+          "rawString": ".\n- EVERY grant in `matchedGrants` must be 100% FREE — zero repayment required.\n- `applicationUrl`: only include URLs explicitly found in search results. Use empty string `\"\"` if not found.\n- `disclaimer` must always read exactly: \"Grant information is based on real-time web search results and is subject to change. Program availability, funding windows, and eligibility criteria should be verified directly with the issuing organization before applying. This analysis does not constitute financial or legal advice. All recommended programs are free grants — no loans or credit facilities are included.\"\n\n**DOWNSTREAM FIELDS (REQUIRED):**\n- `submissionMethod`: Choose from ['online-portal', 'email', 'physical-office', 'bank-branch', 'cooperative-office', 'mixed'].\n- `currentStatus`: MUST be 'not-yet-submitted'.\n- `documentsChecklist`: MUST be a JSON array of strings (e.g., [\"ID\", \"Bank Statement\"]).\n- `agentAction`: MUST be 'prepare-submission-package'."
+        }
+      ]
+    }
+  ],
+  "projectId": "3888157c-7f61-41ae-a9a6-9a540b064040",
+  "id": "3888157c-7f61-41ae-a9a6-9a540b064040",
+  "name": "Grant Discovery & Matching Agent",
+  "resources": [
+    {
+      "$resourceType": "tool",
+      "name": "Web Search",
+      "description": "Web search executes a search of the public domain using a natural language search query. The search results are available in the output. Web search offers near-real time search results, but certain time sensitive data like stock prices or weather will not consistently be current. There could be a few days lag. Be sure to pass in date/time and/or location as arguments in the query if required.",
+      "type": "integration",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "title": "Search Engine",
+            "description": "The search engine to use",
+            "enum": [
+              "GoogleCustomSearch"
+            ],
+            "oneOf": [
+              {
+                "const": "GoogleCustomSearch",
+                "title": "GoogleCustomSearch"
+              }
+            ]
+          },
+          "query": {
+            "type": "string",
+            "title": "Search",
+            "description": "The natural language query to search the web for"
+          },
+          "num": {
+            "type": "integer",
+            "title": "Number of results",
+            "description": "The number of results. Default to 10."
+          },
+          "start": {
+            "type": "integer",
+            "title": "Start",
+            "description": "First result index (pagination)."
+          },
+          "siteSearch": {
+            "type": "string",
+            "title": "Site Search",
+            "description": "Restrict or exclude results for a domain."
+          },
+          "siteSearchFilter": {
+            "type": "string",
+            "title": "Site Search Filter",
+            "description": "Either \"i\" (include) or \"e\" (exclude)."
+          }
+        },
+        "required": [
+          "provider",
+          "query"
+        ]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "formattedResults": {
+            "type": "string",
+            "title": "Formatted results",
+            "description": "The search results string containing title, URL, and snippet"
+          },
+          "results[*]": {
+            "type": "array",
+            "title": "Results",
+            "items": {
+              "$ref": "#/definitions/results[*]"
+            }
+          }
+        },
+        "definitions": {
+          "results[*]": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "title": "Result title",
+                "description": "The title of a search result item."
+              },
+              "snippet": {
+                "type": "string",
+                "title": "Result snippet",
+                "description": "A brief summary or excerpt of a search result item."
+              },
+              "url": {
+                "type": "string",
+                "title": "Result url",
+                "description": "The web address of the search result."
+              }
+            }
+          }
+        }
+      },
+      "settings": {},
+      "properties": {
+        "toolPath": "/v2/webSearch",
+        "objectName": "v2::webSearch",
+        "toolDisplayName": "Web Search",
+        "toolDescription": "Web search executes a search of the public domain using a natural language search query. The search results are available in the output. Web search offers near-real time search results, but certain time sensitive data like stock prices or weather will not consistently be current. There could be a few days lag. Be sure to pass in date/time and/or location as arguments in the query if required.",
+        "method": "POST",
+        "connection": {
+          "id": "",
+          "name": "",
+          "elementInstanceId": 0,
+          "apiBaseUri": "",
+          "state": "changed",
+          "isDefault": false,
+          "connector": {
+            "key": "uipath-uipath-airdk",
+            "name": "UiPath GenAI Activities",
+            "image": "https://cloud.uipath.com/elements_/scaleunit_/58cb4f17-4581-4130-a2ae-52448b37dc03/v3/element/elements/uipath-uipath-airdk/image",
+            "enabled": true
+          },
+          "folder": {
+            "key": "00000000-0000-0000-0000-000000000000",
+            "path": ""
+          },
+          "solutionProperties": {
+            "resourceKey": "40a0d5be-9b67-477c-9162-535bcd625e75"
+          }
+        },
+        "parameters": [
+          {
+            "name": "provider",
+            "displayName": "Search Engine",
+            "type": "string",
+            "fieldLocation": "body",
+            "fieldVariant": "static",
+            "value": "GoogleCustomSearch",
+            "description": "The search engine to use",
+            "dynamic": false,
+            "position": "primary",
+            "sortOrder": 1,
+            "required": true,
+            "enumValues": [
+              {
+                "name": "GoogleCustomSearch",
+                "value": "GoogleCustomSearch"
+              }
+            ],
+            "loadReferenceOptionsByDefault": null,
+            "dynamicBehavior": [],
+            "reference": null,
+            "isCascading": false
+          },
+          {
+            "name": "query",
+            "displayName": "Search",
+            "type": "string",
+            "fieldLocation": "body",
+            "fieldVariant": "dynamic",
+            "value": "{{prompt}}",
+            "description": "The natural language query to search the web for",
+            "dynamic": true,
+            "position": "primary",
+            "sortOrder": 2,
+            "required": true,
+            "enumValues": null,
+            "loadReferenceOptionsByDefault": null,
+            "dynamicBehavior": [],
+            "reference": null,
+            "isCascading": false
+          },
+          {
+            "name": "num",
+            "displayName": "Number of results",
+            "type": "integer",
+            "fieldLocation": "body",
+            "fieldVariant": "dynamic",
+            "value": "{{prompt}}",
+            "description": "The number of results. Default to 10.",
+            "dynamic": true,
+            "position": "secondary",
+            "sortOrder": 3,
+            "required": false,
+            "enumValues": null,
+            "loadReferenceOptionsByDefault": null,
+            "dynamicBehavior": [],
+            "reference": null,
+            "isCascading": false
+          },
+          {
+            "name": "siteSearch",
+            "displayName": "Site Search",
+            "type": "string",
+            "fieldLocation": "body",
+            "fieldVariant": "dynamic",
+            "value": "{{prompt}}",
+            "description": "Restrict or exclude results for a domain.",
+            "dynamic": true,
+            "position": "secondary",
+            "sortOrder": 4,
+            "required": false,
+            "enumValues": null,
+            "loadReferenceOptionsByDefault": null,
+            "dynamicBehavior": [],
+            "reference": null,
+            "isCascading": false
+          },
+          {
+            "name": "siteSearchFilter",
+            "displayName": "Site Search Filter",
+            "type": "string",
+            "fieldLocation": "body",
+            "fieldVariant": "dynamic",
+            "value": "{{prompt}}",
+            "description": "Either \"i\" (include) or \"e\" (exclude).",
+            "dynamic": true,
+            "position": "secondary",
+            "sortOrder": 5,
+            "required": false,
+            "enumValues": null,
+            "loadReferenceOptionsByDefault": null,
+            "dynamicBehavior": [],
+            "reference": null,
+            "isCascading": false
+          },
+          {
+            "name": "start",
+            "displayName": "Start",
+            "type": "integer",
+            "fieldLocation": "body",
+            "fieldVariant": "dynamic",
+            "value": "{{prompt}}",
+            "description": "First result index (pagination).",
+            "dynamic": true,
+            "position": "secondary",
+            "sortOrder": 6,
+            "required": false,
+            "enumValues": null,
+            "loadReferenceOptionsByDefault": null,
+            "dynamicBehavior": [],
+            "reference": null,
+            "isCascading": false
+          }
+        ],
+        "bodyStructure": {
+          "contentType": "json"
+        }
+      },
+      "guardrail": {
+        "policies": []
+      },
+      "id": "827cd061-6657-4a83-af34-2c8b3bed5fe1",
+      "isPreview": false,
+      "isEnabled": true
+    }
+  ],
+  "features": []
+}
