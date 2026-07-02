@@ -1,0 +1,63 @@
+{
+  "DocVersion": "1.0.0",
+  "StudioMinVersion": "2025.04.0",
+  "SolutionId": "3a4257ff-ce33-4a90-be65-08dec08e2a71",
+  "Projects": [
+    {
+      "Type": "Agent",
+      "ProjectRelativePath": "Document Understanding Agent/project.uiproj",
+      "Id": "5a156755-7fa2-4329-9a3a-d1294e326746"
+    },
+    {
+      "Type": "Process",
+      "ProjectRelativePath": "Grant Form Filler Robot/project.uiproj",
+      "Id": "44838a6e-9f3b-468f-929f-7b54641e38c6"
+    },
+    {
+      "Type": "WebApp",
+      "ProjectRelativePath": "Proposal Review App/project.uiproj",
+      "Id": "b4886c90-964d-4e83-ac80-08550108dfc2"
+    },
+    {
+      "Type": "Agent",
+      "ProjectRelativePath": "Proposal Generation Agent/project.uiproj",
+      "Id": "56573e1c-baad-41d2-95e9-29b531e6d2a0"
+    },
+    {
+      "Type": "Agent",
+      "ProjectRelativePath": "Eligibility & Risk Assessment Agent/project.uiproj",
+      "Id": "b1cd8009-fd48-4f6e-a7e6-e828466e9900"
+    },
+    {
+      "Type": "WebApp",
+      "ProjectRelativePath": "Grant Selection App/project.uiproj",
+      "Id": "90512d0f-8577-4e6e-aefc-97dbb9232092"
+    },
+    {
+      "Type": "Api",
+      "ProjectRelativePath": "AgriGrant API/project.uiproj",
+      "Id": "990dbee8-3d5f-4307-ba89-2aa5f6559421"
+    },
+    {
+      "Type": "ProcessOrchestration",
+      "ProjectRelativePath": "Nigerian AgriGrant Pipeline/project.uiproj",
+      "Id": "d19ee504-5572-4f9d-805a-3ec5e35c2b32"
+    },
+    {
+      "Type": "Agent",
+      "ProjectRelativePath": "Grant Discovery & Matching Agent/project.uiproj",
+      "Id": "c1e56a84-99a0-4189-85fc-fe0579ec01ca"
+    },
+    {
+      "Type": "WebApp",
+      "ProjectRelativePath": "Document Upload (HITL) App/project.uiproj",
+      "Id": "ef3a1a4d-7b05-43ec-83a9-35a760acee4a"
+    },
+    {
+      "Type": "Agent",
+      "ProjectRelativePath": "Submission & Follow-up Agent/project.uiproj",
+      "Id": "47d5dd08-472c-4b6c-af02-58275cea617b"
+    }
+  ],
+  "AutomationHubIdeaUrl": null
+}
