@@ -1,0 +1,10 @@
+{
+  "ProjectType": "WebApp",
+  "WebAppSettings": {
+    "AppId": "ID670ffa24a1344c4bb36aa634a7825c44",
+    "IsCoreProject": true
+  },
+  "Name": "Document Upload (HITL) App",
+  "Description": "",
+  "MainFile": "Main.xaml"
+}
