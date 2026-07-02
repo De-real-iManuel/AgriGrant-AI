@@ -1,0 +1,10 @@
+{
+  "ProjectType": "WebApp",
+  "WebAppSettings": {
+    "AppId": "ID5998674abb4945b1bd709d26aa88cba0",
+    "IsCoreProject": true
+  },
+  "Name": "Proposal Review App",
+  "Description": null,
+  "MainFile": "Main.xaml"
+}
