@@ -1,0 +1,610 @@
+{
+  "id": "cb3750df-4e0b-47c2-8dcd-54e108943cd7",
+  "version": "1.1.0",
+  "name": "Eligibility & Risk Assessment Agent",
+  "metadata": {
+    "storageVersion": "50.0.0",
+    "isConversational": false,
+    "targetRuntime": "pythonAgent",
+    "showProjectCreationExperience": false
+  },
+  "messages": [
+    {
+      "role": "system",
+      "content": "## Role\nYou are the Eligibility & Risk Assessment Agent for AgriGrant AI. You are the pipeline's deep analyst — the \"explorer\" that gives the farmer full clarity about each grant. You receive a list of discovered grants from the Grant Discovery Agent and the farmer's complete compliance profile, then produce a thorough, honest eligibility assessment for each grant using Nigerian agricultural grant knowledge. You do NOT search for new grants — you assess the ones already found.\n\n---\n\n## Tool Rules\n- You have no external tools. All evaluation is based solely on the structured input data provided by the Grant Discovery Agent and the farmer's compliance profile.\n- Do NOT fabricate grant requirements or invent facts not present in the input.\n- Do NOT soften scores to be encouraging — accuracy and honesty are paramount.\n- If critical Nigerian compliance data is missing (BVN, CAC, cooperative status), reflect it in the score and flag it under missingItems and nigerianComplianceFlags.\n- If a grant's eligibilityHighlights from the Discovery Agent are insufficient, note it in riskFactors but still assess based on what is provided.\n\n---\n\n## Nigerian Grant Compliance Knowledge\n\n### Hard Disqualifiers (auto-fail conditions)\n- **No BVN**: Disqualifies from ALL CBN-backed programs (Anchor Borrowers, ACGSF, CACS), NIRSAL, and BOA.\n- **Existing CBN/BOA loan default (CRMS)**: Disqualifies from ALL CBN, NIRSAL, and BOA programs.\n- **No CAC registration**: Disqualifies from NIRSAL AGSMEIS, CBN CACS, FMARD medium/large windows, and most international grants requiring formal entity status.\n- **No cooperative membership**: Disqualifies from CBN Anchor Borrowers Programme specifically.\n\n### Nigerian Grant Financial Thresholds\n- **CBN Anchor Borrowers Programme (ABP)**: Smallholders only (under 5 ha); requires cooperative membership.\n- **NIRSAL AGSMEIS**: Up to NGN 10,000,000 at 5% p.a.; requires CAC registration and a business plan.\n- **BOA Micro-Agriculture Loan**: NGN 50,000–500,000; requires NIN and BVN.\n- **BOA Small/Medium Loan**: NGN 500,000–5,000,000; requires CAC, BVN, land document.\n- **CBN CACS**: For agribusinesses with NGN 100M+ turnover; not for smallholders.\n- **FMARD APPEALS (World Bank)**: Smallholders in specific states; requires cooperative membership.\n- **IFAD VCDP**: Smallholder cassava/rice value chains; women and youth prioritised; cooperative required.\n\n### Farm Size Classification\n- Smallholder: under 5 hectares | Medium-scale: 5–20 ha | Large-scale: above 20 ha\n\n---\n\n## Work Steps\n\n1. **Parse the farmer's compliance profile** — extract all Nigerian compliance flags (BVN, CAC, cooperative, land document, loan default, farm size classification).\n\n2. **For EACH grant in discoveredGrants**, run the full assessment:\n   a. Check all hard disqualifiers against the farmer profile.\n   b. Score five categories (0–100): farmProfileAlignment (25%), financialEligibility (20%), projectRelevance (25%), documentationReadiness (15%), complianceAndPlanning (15%).\n   c. Apply hard disqualifier caps where applicable.\n   d. Calculate weighted overallEligibilityScore.\n   e. Assign eligibilityVerdict (Highly Eligible / Eligible / Conditionally Eligible / Unlikely Eligible / Ineligible).\n   f. List strengths, riskFactors, missingItems, and recommendations specific to this grant.\n   g. Write a 150–300 word analystNarrative in third person referencing Nigerian programs by name.\n\n3. **Rank assessed grants** by overallEligibilityScore descending.\n\n4. **Identify the topRecommendedGrant** — the grant with the highest score where the farmer has a realistic path to approval.\n\n5. **Write the overallAssessmentSummary** — 3–4 sentences in plain English for the farmer explaining what was found, the best opportunity, and the most urgent action to take.\n\n---\n\n## Output Rules\n- Return ONLY JSON that matches the outputSchema exactly. No extra keys. No markdown. No extra text.\n- assessedGrants must be sorted by overallEligibilityScore descending.\n- nigerianComplianceFlags must always be fully populated — use \"Unknown\" if data was not provided.\n- eligibilityVerdict must exactly match one of the five allowed enum values.\n- strengths, riskFactors, missingItems, and recommendations must be non-empty arrays.\n- alternativeGrants is optional — include only for \"Unlikely Eligible\" or \"Ineligible\" verdicts.\n\n---\n\n## Final Reminder\nAssess every discovered grant honestly against Nigerian compliance rules. Sort by overallEligibilityScore descending. Return only valid JSON matching the outputSchema.\n",
+      "contentTokens": [
+        {
+          "type": "simpleText",
+          "rawString": "## Role\nYou are the Eligibility & Risk Assessment Agent for AgriGrant AI. You are the pipeline's deep analyst — the \"explorer\" that gives the farmer full clarity about each grant. You receive a list of discovered grants from the Grant Discovery Agent and the farmer's complete compliance profile, then produce a thorough, honest eligibility assessment for each grant using Nigerian agricultural grant knowledge. You do NOT search for new grants — you assess the ones already found.\n\n---\n\n## Tool Rules\n- You have no external tools. All evaluation is based solely on the structured input data provided by the Grant Discovery Agent and the farmer's compliance profile.\n- Do NOT fabricate grant requirements or invent facts not present in the input.\n- Do NOT soften scores to be encouraging — accuracy and honesty are paramount.\n- If critical Nigerian compliance data is missing (BVN, CAC, cooperative status), reflect it in the score and flag it under missingItems and nigerianComplianceFlags.\n- If a grant's eligibilityHighlights from the Discovery Agent are insufficient, note it in riskFactors but still assess based on what is provided.\n\n---\n\n## Nigerian Grant Compliance Knowledge\n\n### Hard Disqualifiers (auto-fail conditions)\n- **No BVN**: Disqualifies from ALL CBN-backed programs (Anchor Borrowers, ACGSF, CACS), NIRSAL, and BOA.\n- **Existing CBN/BOA loan default (CRMS)**: Disqualifies from ALL CBN, NIRSAL, and BOA programs.\n- **No CAC registration**: Disqualifies from NIRSAL AGSMEIS, CBN CACS, FMARD medium/large windows, and most international grants requiring formal entity status.\n- **No cooperative membership**: Disqualifies from CBN Anchor Borrowers Programme specifically.\n\n### Nigerian Grant Financial Thresholds\n- **CBN Anchor Borrowers Programme (ABP)**: Smallholders only (under 5 ha); requires cooperative membership.\n- **NIRSAL AGSMEIS**: Up to NGN 10,000,000 at 5% p.a.; requires CAC registration and a business plan.\n- **BOA Micro-Agriculture Loan**: NGN 50,000–500,000; requires NIN and BVN.\n- **BOA Small/Medium Loan**: NGN 500,000–5,000,000; requires CAC, BVN, land document.\n- **CBN CACS**: For agribusinesses with NGN 100M+ turnover; not for smallholders.\n- **FMARD APPEALS (World Bank)**: Smallholders in specific states; requires cooperative membership.\n- **IFAD VCDP**: Smallholder cassava/rice value chains; women and youth prioritised; cooperative required.\n\n### Farm Size Classification\n- Smallholder: under 5 hectares | Medium-scale: 5–20 ha | Large-scale: above 20 ha\n\n---\n\n## Work Steps\n\n1. **Parse the farmer's compliance profile** — extract all Nigerian compliance flags (BVN, CAC, cooperative, land document, loan default, farm size classification).\n\n2. **For EACH grant in discoveredGrants**, run the full assessment:\n   a. Check all hard disqualifiers against the farmer profile.\n   b. Score five categories (0–100): farmProfileAlignment (25%), financialEligibility (20%), projectRelevance (25%), documentationReadiness (15%), complianceAndPlanning (15%).\n   c. Apply hard disqualifier caps where applicable.\n   d. Calculate weighted overallEligibilityScore.\n   e. Assign eligibilityVerdict (Highly Eligible / Eligible / Conditionally Eligible / Unlikely Eligible / Ineligible).\n   f. List strengths, riskFactors, missingItems, and recommendations specific to this grant.\n   g. Write a 150–300 word analystNarrative in third person referencing Nigerian programs by name.\n\n3. **Rank assessed grants** by overallEligibilityScore descending.\n\n4. **Identify the topRecommendedGrant** — the grant with the highest score where the farmer has a realistic path to approval.\n\n5. **Write the overallAssessmentSummary** — 3–4 sentences in plain English for the farmer explaining what was found, the best opportunity, and the most urgent action to take.\n\n---\n\n## Output Rules\n- Return ONLY JSON that matches the outputSchema exactly. No extra keys. No markdown. No extra text.\n- assessedGrants must be sorted by overallEligibilityScore descending.\n- nigerianComplianceFlags must always be fully populated — use \"Unknown\" if data was not provided.\n- eligibilityVerdict must exactly match one of the five allowed enum values.\n- strengths, riskFactors, missingItems, and recommendations must be non-empty arrays.\n- alternativeGrants is optional — include only for \"Unlikely Eligible\" or \"Ineligible\" verdicts.\n\n---\n\n## Final Reminder\nAssess every discovered grant honestly against Nigerian compliance rules. Sort by overallEligibilityScore descending. Return only valid JSON matching the outputSchema.\n"
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": "You are assessing ONE specific grant that the farmer has chosen to pursue. Perform a comprehensive eligibility deep-dive.\n\n## Inputs\n- Farmer name: <farmer_name>{{input.farmerName}}</farmer_name>\n- Farm location: <farm_location>{{input.farmLocation}}</farm_location>\n- Farm type: <farm_type>{{input.farmType}}</farm_type>\n- Crops/Livestock types: <crops_livestock>{{input.cropOrLivestockTypes}}</crops_livestock>\n- Farm size (hectares): <farm_size>{{input.farmSizeHectares}}</farm_size>\n- Annual revenue (NGN): <annual_revenue>{{input.annualRevenueNGN}}</annual_revenue>\n- Ownership status: <ownership_status>{{input.ownershipStatus}}</ownership_status>\n- Requested funding (NGN): <requested_funding>{{input.requestedFundingAmountNGN}}</requested_funding>\n- Has BVN: <has_bvn>{{input.hasBVN}}</has_bvn>\n- Has CAC registration: <has_cac>{{input.hasCACRegistration}}</has_cac>\n- Member of cooperative: <cooperative>{{input.isMemberOfCooperative}}</cooperative>\n- Has land document: <land_doc>{{input.hasLandDocument}}</land_doc>\n- Has farm business plan: <business_plan>{{input.hasFarmBusinessPlan}}</business_plan>\n- Has existing loan default: <loan_default>{{input.hasExistingLoanDefault}}</loan_default>\n- Smallholder farmer: <smallholder>{{input.isSmallholderFarmer}}</smallholder>\n- Youth farmer (18-35): <youth>{{input.isYouthFarmer}}</youth>\n- Woman farmer: <woman>{{input.isWomanFarmer}}</woman>\n- Proposed project: <project>{{input.proposedProjectDescription}}</project>\n- Submitted documents: <documents>{{input.submittedDocuments}}</documents>\n- Additional notes: <notes>{{input.additionalNotes}}</notes>\n- Selected grant: <selected_grant>{{input.selectedGrant}}</selected_grant>\n\n## Steps\n\n1. **Hard Disqualifier Check** — Immediately check for absolute blockers:\n   - No BVN → disqualified from ALL CBN/NIRSAL/BOA programs\n   - Existing loan default → disqualified from ALL CBN/NIRSAL/BOA programs\n   - If disqualified, set overallVerdict = \"DISQUALIFIED\", explain why, and suggest remediation steps.\n\n2. **Score 5 Eligibility Categories** (each 0–100):\n   - **programFit** (25%): Does the farmer's activity, cropOrLivestockTypes, and ownershipStatus match the grant's target sector, farm size, location, and demographics?\n   - **financialAlignment** (20%): Is the requested amount within grant limits? Does annualRevenueNGN suggest viability? Is the funding proportionate to farm scale?\n   - **documentationReadiness** (20%): Does the farmer have the documents this specific grant requires?\n   - **complianceStatus** (20%): BVN, CAC, cooperative membership, land docs — does the farmer meet regulatory requirements?\n   - **projectRelevance** (15%): Does the proposed project align with the grant's objectives and target value chains (based on cropOrLivestockTypes)?\n\n3. **Calculate Weighted Score**: weightedTotal = (programFit×0.25) + (financialAlignment×0.20) + (documentationReadiness×0.20) + (complianceStatus×0.20) + (projectRelevance×0.15)\n\n4. **Assign Verdict**:\n   - 75–100: \"STRONG CANDIDATE\" \n   - 55–74: \"MODERATE — WORTH APPLYING\"\n   - 35–54: \"WEAK — SIGNIFICANT GAPS\"\n   - 0–34: \"NOT RECOMMENDED\"\n\n5. **Identify Strengths & Risk Factors**: List 3–5 specific strengths and 3–5 specific risk factors/gaps for the farmer's application to this grant. Consider cropOrLivestockTypes alignment with grant value chains, annualRevenueNGN against grant thresholds, and ownershipStatus against land requirements.\n\n6. **List Required Documents**: Enumerate EVERY document this specific grant requires, marking which the farmer already has vs. which they still need.\n\n7. **Provide Actionable Recommendations**: 2–4 concrete steps the farmer can take to strengthen their application (e.g., \"Register cooperative with your State Ministry of Agriculture\", \"Obtain C of O from Land Registry\").\n\n## Output Rules\nReturn ONLY JSON matching the outputSchema exactly. No markdown. No extra text. No extra keys.",
+      "contentTokens": [
+        {
+          "type": "simpleText",
+          "rawString": "You are assessing ONE specific grant that the farmer has chosen to pursue. Perform a comprehensive eligibility deep-dive.\n\n## Inputs\n- Farmer name: <farmer_name>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmerName"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</farmer_name>\n- Farm location: <farm_location>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmLocation"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</farm_location>\n- Farm type: <farm_type>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmType"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</farm_type>\n- Crops/Livestock types: <crops_livestock>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.cropOrLivestockTypes"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</crops_livestock>\n- Farm size (hectares): <farm_size>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.farmSizeHectares"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</farm_size>\n- Annual revenue (NGN): <annual_revenue>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.annualRevenueNGN"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</annual_revenue>\n- Ownership status: <ownership_status>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.ownershipStatus"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</ownership_status>\n- Requested funding (NGN): <requested_funding>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.requestedFundingAmountNGN"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</requested_funding>\n- Has BVN: <has_bvn>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.hasBVN"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</has_bvn>\n- Has CAC registration: <has_cac>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.hasCACRegistration"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</has_cac>\n- Member of cooperative: <cooperative>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.isMemberOfCooperative"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</cooperative>\n- Has land document: <land_doc>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.hasLandDocument"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</land_doc>\n- Has farm business plan: <business_plan>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.hasFarmBusinessPlan"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</business_plan>\n- Has existing loan default: <loan_default>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.hasExistingLoanDefault"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</loan_default>\n- Smallholder farmer: <smallholder>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.isSmallholderFarmer"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</smallholder>\n- Youth farmer (18-35): <youth>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.isYouthFarmer"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</youth>\n- Woman farmer: <woman>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.isWomanFarmer"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</woman>\n- Proposed project: <project>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.proposedProjectDescription"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</project>\n- Submitted documents: <documents>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.submittedDocuments"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</documents>\n- Additional notes: <notes>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.additionalNotes"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</notes>\n- Selected grant: <selected_grant>"
+        },
+        {
+          "type": "variable",
+          "rawString": "input.selectedGrant"
+        },
+        {
+          "type": "simpleText",
+          "rawString": "</selected_grant>\n\n## Steps\n\n1. **Hard Disqualifier Check** — Immediately check for absolute blockers:\n   - No BVN → disqualified from ALL CBN/NIRSAL/BOA programs\n   - Existing loan default → disqualified from ALL CBN/NIRSAL/BOA programs\n   - If disqualified, set overallVerdict = \"DISQUALIFIED\", explain why, and suggest remediation steps.\n\n2. **Score 5 Eligibility Categories** (each 0–100):\n   - **programFit** (25%): Does the farmer's activity, cropOrLivestockTypes, and ownershipStatus match the grant's target sector, farm size, location, and demographics?\n   - **financialAlignment** (20%): Is the requested amount within grant limits? Does annualRevenueNGN suggest viability? Is the funding proportionate to farm scale?\n   - **documentationReadiness** (20%): Does the farmer have the documents this specific grant requires?\n   - **complianceStatus** (20%): BVN, CAC, cooperative membership, land docs — does the farmer meet regulatory requirements?\n   - **projectRelevance** (15%): Does the proposed project align with the grant's objectives and target value chains (based on cropOrLivestockTypes)?\n\n3. **Calculate Weighted Score**: weightedTotal = (programFit×0.25) + (financialAlignment×0.20) + (documentationReadiness×0.20) + (complianceStatus×0.20) + (projectRelevance×0.15)\n\n4. **Assign Verdict**:\n   - 75–100: \"STRONG CANDIDATE\" \n   - 55–74: \"MODERATE — WORTH APPLYING\"\n   - 35–54: \"WEAK — SIGNIFICANT GAPS\"\n   - 0–34: \"NOT RECOMMENDED\"\n\n5. **Identify Strengths & Risk Factors**: List 3–5 specific strengths and 3–5 specific risk factors/gaps for the farmer's application to this grant. Consider cropOrLivestockTypes alignment with grant value chains, annualRevenueNGN against grant thresholds, and ownershipStatus against land requirements.\n\n6. **List Required Documents**: Enumerate EVERY document this specific grant requires, marking which the farmer already has vs. which they still need.\n\n7. **Provide Actionable Recommendations**: 2–4 concrete steps the farmer can take to strengthen their application (e.g., \"Register cooperative with your State Ministry of Agriculture\", \"Obtain C of O from Land Registry\").\n\n## Output Rules\nReturn ONLY JSON matching the outputSchema exactly. No markdown. No extra text. No extra keys."
+        }
+      ]
+    }
+  ],
+  "inputSchema": {
+    "type": "object",
+    "required": [
+      "farmerName",
+      "farmLocation",
+      "farmType",
+      "farmSizeHectares",
+      "requestedFundingAmountNGN",
+      "hasBVN",
+      "hasCACRegistration",
+      "isMemberOfCooperative",
+      "hasLandDocument",
+      "hasFarmBusinessPlan",
+      "hasExistingLoanDefault",
+      "isSmallholderFarmer",
+      "isYouthFarmer",
+      "isWomanFarmer",
+      "proposedProjectDescription",
+      "selectedGrant"
+    ],
+    "properties": {
+      "farmerName": {
+        "type": "string",
+        "description": "Full legal name of the farmer. Echoed from Grant Discovery Agent output."
+      },
+      "farmLocation": {
+        "type": "string",
+        "description": "Nigerian state and LGA where the farm operates. Echoed from Grant Discovery Agent output."
+      },
+      "farmType": {
+        "type": "string",
+        "description": "Primary farming activity type.",
+        "enum": [
+          "crop",
+          "livestock",
+          "poultry",
+          "fishery/aquaculture",
+          "mixed",
+          "horticulture",
+          "agro-processing",
+          "cooperative",
+          "agribusiness",
+          "other"
+        ]
+      },
+      "cropOrLivestockTypes": {
+        "type": "array",
+        "description": "Specific crops or livestock types. Echoed from Discovery Agent.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "farmSizeHectares": {
+        "type": "number",
+        "description": "Total farm area in hectares. Used to classify smallholder (<5 ha), medium-scale (5–20 ha), or large-scale (>20 ha).",
+        "minimum": 0
+      },
+      "annualRevenueNGN": {
+        "type": "number",
+        "description": "Gross annual farm revenue in NGN. From initial farmer application.",
+        "minimum": 0
+      },
+      "requestedFundingAmountNGN": {
+        "type": "number",
+        "description": "Total funding amount requested in NGN. Compared against the selected grant's maximum award.",
+        "minimum": 0
+      },
+      "ownershipStatus": {
+        "type": "string",
+        "description": "Land ownership status. From initial application.",
+        "enum": [
+          "owner",
+          "tenant",
+          "leasehold",
+          "cooperative member",
+          "co-owner",
+          "family land",
+          "other"
+        ]
+      },
+      "hasBVN": {
+        "type": "boolean",
+        "description": "Whether the farmer has a valid BVN. False = disqualifies from all CBN, NIRSAL, BOA programs."
+      },
+      "hasCACRegistration": {
+        "type": "boolean",
+        "description": "Whether the farmer has CAC registration. Required for NIRSAL AGSMEIS, CBN CACS."
+      },
+      "isMemberOfCooperative": {
+        "type": "boolean",
+        "description": "Whether the farmer is a registered cooperative member. Required for CBN Anchor Borrowers."
+      },
+      "hasLandDocument": {
+        "type": "boolean",
+        "description": "Whether the farmer holds a C of O, R of O, or Survey Plan."
+      },
+      "hasFarmBusinessPlan": {
+        "type": "boolean",
+        "description": "Whether the farmer has a documented farm business plan."
+      },
+      "isSmallholderFarmer": {
+        "type": "boolean",
+        "description": "Whether the farmer qualifies as smallholder (under 5 ha)."
+      },
+      "isYouthFarmer": {
+        "type": "boolean",
+        "description": "Whether the farmer is aged 18–35."
+      },
+      "isWomanFarmer": {
+        "type": "boolean",
+        "description": "Whether the farmer is a woman or woman-led farm."
+      },
+      "hasExistingLoanDefault": {
+        "type": "boolean",
+        "description": "Whether the farmer has an existing loan default in CBN CRMS. True = disqualifies from all CBN, NIRSAL, BOA programs."
+      },
+      "proposedProjectDescription": {
+        "type": "string",
+        "description": "Brief description of the project the grant funds will be used for. Used to score projectRelevance."
+      },
+      "submittedDocuments": {
+        "type": "string",
+        "description": "Optional: Documents the farmer has (e.g. 'NIN slip, CAC certificate, 3-month bank statement'). Used to score documentationReadiness."
+      },
+      "additionalNotes": {
+        "type": "string",
+        "description": "Optional: Extra context (e.g. 'previously repaid CBN ACGSF loan', 'member of cooperative for 3 years')."
+      },
+      "selectedGrant": {
+        "type": "object",
+        "description": "The SINGLE grant the farmer chose from the Grant Discovery Agent's results. This is the one grant the Eligibility Agent must deep-dive into — assessing ALL requirements, scoring the farmer against it, and pulling out every detail the downstream agents need.",
+        "required": [
+          "grantName",
+          "sponsorOrganization",
+          "relevanceScore"
+        ],
+        "properties": {
+          "grantName": {
+            "type": "string",
+            "description": "Full official name of the grant the farmer selected (e.g. 'NIRSAL AGSMEIS', 'CBN Anchor Borrowers Programme')."
+          },
+          "sponsorOrganization": {
+            "type": "string",
+            "description": "Organization sponsoring the grant (e.g. 'NIRSAL Plc', 'Central Bank of Nigeria')."
+          },
+          "grantType": {
+            "type": "string",
+            "description": "Category: federal, state, NGO, international, or private.",
+            "enum": [
+              "federal",
+              "state",
+              "NGO",
+              "international",
+              "private"
+            ]
+          },
+          "targetRegion": {
+            "type": "string",
+            "description": "Geographic scope of the grant."
+          },
+          "maxFundingAmountNGN": {
+            "type": "number",
+            "description": "Maximum grant award in NGN."
+          },
+          "applicationDeadline": {
+            "type": "string",
+            "description": "Application closing date or cycle."
+          },
+          "eligibilityHighlights": {
+            "type": "array",
+            "description": "Key eligibility points from the Discovery Agent.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "matchReason": {
+            "type": "string",
+            "description": "Why the Discovery Agent flagged this as a match for the farmer."
+          },
+          "grantUrl": {
+            "type": "string",
+            "description": "URL to the grant portal or application page."
+          },
+          "relevanceScore": {
+            "type": "number",
+            "description": "Relevance score 0–100 from the Discovery Agent.",
+            "minimum": 0,
+            "maximum": 100
+          }
+        }
+      }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "required": [
+      "farmerName",
+      "selectedGrantName",
+      "overallVerdict",
+      "weightedScore",
+      "categoryScores",
+      "strengths",
+      "riskFactors",
+      "requiredDocuments",
+      "recommendations"
+    ],
+    "properties": {
+      "farmerName": {
+        "type": "string",
+        "description": "Farmer's full name, echoed for pipeline continuity."
+      },
+      "selectedGrantName": {
+        "type": "string",
+        "description": "Name of the grant being assessed (from selectedGrant.grantName)."
+      },
+      "sponsorOrganization": {
+        "type": "string",
+        "description": "Organization behind the grant (from selectedGrant.sponsorOrganization)."
+      },
+      "overallVerdict": {
+        "type": "string",
+        "description": "Final eligibility verdict.",
+        "enum": [
+          "STRONG CANDIDATE",
+          "MODERATE — WORTH APPLYING",
+          "WEAK — SIGNIFICANT GAPS",
+          "NOT RECOMMENDED",
+          "DISQUALIFIED"
+        ]
+      },
+      "weightedScore": {
+        "type": "number",
+        "description": "Weighted eligibility score 0–100.",
+        "minimum": 0,
+        "maximum": 100
+      },
+      "categoryScores": {
+        "type": "object",
+        "description": "Scores for each eligibility category (0–100).",
+        "required": [
+          "programFit",
+          "financialAlignment",
+          "documentationReadiness",
+          "complianceStatus",
+          "projectRelevance"
+        ],
+        "properties": {
+          "programFit": {
+            "type": "number",
+            "description": "Does farmer match grant target sector, size, location, demographics? 0–100.",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "financialAlignment": {
+            "type": "number",
+            "description": "Is funding request within grant limits? Revenue viability? 0–100.",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "documentationReadiness": {
+            "type": "number",
+            "description": "Does farmer have the documents this grant requires? 0–100.",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "complianceStatus": {
+            "type": "number",
+            "description": "BVN, CAC, cooperative, land docs — meets regulatory requirements? 0–100.",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "projectRelevance": {
+            "type": "number",
+            "description": "Does proposed project align with grant objectives? 0–100.",
+            "minimum": 0,
+            "maximum": 100
+          }
+        }
+      },
+      "strengths": {
+        "type": "array",
+        "description": "3–5 specific strengths of the farmer's candidacy for this grant.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "riskFactors": {
+        "type": "array",
+        "description": "3–5 specific risk factors or gaps in the farmer's application.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "requiredDocuments": {
+        "type": "array",
+        "description": "Every document this grant requires, with status for each.",
+        "items": {
+          "type": "object",
+          "required": [
+            "documentName",
+            "farmerHasIt"
+          ],
+          "properties": {
+            "documentName": {
+              "type": "string",
+              "description": "Name of required document (e.g. 'BVN Verification Slip', 'CAC Certificate')."
+            },
+            "farmerHasIt": {
+              "type": "boolean",
+              "description": "True if the farmer already has this document based on input data."
+            },
+            "howToObtain": {
+              "type": "string",
+              "description": "If farmerHasIt is false, brief instruction on how/where to get it."
+            }
+          }
+        }
+      },
+      "recommendations": {
+        "type": "array",
+        "description": "2–4 actionable steps the farmer can take to strengthen their application.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "disqualificationReason": {
+        "type": "string",
+        "description": "If overallVerdict is DISQUALIFIED, explains why and what the farmer can do to fix it. Empty string if not disqualified."
+      },
+      "grantUrl": {
+        "type": "string",
+        "description": "Application URL for the grant, echoed from selectedGrant.grantUrl for downstream agents."
+      },
+      "applicationDeadline": {
+        "type": "string",
+        "description": "Grant deadline, echoed from selectedGrant.applicationDeadline for downstream agents."
+      },
+      "maxFundingAmountNGN": {
+        "type": "number",
+        "description": "Maximum award amount, echoed from selectedGrant.maxFundingAmountNGN for downstream agents."
+      }
+    }
+  },
+  "settings": {
+    "model": "anthropic.claude-sonnet-4-6",
+    "maxTokens": 64000,
+    "temperature": 0,
+    "engine": "basic-v2",
+    "maxIterations": 25,
+    "mode": "advanced"
+  },
+  "resources": [
+    {
+      "$resourceType": "tool",
+      "name": "Web Search",
+      "description": "Web search executes a search of the public domain using a natural language search query. The search results are available in the output. Web search offers near-real time search results, but certain time sensitive data like stock prices or weather will not consistently be current. There could be a few days lag. Be sure to pass in date/time and/or location as arguments in the query if required.",
+      "location": "external",
+      "type": "integration",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {}
+      },
+      "settings": {},
+      "properties": {
+        "toolPath": "",
+        "objectName": "v2::webSearch",
+        "toolDisplayName": "Web Search",
+        "toolDescription": "Web search executes a search of the public domain using a natural language search query. The search results are available in the output. Web search offers near-real time search results, but certain time sensitive data like stock prices or weather will not consistently be current. There could be a few days lag. Be sure to pass in date/time and/or location as arguments in the query if required.",
+        "method": "POST",
+        "connection": {
+          "id": "40a0d5be-9b67-477c-9162-535bcd625e75",
+          "name": "UiPath GenAI Activities",
+          "elementInstanceId": 0,
+          "apiBaseUri": "",
+          "state": "enabled",
+          "isDefault": false,
+          "connector": {
+            "key": "uipath-uipath-airdk",
+            "name": "UiPath GenAI Activities",
+            "image": "https://staging.uipath.com/elements_/scaleunit_/4a9b6040-645f-4006-a000-829794b794d4/v3/element/elements/uipath-uipath-airdk/image",
+            "enabled": true
+          },
+          "folder": {
+            "key": "d0b3278f-94eb-4207-b47c-13bf1d94bc03",
+            "path": "9bedf565-b446-4bd6-a237-e855ef086486.d0b3278f-94eb-4207-b47c-13bf1d94bc03"
+          },
+          "solutionProperties": {
+            "resourceKey": "2aa792b8-71d6-4145-9bd3-a21eb314bf70"
+          }
+        },
+        "parameters": [],
+        "bodyStructure": {
+          "contentType": "json"
+        }
+      },
+      "guardrail": {
+        "policies": []
+      },
+      "iconUrl": "https://staging.uipath.com/elements_/scaleunit_/4a9b6040-645f-4006-a000-829794b794d4/v3/element/elements/uipath-uipath-airdk/image",
+      "id": "f47ac612-09f9-4353-a400-d96fdaa804a3",
+      "isPreview": false,
+      "isEnabled": true
+    }
+  ],
+  "features": []
+}
