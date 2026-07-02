@@ -1,0 +1,228 @@
+{
+  "document": {
+    "dsl": "1.0.0",
+    "name": "CompleteTask",
+    "tags": {
+      "projectId": "4f9209fa-5611-40be-9c73-896370433e8b",
+      "solutionId": "3a4257ff-ce33-4a90-be65-08dec08e2a71"
+    },
+    "version": "0.0.1",
+    "namespace": "default",
+    "metadata": {
+      "variables": {
+        "schema": {
+          "format": "json",
+          "document": {
+            "type": "object",
+            "properties": {
+              "validationError": { "type": "string", "default": "" },
+              "taskType": { "type": "string", "default": "" },
+              "decisionJson": { "type": "string", "default": "" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "input": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "properties": {
+          "taskId": { "type": "string" },
+          "orchestratorBaseUrl": { "type": "string" },
+          "folderId": { "type": "string" },
+          "pat": { "type": "string" },
+          "taskType": {
+            "type": "string",
+            "enum": ["select-grant", "upload-documents", "review-proposal", "review-rejection"]
+          },
+          "decision": { "type": "object" }
+        },
+        "required": ["taskId", "orchestratorBaseUrl", "folderId", "pat", "taskType", "decision"]
+      }
+    }
+  },
+  "do": [
+    {
+      "sequence_1": {
+        "do": [
+          {
+            "WorkflowStart": {
+              "set": "${Object.entries($workflow.definition?.document?.metadata?.variables?.schema?.document?.properties || {}).reduce((acc, [name, def]) => ({ ...acc, [name]: def?.default }), {}) }",
+              "output": { "as": "${$input}" },
+              "export": { "as": "{ ...$context, variables: { ...$context.variables, ...$output } }" },
+              "metadata": {
+                "activityType": "Assign",
+                "displayName": "Workflow start",
+                "fullName": "Assign",
+                "isTransparent": true
+              }
+            }
+          },
+          {
+            "Validate_Inputs": {
+              "run": {
+                "script": {
+                  "code": "let validationError = \"\";\nlet validationPassed = true;\nif (!$input.taskId || typeof $input.taskId !== 'string' || $input.taskId.trim() === \"\") {\n  validationPassed = false;\n  validationError += \"taskId is required. \";\n}\nif (!$input.orchestratorBaseUrl || typeof $input.orchestratorBaseUrl !== 'string' || !$input.orchestratorBaseUrl.startsWith(\"http\")) {\n  validationPassed = false;\n  validationError += \"A valid orchestratorBaseUrl is required. \";\n}\nif (!$input.folderId || typeof $input.folderId !== 'string') {\n  validationPassed = false;\n  validationError += \"folderId is required. \";\n}\nif (!$input.pat || typeof $input.pat !== 'string' || $input.pat.length < 20) {\n  validationPassed = false;\n  validationError += \"A valid PAT is required. \";\n}\nif (!$input.taskType || typeof $input.taskType !== 'string') {\n  validationPassed = false;\n  validationError += \"taskType is required. \";\n}\nif (!$input.decision || typeof $input.decision !== 'object') {\n  validationPassed = false;\n  validationError += \"decision object is required. \";\n}\nreturn { validationPassed, validationError: validationError.trim() };",
+                  "language": "javascript",
+                  "arguments": "${{\n                        \"$context\": $context,\n                        \"$workflow\": $workflow,\n                        \"$input\": $input,\n                    }}"
+                }
+              },
+              "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"Validate_Inputs\": $output } }" },
+              "metadata": {
+                "activityType": "JsInvoke",
+                "displayName": "Validate inputs",
+                "fullName": "JsInvoke",
+                "outputName": "Validate_Inputs"
+              }
+            }
+          },
+          {
+            "If_Validation_Passed#Wrapper": {
+              "do": [
+                {
+                  "If_Validation_Passed": {
+                    "switch": [
+                      { "case": { "when": "${$context.outputs.Validate_Inputs.validationPassed === true}", "then": "If_Validation_Passed#Then" } },
+                      { "default": { "then": "If_Validation_Passed#Else" } }
+                    ],
+                    "metadata": { "displayName": "Check if validation succeeded" }
+                  }
+                },
+                {
+                  "If_Validation_Passed#Then": {
+                    "do": [
+                      {
+                        "Build_Complete_Body": {
+                          "run": {
+                            "script": {
+                              "code": "const decision = $input.decision || {};\nconst taskType = $input.taskType;\n\n// Build the Action Center completion payload\nconst acPayload = {\n  action: \"complete\",\n  data: JSON.stringify({\n    taskType: taskType,\n    completedAt: new Date().toISOString(),\n    decision: decision\n  })\n};\n\nreturn {\n  body: JSON.stringify(acPayload),\n  contentType: \"application/json\"\n};",
+                              "language": "javascript",
+                              "arguments": "${{\n                        \"$context\": $context,\n                        \"$workflow\": $workflow,\n                        \"$input\": $input,\n                    }}"
+                            }
+                          },
+                          "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"Build_Complete_Body\": $output } }" },
+                          "metadata": {
+                            "activityType": "JsInvoke",
+                            "displayName": "Build Action Center completion body",
+                            "fullName": "JsInvoke",
+                            "outputName": "Build_Complete_Body"
+                          }
+                        }
+                      },
+                      {
+                        "Complete_Task": {
+                          "call": "UiPath.Http",
+                          "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"Complete_Task\": $output } }" },
+                          "with": {
+                            "connector": "uipath-uipath-http",
+                            "connectionId": "ImplicitConnection",
+                            "connectionResourceId": null,
+                            "method": "POST",
+                            "endpoint": "/http-request",
+                            "bodyParameters": {
+                              "authentication": "manual",
+                              "method": "POST",
+                              "url": "${$input.orchestratorBaseUrl + \"/odata/Tasks(\" + $input.taskId + \")/UiPath.Server.Configuration.OData.CompleteTask\"}",
+                              "path": "${$input.orchestratorBaseUrl + \"/odata/Tasks(\" + $input.taskId + \")/UiPath.Server.Configuration.OData.CompleteTask\"}",
+                              "headers": "${{\"Authorization\": \"Bearer \" + $input.pat, \"X-UIPATH-OrganizationUnitId\": $input.folderId, \"Content-Type\": \"application/json\"}}",
+                              "body": "${$context.outputs.Build_Complete_Body.body}"
+                            }
+                          },
+                          "metadata": {
+                            "activityType": "Connector",
+                            "configuration": "{\"essentialConfiguration\":{\"instanceParameters\":{\"connectorKey\":\"uipath-uipath-http\",\"objectName\":\"http-request\",\"httpMethod\":\"POST\",\"activityType\":\"Curated\",\"version\":\"1.0.0\",\"subType\":\"method\"},\"objectName\":\"http-request\",\"httpMethod\":\"POST\",\"path\":\"/http-request\",\"packageVersion\":\"1.0.0\"}}",
+                            "displayName": "POST complete task to Orchestrator Action Center",
+                            "fullName": "Connector",
+                            "outputName": "Complete_Task"
+                          }
+                        }
+                      },
+                      {
+                        "Build_Response": {
+                          "run": {
+                            "script": {
+                              "code": "const http = $context.outputs.Complete_Task || {};\nconst statusCode = http.statusCode || http.StatusCode;\n\nif (statusCode && statusCode >= 400) {\n  return {\n    success: false,\n    error: {\n      code: statusCode === 404 ? \"TASK_NOT_FOUND\" : statusCode === 401 ? \"UNAUTHORIZED\" : statusCode === 409 ? \"TASK_ALREADY_COMPLETED\" : \"UPSTREAM_FAILED\",\n      message: \"Orchestrator returned status \" + statusCode,\n      details: http.body || {}\n    }\n  };\n}\n\nconst body = http.body || {};\nreturn {\n  success: true,\n  taskId: $input.taskId,\n  status: \"completed\",\n  completedAt: new Date().toISOString(),\n  pipelineResumed: true,\n  orchestratorResponse: body\n};",
+                              "language": "javascript",
+                              "arguments": "${{\n                        \"$context\": $context,\n                        \"$workflow\": $workflow,\n                        \"$input\": $input,\n                    }}"
+                            }
+                          },
+                          "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"Build_Response\": $output } }" },
+                          "metadata": {
+                            "activityType": "JsInvoke",
+                            "displayName": "Build completion response",
+                            "fullName": "JsInvoke",
+                            "outputName": "Build_Response"
+                          }
+                        }
+                      }
+                    ],
+                    "then": "exit"
+                  }
+                },
+                {
+                  "If_Validation_Passed#Else": {
+                    "do": [
+                      {
+                        "Build_Validation_Failure": {
+                          "run": {
+                            "script": {
+                              "code": "return {\n  success: false,\n  error: {\n    code: \"VALIDATION_FAILED\",\n    message: $context.outputs.Validate_Inputs.validationError,\n    details: {}\n  }\n};",
+                              "language": "javascript",
+                              "arguments": "${{\n                        \"$context\": $context,\n                        \"$workflow\": $workflow,\n                        \"$input\": $input,\n                    }}"
+                            }
+                          },
+                          "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"Build_Validation_Failure\": $output } }" },
+                          "metadata": {
+                            "activityType": "JsInvoke",
+                            "displayName": "Build validation-failure response",
+                            "fullName": "JsInvoke",
+                            "outputName": "Build_Validation_Failure"
+                          }
+                        }
+                      }
+                    ],
+                    "then": "exit"
+                  }
+                }
+              ],
+              "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"If_Validation_Passed\": $output } }" },
+              "metadata": {
+                "activityType": "If",
+                "displayName": "Validation gate",
+                "fullName": "If",
+                "outputName": "If_Validation_Passed"
+              }
+            }
+          },
+          {
+            "Final_Response": {
+              "response": "${$context.outputs.Build_Response || $context.outputs.Build_Validation_Failure}",
+              "markJobAsFailed": false,
+              "then": "end",
+              "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"Final_Response\": $output } }" },
+              "metadata": {
+                "activityType": "Response",
+                "displayName": "Return completion result or error",
+                "fullName": "Response",
+                "outputName": "Final_Response"
+              }
+            }
+          }
+        ],
+        "metadata": {
+          "activityType": "Sequence",
+          "displayName": "Sequence",
+          "fullName": "Sequence",
+          "outputName": "sequence_1"
+        }
+      }
+    }
+  ],
+  "evaluate": {
+    "mode": "strict",
+    "language": "javascript"
+  }
+}

@@ -1,0 +1,203 @@
+{
+  "document": {
+    "dsl": "1.0.0",
+    "name": "GetFileReadUrl",
+    "tags": {
+      "projectId": "4f9209fa-5611-40be-9c73-896370433e8b",
+      "solutionId": "3a4257ff-ce33-4a90-be65-08dec08e2a71"
+    },
+    "version": "0.0.1",
+    "namespace": "default",
+    "metadata": {
+      "variables": {
+        "schema": {
+          "format": "json",
+          "document": {
+            "type": "object",
+            "properties": {
+              "validationError": { "type": "string", "default": "" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "input": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "properties": {
+          "storageFileId": { "type": "string" },
+          "orchestratorBaseUrl": { "type": "string" },
+          "folderId": { "type": "string" },
+          "pat": { "type": "string" }
+        },
+        "required": ["storageFileId", "orchestratorBaseUrl", "folderId", "pat"]
+      }
+    }
+  },
+  "do": [
+    {
+      "sequence_1": {
+        "do": [
+          {
+            "WorkflowStart": {
+              "set": "${Object.entries($workflow.definition?.document?.metadata?.variables?.schema?.document?.properties || {}).reduce((acc, [name, def]) => ({ ...acc, [name]: def?.default }), {}) }",
+              "output": { "as": "${$input}" },
+              "export": { "as": "{ ...$context, variables: { ...$context.variables, ...$output } }" },
+              "metadata": {
+                "activityType": "Assign",
+                "displayName": "Workflow start",
+                "fullName": "Assign",
+                "isTransparent": true
+              }
+            }
+          },
+          {
+            "Validate_Inputs": {
+              "run": {
+                "script": {
+                  "code": "let validationError = \"\";\nlet validationPassed = true;\nif (!$input.storageFileId || typeof $input.storageFileId !== 'string' || $input.storageFileId.trim() === \"\") {\n  validationPassed = false;\n  validationError += \"storageFileId is required. \";\n}\nif (!$input.orchestratorBaseUrl || typeof $input.orchestratorBaseUrl !== 'string' || !$input.orchestratorBaseUrl.startsWith(\"http\")) {\n  validationPassed = false;\n  validationError += \"A valid orchestratorBaseUrl is required. \";\n}\nif (!$input.folderId || typeof $input.folderId !== 'string') {\n  validationPassed = false;\n  validationError += \"folderId is required. \";\n}\nif (!$input.pat || typeof $input.pat !== 'string' || $input.pat.length < 20) {\n  validationPassed = false;\n  validationError += \"A valid PAT is required. \";\n}\nreturn { validationPassed, validationError: validationError.trim() };",
+                  "language": "javascript",
+                  "arguments": "${{\n                        \"$context\": $context,\n                        \"$workflow\": $workflow,\n                        \"$input\": $input,\n                    }}"
+                }
+              },
+              "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"Validate_Inputs\": $output } }" },
+              "metadata": {
+                "activityType": "JsInvoke",
+                "displayName": "Validate inputs",
+                "fullName": "JsInvoke",
+                "outputName": "Validate_Inputs"
+              }
+            }
+          },
+          {
+            "If_Validation_Passed#Wrapper": {
+              "do": [
+                {
+                  "If_Validation_Passed": {
+                    "switch": [
+                      { "case": { "when": "${$context.outputs.Validate_Inputs.validationPassed === true}", "then": "If_Validation_Passed#Then" } },
+                      { "default": { "then": "If_Validation_Passed#Else" } }
+                    ],
+                    "metadata": { "displayName": "Check if validation succeeded" }
+                  }
+                },
+                {
+                  "If_Validation_Passed#Then": {
+                    "do": [
+                      {
+                        "Get_Read_Url": {
+                          "call": "UiPath.Http",
+                          "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"Get_Read_Url\": $output } }" },
+                          "with": {
+                            "connector": "uipath-uipath-http",
+                            "connectionId": "ImplicitConnection",
+                            "connectionResourceId": null,
+                            "method": "GET",
+                            "endpoint": "/http-request",
+                            "bodyParameters": {
+                              "authentication": "manual",
+                              "method": "GET",
+                              "url": "${$input.orchestratorBaseUrl + \"/odata/StorageFiles(\" + $input.storageFileId + \")/UiPath.Server.Configuration.OData.GetReadUrl\"}",
+                              "path": "${$input.orchestratorBaseUrl + \"/odata/StorageFiles(\" + $input.storageFileId + \")/UiPath.Server.Configuration.OData.GetReadUrl\"}",
+                              "headers": "${{\"Authorization\": \"Bearer \" + $input.pat, \"X-UIPATH-OrganizationUnitId\": $input.folderId, \"Content-Type\": \"application/json\"}}",
+                              "body": ""
+                            }
+                          },
+                          "metadata": {
+                            "activityType": "Connector",
+                            "configuration": "{\"essentialConfiguration\":{\"instanceParameters\":{\"connectorKey\":\"uipath-uipath-http\",\"objectName\":\"http-request\",\"httpMethod\":\"GET\",\"activityType\":\"Curated\",\"version\":\"1.0.0\",\"subType\":\"method\"},\"objectName\":\"http-request\",\"httpMethod\":\"GET\",\"path\":\"/http-request\",\"packageVersion\":\"1.0.0\"}}",
+                            "displayName": "GET presigned read URL from Orchestrator Storage",
+                            "fullName": "Connector",
+                            "outputName": "Get_Read_Url"
+                          }
+                        }
+                      },
+                      {
+                        "Build_Response": {
+                          "run": {
+                            "script": {
+                              "code": "const http = $context.outputs.Get_Read_Url || {};\nconst statusCode = http.statusCode || http.StatusCode;\n\nif (statusCode && statusCode >= 400) {\n  return {\n    success: false,\n    error: {\n      code: statusCode === 404 ? \"FILE_NOT_FOUND\" : statusCode === 401 ? \"UNAUTHORIZED\" : \"UPSTREAM_FAILED\",\n      message: \"Orchestrator returned status \" + statusCode,\n      details: http.body || {}\n    }\n  };\n}\n\nconst body = http.body || {};\nconst url = body.Url || body.url || body.value || null;\n\nif (!url) {\n  return {\n    success: false,\n    error: {\n      code: \"UPSTREAM_FAILED\",\n      message: \"Orchestrator response did not contain a read URL\",\n      details: body\n    }\n  };\n}\n\nreturn {\n  success: true,\n  storageFileId: $input.storageFileId,\n  readUrl: url,\n  expiresAt: body.ExpiresAt || body.expiresAt || null\n};",
+                              "language": "javascript",
+                              "arguments": "${{\n                        \"$context\": $context,\n                        \"$workflow\": $workflow,\n                        \"$input\": $input,\n                    }}"
+                            }
+                          },
+                          "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"Build_Response\": $output } }" },
+                          "metadata": {
+                            "activityType": "JsInvoke",
+                            "displayName": "Build presigned URL response",
+                            "fullName": "JsInvoke",
+                            "outputName": "Build_Response"
+                          }
+                        }
+                      }
+                    ],
+                    "then": "exit"
+                  }
+                },
+                {
+                  "If_Validation_Passed#Else": {
+                    "do": [
+                      {
+                        "Build_Validation_Failure": {
+                          "run": {
+                            "script": {
+                              "code": "return {\n  success: false,\n  error: {\n    code: \"VALIDATION_FAILED\",\n    message: $context.outputs.Validate_Inputs.validationError,\n    details: {}\n  }\n};",
+                              "language": "javascript",
+                              "arguments": "${{\n                        \"$context\": $context,\n                        \"$workflow\": $workflow,\n                        \"$input\": $input,\n                    }}"
+                            }
+                          },
+                          "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"Build_Validation_Failure\": $output } }" },
+                          "metadata": {
+                            "activityType": "JsInvoke",
+                            "displayName": "Build validation-failure response",
+                            "fullName": "JsInvoke",
+                            "outputName": "Build_Validation_Failure"
+                          }
+                        }
+                      }
+                    ],
+                    "then": "exit"
+                  }
+                }
+              ],
+              "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"If_Validation_Passed\": $output } }" },
+              "metadata": {
+                "activityType": "If",
+                "displayName": "Validation gate",
+                "fullName": "If",
+                "outputName": "If_Validation_Passed"
+              }
+            }
+          },
+          {
+            "Final_Response": {
+              "response": "${$context.outputs.Build_Response || $context.outputs.Build_Validation_Failure}",
+              "markJobAsFailed": false,
+              "then": "end",
+              "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"Final_Response\": $output } }" },
+              "metadata": {
+                "activityType": "Response",
+                "displayName": "Return presigned URL or error",
+                "fullName": "Response",
+                "outputName": "Final_Response"
+              }
+            }
+          }
+        ],
+        "metadata": {
+          "activityType": "Sequence",
+          "displayName": "Sequence",
+          "fullName": "Sequence",
+          "outputName": "sequence_1"
+        }
+      }
+    }
+  ],
+  "evaluate": {
+    "mode": "strict",
+    "language": "javascript"
+  }
+}

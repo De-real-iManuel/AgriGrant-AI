@@ -4,7 +4,8 @@
   "entryPoints": [
     {
       "filePath": "content/Workflow.json",
-      "uniqueId": "530a55b3-9708-43e0-a9a1-2bffb248c232",
+      "uniqueId": "b3641211-8051-4185-8d90-2a2f5051c84c",
+      "type": "Api",
       "input": {
         "type": "object",
         "properties": {
@@ -87,8 +88,7 @@
           "hasExistingLoanDefault"
         ]
       },
-      "output": null,
-      "type": "Api"
+      "output": null
     }
   ]
 }

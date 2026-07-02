@@ -3,18 +3,18 @@
   "resources": [
     {
       "resource": "Connection",
-      "key": "",
+      "key": "2e4db73f-c2f3-44cd-882e-503032b65556",
       "activityId": "Send_Confirmation_Email",
       "activityDisplayName": "Send a confirmation email to the farmer via SendGrid",
       "value": {
         "ConnectionId": {
-          "defaultValue": "",
+          "defaultValue": "2e4db73f-c2f3-44cd-882e-503032b65556",
           "isExpression": false
         }
       },
       "metadata": {
         "UseConnectionService": "true",
-        "Connector": "uipath-uipath-http",
+        "Connector": "uipath-twilio-sendgrid",
         "ActivityName": "Send a confirmation email to the farmer via SendGrid",
         "BindingsVersion": "2.2",
         "SolutionsSupport": "true"
