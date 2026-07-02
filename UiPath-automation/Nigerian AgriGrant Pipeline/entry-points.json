@@ -144,12 +144,12 @@
           "currentStatus": {
             "type": "string",
             "title": "currentStatus",
-            "default": "pending"
+            "default": "not-yet-submitted"
           },
           "agentAction": {
             "type": "string",
             "title": "agentAction",
-            "default": "submit_application"
+            "default": "prepare-submission-package"
           },
           "chatMessage": {
             "type": "string",
@@ -167,26 +167,169 @@
             "type": "string",
             "title": "rejectionReason"
           },
-          "pererredLanguage": {
+          "preferredLanguage": {
             "type": "string",
-            "title": "pererredLanguage",
-            "default": "en"
+            "title": "preferredLanguage",
+            "default": "english"
           },
           "submissionDeadline": {
             "type": "string",
             "title": "submissionDeadline"
           },
           "documentsChecklist": {
-            "type": "object"
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "missingDocuments": {
             "type": "object"
           },
           "chatHistory": {
             "type": "object"
+          },
+          "hasBVN": {
+            "type": "boolean",
+            "title": "hasBVN"
+          },
+          "submittedDocuments": {
+            "type": "string",
+            "title": "submittedDocuments"
+          },
+          "hasFarmBusinessPlan": {
+            "type": "boolean",
+            "title": "hasFarmBusinessPlan",
+            "default": "true"
+          },
+          "ownershipStatus": {
+            "type": "string",
+            "title": "ownershipStatus"
+          },
+          "farmLocation": {
+            "type": "string",
+            "title": "farmLocation"
+          },
+          "documentsType": {
+            "type": "object"
+          },
+          "extractionGoal": {
+            "type": "string",
+            "title": "extractionGoal"
+          },
+          "documents": {
+            "type": "object"
+          },
+          "grantGuidelinesPDF": {
+            "$ref": "#/definitions/job-attachment"
+          },
+          "grantApplicationForm": {
+            "$ref": "#/definitions/job-attachment"
+          },
+          "tonePreference": {
+            "type": "string",
+            "title": "tonePreference"
+          },
+          "existingAssets": {
+            "type": "string",
+            "title": "existingAssets"
+          },
+          "expectedBeneficiaries": {
+            "type": "integer",
+            "title": "expectedBeneficiaries"
+          },
+          "projectDurationMonths": {
+            "type": "integer",
+            "title": "projectDurationMonths"
+          },
+          "problemStatement": {
+            "type": "string",
+            "title": "problemStatement"
+          },
+          "grantObjectives": {
+            "type": "string",
+            "title": "grantObjectives"
+          },
+          "organizationName": {
+            "type": "string",
+            "title": "organizationName"
+          },
+          "farmerAddress": {
+            "type": "string",
+            "title": "farmerAddress"
+          },
+          "in_ninDocumentPath": {
+            "type": "string",
+            "title": "in_ninDocumentPath"
+          },
+          "in_cacDocumentPath": {
+            "type": "string",
+            "title": "in_cacDocumentPath"
+          },
+          "in_bankStatementPath": {
+            "type": "string",
+            "title": "in_bankStatementPath"
+          },
+          "in_landDocumentPath": {
+            "type": "string",
+            "title": "in_landDocumentPath"
+          },
+          "in_targetPortalURL": {
+            "type": "string",
+            "title": "in_targetPortalURL"
+          },
+          "in_declarationAgreed": {
+            "type": "boolean",
+            "title": "in_declarationAgreed"
+          },
+          "topRecommendation": {
+            "type": "string",
+            "title": "topRecommendation"
+          },
+          "targetGrantName": {
+            "type": "string",
+            "title": "targetGrantName"
+          },
+          "nameConsistencyConfirmed": {
+            "type": "boolean",
+            "title": "nameConsistencyConfirmed"
+          },
+          "hasExistingLoanDefault": {
+            "type": "boolean",
+            "title": "hasExistingLoanDefault",
+            "default": "=js:vars.hasExistingLoanDefault"
           }
         },
-        "required": []
+        "required": [],
+        "definitions": {
+          "job-attachment": {
+            "type": "object",
+            "properties": {
+              "ID": {
+                "type": "string",
+                "description": "Orchestrator attachment key"
+              },
+              "FullName": {
+                "type": "string",
+                "description": "File name"
+              },
+              "MimeType": {
+                "type": "string",
+                "description": "The MIME type of the content, such as \"application/json\" or \"image/png"
+              },
+              "Metadata": {
+                "type": "object",
+                "description": "Dictionary<string, string> of metadata",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "ID"
+            ],
+            "x-uipath-resource-kind": "JobAttachment"
+          }
+        }
       },
       "output": {
         "type": "object",

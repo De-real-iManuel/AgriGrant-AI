@@ -1,0 +1,53 @@
+{
+  "type": "lowCode",
+  "version": "1.1.0",
+  "metadata": {
+    "storageVersion": "50.0.0",
+    "isConversational": false,
+    "showProjectCreationExperience": false
+  },
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an agentic assistant.",
+      "contentTokens": [
+        {
+          "type": "simpleText",
+          "rawString": "You are an agentic assistant."
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": "What is the current date?",
+      "contentTokens": [
+        {
+          "type": "simpleText",
+          "rawString": "What is the current date?"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "mode": "standard",
+    "model": "gpt-4o-2024-11-20",
+    "maxTokens": 16384,
+    "temperature": 0,
+    "engine": "basic-v2",
+    "maxIterations": 25
+  },
+  "inputSchema": {
+    "type": "object",
+    "properties": {}
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "content": {
+        "type": "string",
+        "description": "Output content"
+      }
+    }
+  },
+  "projectId": "516e6c19-5e6e-4765-ac9f-922691c4ba3b"
+}

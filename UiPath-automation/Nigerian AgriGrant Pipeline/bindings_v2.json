@@ -3,11 +3,11 @@
   "resources": [
     {
       "resource": "process",
-      "key": "Solution.1.agent.Grant.Discovery._.Matching.Agent",
-      "id": "processSolution.1.agent.Grant.Discovery._.Matching.Agent",
+      "key": "Grant Discovery & Matching Agent",
+      "id": "processGrant Discovery & Matching Agent",
       "value": {
         "name": {
-          "defaultValue": "Solution.1.agent.Grant.Discovery._.Matching.Agent",
+          "defaultValue": "Grant Discovery & Matching Agent",
           "isExpression": false,
           "displayName": "Process name"
         }
@@ -16,8 +16,7 @@
         "ActivityName": "Grant Discovery Agent: Search & Match Eligible Grants",
         "BindingsVersion": "2.2",
         "DisplayLabel": "name",
-        "SolutionsSupport": "true",
-        "subType": "Agent"
+        "SolutionsSupport": "true"
       }
     },
     {
@@ -35,8 +34,136 @@
         "ActivityName": "Submission & Follow-up Agent: Notify Farmer - No Grants Available",
         "BindingsVersion": "2.2",
         "DisplayLabel": "name",
+        "SolutionsSupport": "true"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "Eligibility & Risk Assessment Agent",
+      "id": "processEligibility & Risk Assessment Agent",
+      "value": {
+        "name": {
+          "defaultValue": "Eligibility & Risk Assessment Agent",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "Eligibility & Assessment Agent: Analyze Grant Requirements vs Farmer Profile",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
         "SolutionsSupport": "true",
         "subType": "Agent"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "Document Understanding Agent",
+      "id": "processDocument Understanding Agent",
+      "value": {
+        "name": {
+          "defaultValue": "Document Understanding Agent",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "Document & Understanding Agent: Check Required Documents for Grant",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true",
+        "subType": "Agent"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "Proposal Generation Agent",
+      "id": "processProposal Generation Agent",
+      "value": {
+        "name": {
+          "defaultValue": "Proposal Generation Agent",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "Proposal Agent: Collect Grant Details from Eligibility & Assessment Agent",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true",
+        "subType": "Agent"
+      }
+    },
+    {
+      "resource": "process",
+      "key": "Grant Form Filler Robot",
+      "id": "processGrant Form Filler Robot",
+      "value": {
+        "name": {
+          "defaultValue": "Grant Form Filler Robot",
+          "isExpression": false,
+          "displayName": "Process name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "RPA Portal Submission Robot: Fill & Submit Application Form",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true"
+      }
+    },
+    {
+      "resource": "app",
+      "key": "Grant Selection App",
+      "id": "appGrant Selection App",
+      "value": {
+        "name": {
+          "defaultValue": "Grant Selection App",
+          "isExpression": false,
+          "displayName": "App name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "Farmer Grant Selection App (HITL)",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true"
+      }
+    },
+    {
+      "resource": "app",
+      "key": "Document Upload (HITL) App",
+      "id": "appDocument Upload (HITL) App",
+      "value": {
+        "name": {
+          "defaultValue": "Document Upload (HITL) App",
+          "isExpression": false,
+          "displayName": "App name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "Document Validation App (HITL)",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true"
+      }
+    },
+    {
+      "resource": "app",
+      "key": "Proposal Review App",
+      "id": "appProposal Review App",
+      "value": {
+        "name": {
+          "defaultValue": "Proposal Review App",
+          "isExpression": false,
+          "displayName": "App name"
+        }
+      },
+      "metadata": {
+        "ActivityName": "Proposal Review App (HITL)",
+        "BindingsVersion": "2.2",
+        "DisplayLabel": "name",
+        "SolutionsSupport": "true"
       }
     }
   ]
