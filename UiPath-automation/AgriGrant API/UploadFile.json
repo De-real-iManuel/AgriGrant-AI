@@ -1,0 +1,225 @@
+{
+  "document": {
+    "dsl": "1.0.0",
+    "name": "UploadFile",
+    "tags": {
+      "projectId": "4f9209fa-5611-40be-9c73-896370433e8b",
+      "solutionId": "3a4257ff-ce33-4a90-be65-08dec08e2a71"
+    },
+    "version": "0.0.1",
+    "namespace": "default",
+    "metadata": {
+      "variables": {
+        "schema": {
+          "format": "json",
+          "document": {
+            "type": "object",
+            "properties": {
+              "validationError": { "type": "string", "default": "" },
+              "uploadUrl": { "type": "string", "default": "" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "input": {
+    "schema": {
+      "format": "json",
+      "document": {
+        "type": "object",
+        "properties": {
+          "storageBucketId": { "type": "string" },
+          "fileName": { "type": "string" },
+          "fileContentBase64": { "type": "string" },
+          "contentType": { "type": "string" },
+          "orchestratorBaseUrl": { "type": "string" },
+          "folderId": { "type": "string" },
+          "pat": { "type": "string" }
+        },
+        "required": ["storageBucketId", "fileName", "fileContentBase64", "contentType", "orchestratorBaseUrl", "folderId", "pat"]
+      }
+    }
+  },
+  "do": [
+    {
+      "sequence_1": {
+        "do": [
+          {
+            "WorkflowStart": {
+              "set": "${Object.entries($workflow.definition?.document?.metadata?.variables?.schema?.document?.properties || {}).reduce((acc, [name, def]) => ({ ...acc, [name]: def?.default }), {}) }",
+              "output": { "as": "${$input}" },
+              "export": { "as": "{ ...$context, variables: { ...$context.variables, ...$output } }" },
+              "metadata": {
+                "activityType": "Assign",
+                "displayName": "Workflow start",
+                "fullName": "Assign",
+                "isTransparent": true
+              }
+            }
+          },
+          {
+            "Validate_Inputs": {
+              "run": {
+                "script": {
+                  "code": "let validationError = \"\";\nlet validationPassed = true;\nif (!$input.storageBucketId || typeof $input.storageBucketId !== 'string' || $input.storageBucketId.trim() === \"\") {\n  validationPassed = false;\n  validationError += \"storageBucketId is required. \";\n}\nif (!$input.fileName || typeof $input.fileName !== 'string' || $input.fileName.trim() === \"\") {\n  validationPassed = false;\n  validationError += \"fileName is required. \";\n}\nif (!$input.fileContentBase64 || typeof $input.fileContentBase64 !== 'string' || $input.fileContentBase64.length < 10) {\n  validationPassed = false;\n  validationError += \"fileContentBase64 is required and must be a valid base64 string. \";\n}\nif (!$input.contentType || typeof $input.contentType !== 'string') {\n  validationPassed = false;\n  validationError += \"contentType is required. \";\n}\nif (!$input.orchestratorBaseUrl || typeof $input.orchestratorBaseUrl !== 'string' || !$input.orchestratorBaseUrl.startsWith(\"http\")) {\n  validationPassed = false;\n  validationError += \"A valid orchestratorBaseUrl is required. \";\n}\nif (!$input.folderId || typeof $input.folderId !== 'string') {\n  validationPassed = false;\n  validationError += \"folderId is required. \";\n}\nif (!$input.pat || typeof $input.pat !== 'string' || $input.pat.length < 20) {\n  validationPassed = false;\n  validationError += \"A valid PAT is required. \";\n}\nreturn { validationPassed, validationError: validationError.trim() };",
+                  "language": "javascript",
+                  "arguments": "${{\n                        \"$context\": $context,\n                        \"$workflow\": $workflow,\n                        \"$input\": $input,\n                    }}"
+                }
+              },
+              "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"Validate_Inputs\": $output } }" },
+              "metadata": {
+                "activityType": "JsInvoke",
+                "displayName": "Validate inputs",
+                "fullName": "JsInvoke",
+                "outputName": "Validate_Inputs"
+              }
+            }
+          },
+          {
+            "If_Validation_Passed#Wrapper": {
+              "do": [
+                {
+                  "If_Validation_Passed": {
+                    "switch": [
+                      { "case": { "when": "${$context.outputs.Validate_Inputs.validationPassed === true}", "then": "If_Validation_Passed#Then" } },
+                      { "default": { "then": "If_Validation_Passed#Else" } }
+                    ],
+                    "metadata": { "displayName": "Check if validation succeeded" }
+                  }
+                },
+                {
+                  "If_Validation_Passed#Then": {
+                    "do": [
+                      {
+                        "Build_Upload_Body": {
+                          "run": {
+                            "script": {
+                              "code": "// Orchestrator Storage Upload requires multipart/form-data\n// Build a simple multipart body from base64 content\nconst boundary = '----FormBoundary' + Math.random().toString(36).substring(2, 15);\nconst fileName = $input.fileName;\nconst contentType = $input.contentType;\nconst base64Content = $input.fileContentBase64;\n\n// Decode base64 to binary-ish string for the body\nconst binaryString = atob(base64Content);\n\nlet body = '';\nbody += '--' + boundary + '\\r\\n';\nbody += 'Content-Disposition: form-data; name=\"file\"; filename=\"' + fileName + '\"\\r\\n';\nbody += 'Content-Type: ' + contentType + '\\r\\n\\r\\n';\nbody += binaryString + '\\r\\n';\nbody += '--' + boundary + '--\\r\\n';\n\nreturn {\n  body: body,\n  boundary: boundary,\n  contentType: 'multipart/form-data; boundary=' + boundary\n};",
+                              "language": "javascript",
+                              "arguments": "${{\n                        \"$context\": $context,\n                        \"$workflow\": $workflow,\n                        \"$input\": $input,\n                    }}"
+                            }
+                          },
+                          "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"Build_Upload_Body\": $output } }" },
+                          "metadata": {
+                            "activityType": "JsInvoke",
+                            "displayName": "Build multipart upload body",
+                            "fullName": "JsInvoke",
+                            "outputName": "Build_Upload_Body"
+                          }
+                        }
+                      },
+                      {
+                        "Upload_File": {
+                          "call": "UiPath.Http",
+                          "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"Upload_File\": $output } }" },
+                          "with": {
+                            "connector": "uipath-uipath-http",
+                            "connectionId": "ImplicitConnection",
+                            "connectionResourceId": null,
+                            "method": "POST",
+                            "endpoint": "/http-request",
+                            "bodyParameters": {
+                              "authentication": "manual",
+                              "method": "POST",
+                              "url": "${$input.orchestratorBaseUrl + \"/odata/StorageBuckets(\" + $input.storageBucketId + \")/UiPath.Server.Configuration.OData.UploadFile\"}",
+                              "path": "${$input.orchestratorBaseUrl + \"/odata/StorageBuckets(\" + $input.storageBucketId + \")/UiPath.Server.Configuration.OData.UploadFile\"}",
+                              "headers": "${{\"Authorization\": \"Bearer \" + $input.pat, \"X-UIPATH-OrganizationUnitId\": $input.folderId, \"Content-Type\": $context.outputs.Build_Upload_Body.contentType}}",
+                              "body": "${$context.outputs.Build_Upload_Body.body}"
+                            }
+                          },
+                          "metadata": {
+                            "activityType": "Connector",
+                            "configuration": "{\"essentialConfiguration\":{\"instanceParameters\":{\"connectorKey\":\"uipath-uipath-http\",\"objectName\":\"http-request\",\"httpMethod\":\"POST\",\"activityType\":\"Curated\",\"version\":\"1.0.0\",\"subType\":\"method\"},\"objectName\":\"http-request\",\"httpMethod\":\"POST\",\"path\":\"/http-request\",\"packageVersion\":\"1.0.0\"}}",
+                            "displayName": "POST file upload to Orchestrator Storage Bucket",
+                            "fullName": "Connector",
+                            "outputName": "Upload_File"
+                          }
+                        }
+                      },
+                      {
+                        "Build_Response": {
+                          "run": {
+                            "script": {
+                              "code": "const http = $context.outputs.Upload_File || {};\nconst statusCode = http.statusCode || http.StatusCode;\n\nif (statusCode && statusCode >= 400) {\n  return {\n    success: false,\n    error: {\n      code: statusCode === 401 ? \"UNAUTHORIZED\" : statusCode === 404 ? \"BUCKET_NOT_FOUND\" : \"UPSTREAM_FAILED\",\n      message: \"Orchestrator returned status \" + statusCode,\n      details: http.body || {}\n    }\n  };\n}\n\nconst body = http.body || {};\nconst fileId = body.Id || body.id || null;\nconst filePath = body.FullPath || body.fullPath || body.Path || body.path || null;\n\nif (!fileId) {\n  return {\n    success: false,\n    error: {\n      code: \"UPSTREAM_FAILED\",\n      message: \"Upload succeeded but Orchestrator response did not contain file ID\",\n      details: body\n    }\n  };\n}\n\nreturn {\n  success: true,\n  storageFileId: String(fileId),\n  fileName: $input.fileName,\n  filePath: filePath,\n  storageBucketId: $input.storageBucketId,\n  contentType: $input.contentType,\n  uploadedAt: new Date().toISOString()\n};",
+                              "language": "javascript",
+                              "arguments": "${{\n                        \"$context\": $context,\n                        \"$workflow\": $workflow,\n                        \"$input\": $input,\n                    }}"
+                            }
+                          },
+                          "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"Build_Response\": $output } }" },
+                          "metadata": {
+                            "activityType": "JsInvoke",
+                            "displayName": "Build upload response",
+                            "fullName": "JsInvoke",
+                            "outputName": "Build_Response"
+                          }
+                        }
+                      }
+                    ],
+                    "then": "exit"
+                  }
+                },
+                {
+                  "If_Validation_Passed#Else": {
+                    "do": [
+                      {
+                        "Build_Validation_Failure": {
+                          "run": {
+                            "script": {
+                              "code": "return {\n  success: false,\n  error: {\n    code: \"VALIDATION_FAILED\",\n    message: $context.outputs.Validate_Inputs.validationError,\n    details: {}\n  }\n};",
+                              "language": "javascript",
+                              "arguments": "${{\n                        \"$context\": $context,\n                        \"$workflow\": $workflow,\n                        \"$input\": $input,\n                    }}"
+                            }
+                          },
+                          "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"Build_Validation_Failure\": $output } }" },
+                          "metadata": {
+                            "activityType": "JsInvoke",
+                            "displayName": "Build validation-failure response",
+                            "fullName": "JsInvoke",
+                            "outputName": "Build_Validation_Failure"
+                          }
+                        }
+                      }
+                    ],
+                    "then": "exit"
+                  }
+                }
+              ],
+              "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"If_Validation_Passed\": $output } }" },
+              "metadata": {
+                "activityType": "If",
+                "displayName": "Validation gate",
+                "fullName": "If",
+                "outputName": "If_Validation_Passed"
+              }
+            }
+          },
+          {
+            "Final_Response": {
+              "response": "${$context.outputs.Build_Response || $context.outputs.Build_Validation_Failure}",
+              "markJobAsFailed": false,
+              "then": "end",
+              "export": { "as": "{ ...$context, outputs: { ...$context?.outputs, \"Final_Response\": $output } }" },
+              "metadata": {
+                "activityType": "Response",
+                "displayName": "Return upload result or error",
+                "fullName": "Response",
+                "outputName": "Final_Response"
+              }
+            }
+          }
+        ],
+        "metadata": {
+          "activityType": "Sequence",
+          "displayName": "Sequence",
+          "fullName": "Sequence",
+          "outputName": "sequence_1"
+        }
+      }
+    }
+  ],
+  "evaluate": {
+    "mode": "strict",
+    "language": "javascript"
+  }
+}

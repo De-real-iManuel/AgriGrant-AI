@@ -1,0 +1,146 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://agrigrant.ai/contracts/grant_application_context/1.0.0",
+  "title": "GrantApplicationContext",
+  "description": "Canonical pipeline contract passed between every AgriGrant agent. Versioned. Strict layer separation between humanInput (immutable to agents) and agentOutput (writable by agents).",
+  "type": "object",
+  "required": ["schemaVersion", "applicationId", "humanInput", "agentOutput", "agentTrace"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "1.0.0" },
+    "applicationId": { "type": "string" },
+
+    "humanInput": {
+      "type": "object",
+      "description": "IMMUTABLE to agents. Source of truth.",
+      "required": ["farmerProfile", "farmDetails", "businessDetails", "grantPreferences"],
+      "additionalProperties": false,
+      "properties": {
+        "farmerProfile": {
+          "type": "object",
+          "required": ["fullName", "email", "phone", "state", "lga"],
+          "properties": {
+            "fullName": { "type": "string" },
+            "email": { "type": "string" },
+            "phone": { "type": "string" },
+            "state": { "type": "string" },
+            "lga": { "type": "string" },
+            "address": { "type": "string" },
+            "isYouthFarmer": { "type": "boolean" },
+            "isWomanFarmer": { "type": "boolean" }
+          }
+        },
+        "farmDetails": {
+          "type": "object",
+          "required": ["farmType", "crops", "farmSize"],
+          "properties": {
+            "farmType": { "type": "string" },
+            "crops": { "type": "array", "items": { "type": "string" } },
+            "farmSize": { "type": "number", "minimum": 0 },
+            "farmSizeUnit": { "type": "string", "enum": ["hectares", "acres"] },
+            "yearsOperating": { "type": "integer", "minimum": 0 },
+            "farmLocation": { "type": "string" },
+            "ownershipStatus": { "type": "string" }
+          }
+        },
+        "businessDetails": {
+          "type": "object",
+          "required": ["businessRegistration", "cooperativeMember"],
+          "properties": {
+            "annualRevenue": { "type": "number", "minimum": 0 },
+            "businessRegistration": { "type": "boolean" },
+            "cooperativeMember": { "type": "boolean" },
+            "hasBVN": { "type": "boolean" },
+            "hasLandDocument": { "type": "boolean" },
+            "hasFarmBusinessPlan": { "type": "boolean" },
+            "hasExistingLoanDefault": { "type": "boolean" }
+          }
+        },
+        "grantPreferences": {
+          "type": "object",
+          "required": ["fundingType", "excludeLoans", "requestedAmount"],
+          "properties": {
+            "fundingType": { "type": "string", "const": "GRANT_ONLY" },
+            "excludeLoans": { "type": "boolean", "const": true },
+            "preferredPrograms": { "type": "array", "items": { "type": "string" } },
+            "requestedAmount": { "type": "number", "minimum": 0 },
+            "requestedCurrency": { "type": "string" },
+            "fundingPurpose": { "type": "string" }
+          }
+        },
+        "uploadedDocuments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": { "type": "string" },
+              "fileName": { "type": "string" },
+              "path": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+
+    "agentOutput": {
+      "type": "object",
+      "description": "AGENT-WRITABLE. Append/update-only.",
+      "properties": {
+        "discoveredGrants": {
+          "type": "array",
+          "description": "Non-repayable grants only. Each entry MUST satisfy repaymentRequired=false AND loanBased=false AND fundingType in {GRANT,SUBSIDY,AWARD,NON_REPAYABLE_FUND}.",
+          "items": {
+            "type": "object",
+            "required": ["grantName", "grantingOrganization", "repaymentRequired", "loanBased", "fundingType"],
+            "properties": {
+              "grantName": { "type": "string" },
+              "grantingOrganization": { "type": "string" },
+              "repaymentRequired": { "type": "boolean", "const": false },
+              "loanBased": { "type": "boolean", "const": false },
+              "fundingType": { "type": "string", "enum": ["GRANT", "SUBSIDY", "AWARD", "NON_REPAYABLE_FUND"] },
+              "matchScore": { "type": "integer", "minimum": 0, "maximum": 100 },
+              "fundingAmountRange": { "type": "string" },
+              "applicationUrl": { "type": "string" }
+            }
+          }
+        },
+        "eligibilityResult": {
+          "type": "object",
+          "properties": {
+            "eligibilityScore": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
+            "recommendation": { "type": "string", "enum": ["", "Eligible", "Conditionally Eligible", "Not Eligible", "NO_GRANT_MATCHES"] },
+            "missingRequirements": { "type": "array", "items": { "type": "string" } },
+            "selectedGrantName": { "type": "string" }
+          }
+        },
+        "documentAnalysis": {
+          "type": "object",
+          "properties": {
+            "verdict": { "type": "string" },
+            "score": { "type": ["number", "null"] },
+            "inconsistencies": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "generatedProposal": { "type": "string" },
+        "submissionStatus": { "type": "string", "enum": ["", "DRAFT", "READY", "SUBMITTED", "PENDING", "APPROVED", "REJECTED", "BLOCKED_VALIDATION"] },
+        "nextAction": { "type": "string", "enum": ["", "CONTINUE", "HUMAN_REVIEW_REQUIRED", "EXPAND_SEARCH", "AWAIT_FARMER_INPUT", "PIPELINE_COMPLETE"] }
+      }
+    },
+
+    "agentTrace": {
+      "type": "array",
+      "description": "Append-only. Every agent appends exactly one entry per run.",
+      "items": {
+        "type": "object",
+        "required": ["agent", "timestamp", "action", "schemaVersionSeen"],
+        "properties": {
+          "agent": { "type": "string" },
+          "timestamp": { "type": "string" },
+          "action": { "type": "string" },
+          "fieldsWritten": { "type": "array", "items": { "type": "string" } },
+          "schemaVersionSeen": { "type": "string" }
+        }
+      }
+    }
+  }
+}
