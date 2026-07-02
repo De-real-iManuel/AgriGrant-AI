@@ -1,0 +1,10 @@
+{
+  "ProjectType": "WebApp",
+  "WebAppSettings": {
+    "AppId": "IDeb32d31f9666468ebec58f649d7a8bee",
+    "IsCoreProject": true
+  },
+  "Name": "Grant Selection App",
+  "Description": null,
+  "MainFile": "Main.xaml"
+}
