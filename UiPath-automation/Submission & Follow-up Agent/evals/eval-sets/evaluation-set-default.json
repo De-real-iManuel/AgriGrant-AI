@@ -1,1 +1,133 @@
-{"fileName":"evaluation-set-default.json","id":"4e7f1739-42b3-4b91-839c-cbabc95e84dc","name":"Default Evaluation Set","batchSize":10,"evaluatorRefs":["3cead7e6-4001-4b6c-95cb-130f4b578853"],"evaluations":[],"modelSettings":[],"createdAt":"2026-06-01T02:07:23.537Z","updatedAt":"2026-06-01T02:07:23.537Z","agentMemoryEnabled":false,"agentMemorySettings":[],"lineByLineEvaluation":false}
+{
+  "fileName": "evaluation-set-default.json",
+  "id": "4e7f1739-42b3-4b91-839c-cbabc95e84dc",
+  "name": "Default Evaluation Set",
+  "batchSize": 10,
+  "evaluatorRefs": [
+    "3cead7e6-4001-4b6c-95cb-130f4b578853"
+  ],
+  "evaluations": [
+    {
+      "id": "cc9e8067-4985-4c37-b09c-f71401746c94",
+      "name": "Debug Run 6/30/2026, 2:06:35 AM",
+      "inputs": {
+        "farmerName": "Chidinma Okafor",
+        "farmerPhone": "+2348035671294",
+        "farmerEmail": "chidinma.okafor@gmail.com",
+        "stateOfResidence": "Enugu",
+        "grantName": "NIRSAL Microfinance Bank Agric SME Loan",
+        "grantingOrganization": "NIRSAL Microfinance Bank",
+        "projectTitle": "Expansion of Cassava Processing and Value-Addition Enterprise in Enugu State",
+        "requestedAmountNGN": 3500000,
+        "submissionDeadline": "2026-07-31",
+        "submissionMethod": "bank-branch",
+        "submissionOfficeAddress": "NIRSAL Microfinance Bank, 14 Ogui Road, Enugu, Enugu State",
+        "submissionContactEmail": "info@nirsal-mfb.com",
+        "submissionContactPhone": "+2349087654321",
+        "applicationReferenceNumber": "NIRSAL/ENS/2026/04471",
+        "submissionDate": "2026-06-10",
+        "currentStatus": "under-review",
+        "documentsChecklist": [
+          "Completed application form",
+          "National ID (NIN slip)",
+          "BVN verification letter",
+          "CAC Business Name Certificate (BN-2047831)",
+          "2-year bank statement",
+          "Farm ownership/lease agreement",
+          "Passport photograph",
+          "Utility bill (proof of address)",
+          "Project proposal and business plan",
+          "Cooperative membership certificate"
+        ],
+        "missingDocuments": [],
+        "agentAction": "track-and-follow-up",
+        "preferredLanguage": "bilingual-english-pidgin",
+        "additionalNotes": "Application was submitted in person at the Enugu branch on 10 June 2026. Farmer has not received any update in 20 days. This is her first grant application."
+      },
+      "expectedOutput": {
+        "farmerName": "Chidinma Okafor",
+        "grantName": "NIRSAL Microfinance Bank Agric SME Loan",
+        "agentAction": "track-and-follow-up",
+        "currentStatus": "under-review",
+        "webAppNotification": {
+          "type": "action-required",
+          "title": "Follow-Up Due — No Update After 20 Days",
+          "message": "Your NIRSAL Microfinance Bank Agric SME Loan application (Ref: NIRSAL/ENS/2026/04471) has been under review for 20 days since your in-person submission at the Enugu branch on 10 June 2026. While this is still within the normal 4–8 week processing window, no acknowledgement or update has been received — and it is now time to act! 📋 A formal follow-up email draft, a bilingual WhatsApp message, and a word-for-word phone script have all been prepared for you. Your recommended action today: send the follow-up email to info@nirsal-mfb.com, then call the branch on +2349087654321 tomorrow morning. Your submission deadline remains 31 July 2026 — you still have time, but staying proactive right now protects your application. 🌾",
+          "actionRequired": true,
+          "actionUrl": "/track-and-follow-up",
+          "stage": "monitoring",
+          "timestamp": "2026-06-30T09:15:00Z"
+        },
+        "farmerFacingMessagePrimary": "Chidinma, your application dey move forward! 🌾 E don reach 20 days since you submit your cassava processing project application for NIRSAL Enugu branch on June 10 — Ref: NIRSAL/ENS/2026/04471. Normal processing for this type of loan dey take 4 to 8 weeks, so we still dey within normal window. But since you never receive any acknowledgement or update since submission, e be the right time to follow up now.\n\n👉 Your next step today: Send the formal follow-up email wey AgriGrant AI don prepare to info@nirsal-mfb.com, then call the Enugu branch tomorrow morning on +2349087654321. Always mention your reference number: NIRSAL/ENS/2026/04471. You dey on track — keep pushing! 💪",
+        "emailPayload": {
+          "to": "chidinma.okafor@gmail.com",
+          "subject": "📊 Chidinma Okafor — Follow-Up Update: NIRSAL Microfinance Bank Agric SME Loan Application",
+          "htmlBody": "",
+          "plainTextBody": "",
+          "sendEmail": false,
+          "emailType": "track-and-follow-up"
+        },
+        "agentSummary": "The track-and-follow-up action was executed for Chidinma Okafor's NIRSAL Microfinance Bank Agric SME Loan application (Ref: NIRSAL/ENS/2026/04471). The application was submitted in person at the Enugu branch on 10 June 2026 and has been under review for 20 days as of 30 June 2026, with no acknowledgement or communication received. The urgency level has been assessed as 'Follow-Up Due': while 20 days falls within the standard 4–8 week NIRSAL processing window, the complete absence of any communication warrants structured, multi-channel outreach. Key outputs generated include a formal follow-up email draft addressed to info@nirsal-mfb.com, a bilingual Pidgin/English WhatsApp message, a word-for-word phone call script, a detailed status assessment, and five prioritised next actions with timelines and channels. emailPayload.sendEmail is set to false because urgency is 'Follow-Up Due' rather than 'Urgent.' The pipeline should dispatch the follow-up email on the farmer's behalf today and schedule a phone-call reminder for 1 July 2026.",
+        "technicalAlert": {
+          "triggered": false,
+          "alertLevel": "none",
+          "alertType": "none",
+          "technicalDetails": "",
+          "farmerFacingMessage": "",
+          "autoRetryInMinutes": 0,
+          "requiresDeveloperAction": false,
+          "suggestedFix": ""
+        },
+        "trackingAndFollowUp": {
+          "statusAssessment": "Chidinma Okafor's application for the NIRSAL Microfinance Bank Agric SME Loan (Ref: NIRSAL/ENS/2026/04471) was submitted in person at the NIRSAL Microfinance Bank Enugu branch on 10 June 2026. As of 30 June 2026, the application has been under review for 20 calendar days. Standard processing timelines for NIRSAL Agric SME loans typically range from 4 to 8 weeks (28–56 days); at 20 days, the application remains within the normal early-to-mid review window. However, the complete absence of any acknowledgement of receipt, status notification, or communication from the bank over this period is atypical practice and merits a structured, polite, multi-channel follow-up. All required documents were provided in full at the time of submission; no outstanding items are on record. A proactive follow-up is recommended immediately to confirm document receipt, establish the current review stage, and safeguard the application against any administrative oversight ahead of the 31 July 2026 submission deadline. This is the applicant's first grant experience, making timely reassurance and clear guidance particularly important.",
+          "urgencyLevel": "Follow-Up Due",
+          "followUpEmailDraft": "The Loans Officer\nNIRSAL Microfinance Bank\n14 Ogui Road, Enugu\nEnugu State\n\n30 June 2026\n\nDear Sir/Madam,\n\nRE: FOLLOW-UP ON AGRICULTURAL SME LOAN APPLICATION — REF: NIRSAL/ENS/2026/04471\n\nI write with due respect to formally follow up on the above-referenced Agricultural SME Loan application submitted by the undersigned on 10 June 2026 at your Enugu branch in connection with the NIRSAL Microfinance Bank Agric SME Loan programme.\n\nThe application concerns the project titled \"Expansion of Cassava Processing and Value-Addition Enterprise in Enugu State,\" for which a loan facility of NGN 3,500,000 has been requested. At the time of in-person submission, all required documents were provided in full, including the Completed Application Form, National ID (NIN Slip), BVN Verification Letter, CAC Business Name Certificate (BN-2047831), two-year bank statement, Farm Ownership/Lease Agreement, Passport Photograph, Utility Bill, Project Proposal and Business Plan, and Cooperative Membership Certificate.\n\nAs of today, 30 June 2026, twenty (20) days have elapsed since the initial submission, and the applicant has not yet received any acknowledgement of receipt, request for additional information, or notification regarding the current stage of the application. I respectfully request your assistance in providing an update on the following:\n\n1. Confirmation that all submitted documents have been received and are complete on your system;\n2. The current stage of the application review process;\n3. Whether any additional information or documentation is required from the applicant at this stage; and\n4. The anticipated timeline for a credit decision on this application.\n\nI remain fully available to attend your office, furnish further documentation, or address any queries your team may have at the earliest convenience.\n\nKindly direct your response to:\nName: Chidinma Okafor\nEmail: chidinma.okafor@gmail.com\nPhone: +2348035671294\nApplication Reference: NIRSAL/ENS/2026/04471\n\nI thank you sincerely for your time and attention to this matter and look forward to your prompt response.\n\nYours faithfully,\n\nChidinma Okafor\nApplicant — NIRSAL Microfinance Bank Agric SME Loan\nReference No.: NIRSAL/ENS/2026/04471\nDate: 30 June 2026",
+          "followUpWhatsappMessage": "Good day! 🌾 My name na Chidinma Okafor. I submitted my NIRSAL Microfinance Bank Agric SME Loan application for my cassava processing project in Enugu State on 10 June 2026 — reference number NIRSAL/ENS/2026/04471. E don reach 20 days now and I never receive any acknowledgement or update from una office yet. I just dey follow up politely to ask — is my application still on track? I dey available to provide any extra document or information wey una need at any time. Please, which stage is my application dey now? 🙏 Thank you!",
+          "phoneScriptForFollowUp": "GREETING:\n\"Good morning / Good afternoon. Please, may I speak with someone in the Loans department or the Agricultural Finance unit? My name is Chidinma Okafor and I am calling to follow up on my loan application. My reference number is NIRSAL/ENS/2026/04471.\"\n\n[WHEN CONNECTED TO THE RIGHT PERSON:]\n\"Thank you very much for taking my call. I submitted my application for the NIRSAL Microfinance Bank Agric SME Loan in person at your Enugu branch on the 10th of June 2026 — that is now twenty days ago. I have not yet received any correspondence or acknowledgement from your office, and I would be most grateful for a brief update on the status.\"\n\nQUESTIONS TO ASK:\n1. \"Please, could you confirm that my application documents have been received and are complete on your system?\"\n2. \"Can you tell me the current status or stage of my application review?\"\n3. \"Is there any additional documentation or information required from me at this stage?\"\n4. \"What is the estimated timeline for a decision on this application?\"\n\nIF ASKED TO CALL BACK OR REDIRECTED:\n\"Of course, I completely understand and I appreciate your help. Could I please get a specific date or time that would be best for me to call back? And is there a direct extension or a name I should ask for when I call?\"\n\nCLOSING:\n\"Thank you very much for your assistance. I am very committed to this project and I am fully available to support the process in any way required. My phone number is +234 803 567 1294 and my email address is chidinma.okafor@gmail.com. Please feel free to reach out at any time should anything be needed. Have a wonderful day.\"",
+          "nextActions": [
+            {
+              "action": "Send the prepared formal follow-up email to info@nirsal-mfb.com today, referencing Ref: NIRSAL/ENS/2026/04471, requesting written confirmation of receipt and a status update",
+              "channel": "Email",
+              "timeline": "Today — 30 June 2026"
+            },
+            {
+              "action": "Call NIRSAL Microfinance Bank Enugu branch on +2349087654321 first thing in the morning using the prepared word-for-word phone script to verbally request an application status update",
+              "channel": "Phone",
+              "timeline": "Tomorrow morning — 1 July 2026"
+            },
+            {
+              "action": "If no response is received by phone, send the prepared WhatsApp follow-up message to the NIRSAL contact number to reinforce the inquiry through an additional channel",
+              "channel": "WhatsApp",
+              "timeline": "2 July 2026 (contingent on no phone response)"
+            },
+            {
+              "action": "If no communication is received within 7 days of the first follow-up, visit NIRSAL Microfinance Bank in person at 14 Ogui Road, Enugu, carrying originals and photocopies of all application documents and a printed copy of the follow-up letter",
+              "channel": "In-Person",
+              "timeline": "7–8 July 2026 (if no response to email, phone, or WhatsApp)"
+            },
+            {
+              "action": "Monitor the NIRSAL Microfinance Bank official portal at nmfb.com.ng daily and check chidinma.okafor@gmail.com inbox regularly for any correspondence or document requests from the bank",
+              "channel": "Portal / Email",
+              "timeline": "Daily — from 30 June 2026 until decision received"
+            }
+          ]
+        }
+      },
+      "expectedAgentBehavior": "",
+      "simulationInstructions": "",
+      "simulateInput": false,
+      "inputGenerationInstructions": "",
+      "simulateTools": false,
+      "evalSetId": "4e7f1739-42b3-4b91-839c-cbabc95e84dc",
+      "createdAt": "2026-06-30T01:06:35.611Z",
+      "updatedAt": "2026-06-30T01:06:35.611Z",
+      "source": "firstSuccessfulRun"
+    }
+  ],
+  "modelSettings": [],
+  "createdAt": "2026-06-01T02:07:23.537Z",
+  "updatedAt": "2026-06-30T01:06:35.611Z",
+  "agentMemoryEnabled": false,
+  "agentMemorySettings": [],
+  "lineByLineEvaluation": false
+}
