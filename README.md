@@ -43,7 +43,7 @@ AgriGrant AI is not a single-stakeholder product. It creates compounding value a
 
 ### 🌾 The Farmer (Adebayo)
 * Speaks to the system in conversational English (and, on the roadmap, Hausa/Yoruba/Igbo via on-the-fly translation).
-* Receives a personally-ranked shortlist of grants in under sixty seconds.
+* Receives a personally-ranked shortlist of grants in seconds (exact latency depends on grant-database size and network conditions).
 * Has a full institutional-grade proposal drafted on their behalf.
 * Sees their application physically submitted, with a portal reference number and a screenshot, while they cook dinner.
 * Pays nothing. The economic model is donor-side / fee-on-success, not farmer-fronted.
@@ -54,7 +54,7 @@ AgriGrant AI is not a single-stakeholder product. It creates compounding value a
 * Sees their capital reach the demographic the programme was designed for, not the demographic best-equipped to navigate the form.
 
 ### 🏢 The Programme Administrator (NGO / Federal Ministry)
-* Processes 10× more applicants without expanding headcount.
+* Processes significantly more applicants per administrator, reducing the marginal cost of each new application.
 * Has a defensible audit trail — every Maestro instance, every Action Center decision, every robot run is logged with timestamps and operator identity.
 * Can plug human reviewers into the four built-in HITL checkpoints without writing a line of integration code.
 
@@ -74,10 +74,10 @@ A typical SaaS team would build this as a form on a website. That solves nothing
 | Genuine pause-and-wait checkpoints for human judgment | **Action Center** (`Actions.HITL` blocking tasks) |
 | Extracting structured data from scanned NIN cards, CAC certs, bank statements | **Document Understanding** |
 | Navigating an external grant portal nobody controls | **Unattended Cross-Platform RPA Robot** |
-| Re-usable, parameterised task UI that the farmer's web app can render | **UiPath Apps** (SimpleApprovalApp) |
+| Re-usable, parameterised task UI that the farmer's web app can render | **UiPath Apps** (Grant Selection App, Document Upload (HITL) App, Proposal Review App) |
 | Versioned, audited, multi-tenant deployment | **Orchestrator** + Folder scoping |
 
-This is what we mean by "automation-first": the orchestration, the agents, the human checkpoints, and the bot are all UiPath-native. The Python backend and Next.js frontend are the **thin web envelope** — they don't carry business logic; they carry traffic to and from the platform that does.
+This is what we mean by "automation-first": the orchestration, the agents, the human checkpoints, and the bot are all UiPath-native. The Python backend and Next.js frontend handle user interaction, document storage, chat, and pipeline validation — they serve as the web envelope that ferries traffic to and from the UiPath platform where the core orchestration and automation logic runs.
 
 ---
 
@@ -148,10 +148,10 @@ For a deep technical map of every project in the solution — the 5 Coded Agents
 
 These are the architecture decisions we consciously made and want judges to evaluate:
 
-- **PAT-Gated Action Center Proxy.** The React frontend never holds an Orchestrator credential. All Action Center calls — listing pending tasks, completing them — are proxied through the Python backend, which is the sole holder of the UiPath PAT and OrganizationUnitId. A leaked browser session leaks zero UiPath surface area.
+- **PAT-Gated Action Center Proxy.** The React frontend never holds an Orchestrator credential. All Action Center calls — listing pending tasks, completing them — are proxied through the Python backend, which is the sole holder of the UiPath PAT and OrganizationUnitId. A leaked browser session leaks no direct Orchestrator credentials.
 - **Native HITL Blocking (not fire-and-forget webhooks).** Each `Create App Task` activity in the BPMN genuinely pauses the Maestro instance. Downstream agents cannot run until `CompleteAppTask` is called. Judges can verify the paused-then-resumed transition in Maestro's Instances view — this is what separates a real orchestration from a demo.
-- **`ExternalTag` Multi-Tenant Isolation.** Every HITL task is tagged with the farmer's `jobId`. The backend's `GET /actioncenter/pending?tag=…` is a strict filter — a farmer can absolutely never see another farmer's pending decision.
-- **One App, Four HITL Screens.** A single Action Center app (`SimpleApprovalApp`) carries all four HITLs. Each `Create App Task` sets `taskType` + `payload` as inputs; the React dashboard dispatches to the correct screen based on `taskType`. Less Studio Web sprawl, cleaner separation of concerns: Action Center is the **queue**, the web app is the **renderer**, the Python backend is the **broker**.
+- **`ExternalTag` Multi-Tenant Isolation.** Every HITL task is tagged with the farmer's `jobId`. The backend's `GET /actioncenter/pending?tag=…` is a strict filter — a farmer cannot see another farmer's pending decision.
+- **Three Action Center Apps, Four HITL Checkpoints.** Each human-in-the-loop checkpoint binds to a dedicated Action Center app (**Grant Selection App** for HITL #1, **Document Upload (HITL) App** for HITL #2, **Proposal Review App** for HITL #3 and #4) that blocks the Maestro instance and carries the payload the Next.js dashboard needs to render the correct decision screen. Action Center is the **queue**, the web app is the **renderer**, the Python backend is the **broker**.
 - **Composable Agents, Not a Monolith.** Five separate Coded Agents — each owns one cognitive responsibility (discover, score, extract, draft, follow-up). They can be swapped, A/B-tested, or retrained independently. The Maestro BPMN is the only thing that knows how they connect.
 
 ---
@@ -169,7 +169,7 @@ AgricGrant AI/
 │   └── services/database_service.py  # Supabase persistence
 ├── web/                        # Next.js 14 farmer + specialist dashboard
 │   └── src/app/dashboard/hitl/ # Polls Action Center via backend, 4 screens
-└── UiPath-automation/          # The UiPath solution — 9 projects
+└── UiPath-automation/          # The UiPath solution — 11 projects
     ├── Nigerian AgriGrant Pipeline/      # Maestro BPMN orchestrator
     ├── Grant Discovery & Matching Agent/ # Coded Agent
     ├── Eligibility & Risk Assessment Agent/  # Coded Agent
@@ -177,7 +177,9 @@ AgricGrant AI/
     ├── Proposal Generation Agent/        # Coded Agent
     ├── Submission & Follow-up Agent/     # Coded Agent
     ├── Grant Form Filler Robot/          # Cross-platform RPA bot (35 inputs)
-    ├── SimpleApprovalApp/                # Action Center web app (4 HITLs)
+    ├── Grant Selection App/              # Action Center web app (HITL #1)
+    ├── Document Upload (HITL) App/       # Action Center web app (HITL #2)
+    ├── Proposal Review App/              # Action Center web app (HITL #3)
     └── AgriGrant API/                    # UiPath API project (internal)
 ```
 
@@ -219,8 +221,8 @@ npm run dev
 
 ### 3. UiPath
 - Open `Solution1` in UiPath Studio (Studio Desktop or Studio Web).
-- Publish each of the 9 projects to your Orchestrator tenant.
-- In the **Nigerian AgriGrant Pipeline** (Maestro BPMN), confirm the four `Create App Task` nodes bind to **SimpleApprovalApp** with `ExternalTag = vars.jobId`.
+- Publish each of the 11 projects to your Orchestrator tenant.
+- In the **Nigerian AgriGrant Pipeline** (Maestro BPMN), confirm the four `Create App Task` nodes bind to the correct Action Center apps (**Grant Selection App**, **Document Upload (HITL) App**, **Proposal Review App**) with `ExternalTag = vars.jobId`.
 - No webhook configuration needed — the backend pulls from Orchestrator using a PAT.
 
 ---

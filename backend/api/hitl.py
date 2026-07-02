@@ -82,7 +82,7 @@ def _shape_task(t: Dict[str, Any]) -> Dict[str, Any]:
 
 @router.get("/actioncenter/pending")
 async def list_pending(
-    sessionId: str = Query(..., description="Farmer's sessionId — must match ExternalTag on Maestro's HITL node."),
+    tag: str = Query(..., description="Farmer's jobId — must match ExternalTag on Maestro's HITL node."),
 ):
     """List Action Center tasks waiting on this farmer.
 
@@ -92,7 +92,7 @@ async def list_pending(
     # OData filter: Unassigned/Pending and matching the farmer
     filt = (
         f"(Status eq 'Unassigned' or Status eq 'Pending') "
-        f"and ExternalTag eq '{sessionId}'"
+        f"and ExternalTag eq '{tag}'"
     )
     url = (
         f"{_orch_base()}/odata/Tasks"

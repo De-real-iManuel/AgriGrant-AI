@@ -146,9 +146,18 @@ UiPath-automation/**/.git
 UiPath-automation/**/*.zip
 UiPath-automation/**/*.nupkg
 UiPath-automation/**/._* 
-# Ignore specific large or machine-generated project folders (embedded repo)
-UiPath-automation/Grant Form Filler Robot/
-UiPath-automation/Grant Form Filler Robot/**
+# Grant Form Filler Robot — keep source, only exclude generated artifacts
+UiPath-automation/Grant Form Filler Robot/.local/
+UiPath-automation/Grant Form Filler Robot/project.lock.json
+UiPath-automation/Grant Form Filler Robot/*.nupkg
+UiPath-automation/Grant Form Filler Robot/.entities/
+UiPath-automation/Grant Form Filler Robot/.objects/
+UiPath-automation/Grant Form Filler Robot/.settings/
+UiPath-automation/Grant Form Filler Robot/.templates/
+UiPath-automation/Grant Form Filler Robot/.tmh/
+UiPath-automation/Grant Form Filler Robot/.storage/
+UiPath-automation/Grant Form Filler Robot/.screenshots/
+UiPath-automation/Grant Form Filler Robot/*.log
 
 
 # ══════════════════════════════════════════════════════════════════════════════

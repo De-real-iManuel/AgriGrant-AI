@@ -162,7 +162,7 @@ def _build_trigger_payload(form: FarmerSubmission) -> Dict[str, Any]:
         "submissionPortalUrl": form.submissionPortalUrl or "",
         "currentStatus": form.currentStatus or "pending",
         "agentAction": form.agentAction or "submit_application",
-        "pererredLanguage": form.preferredLanguage or "en",  # matches entry-points.json typo
+        "preferredLanguage": form.preferredLanguage or "en",
 
         # Document paths
         "in_ninDocumentPath": form.ninDocument or "",

@@ -135,23 +135,24 @@ export default function HitlSandboxPage() {
   const [payloadError, setPayloadError] = useState<string | null>(null);
   const [showPayloadEditor, setShowPayloadEditor] = useState(false);
 
+  // ── JOB TRACKING ─────────────────────────────────────────
+  const [jobId, setJobId] = useState<string | null>(null);
+
   // ── PENDING HITL TASKS POLLING ───────────────────────────────
   const [pendingTasks, setPendingTasks] = useState<any[]>([]);
   const previousTasksCountRef = useRef(0);
 
   useEffect(() => {
     const fetchTasks = async () => {
+      if (!jobId) return;
       try {
-        const url = jobId 
-          ? `${BACKEND}/api/hitl/actioncenter/pending?tag=${encodeURIComponent(jobId)}`
-          : `${BACKEND}/api/hitl/actioncenter/pending`;
+        const url = `${BACKEND}/v1/api/hitl/actioncenter/pending?tag=${encodeURIComponent(jobId)}`;
         const res = await fetch(url);
         if (res.ok) {
           const data = await res.json();
           setPendingTasks(data.tasks || []);
           if (data.count > previousTasksCountRef.current && data.tasks.length > 0) {
             toast.info(`New UiPath task requires human input: ${data.tasks[0]?.title || 'Task'}`);
-            // Auto-jump to the right tab when a new HITL task arrives
             const TYPE_TO_TAB: Record<string, number> = {
               'grant-selection': 1,
               'document-topup': 2,
@@ -167,12 +168,9 @@ export default function HitlSandboxPage() {
       } catch (err) {}
     };
     fetchTasks();
-    const iv = setInterval(fetchTasks, 10000); // Poll every 10 seconds
+    const iv = setInterval(fetchTasks, 10000);
     return () => clearInterval(iv);
   }, [jobId]);
-
-  // ── JOB TRACKING ─────────────────────────────────────────
-  const [jobId, setJobId] = useState<string | null>(null);
   const [appRef, setAppRef] = useState<string | null>(null);
   const [sseStatus, setSseStatus] = useState<'idle' | 'connecting' | 'live' | 'error'>('idle');
   const [sseEvents, setSseEvents] = useState<{ type: string; message: string; time: string }[]>([]);
@@ -226,7 +224,7 @@ export default function HitlSandboxPage() {
       // anything that isn't a clean rejection is treated as approval downstream.
       const REJECT_DECISIONS = new Set(['reject', 'close']);
       const action = REJECT_DECISIONS.has(String(decision).toLowerCase()) ? 'Rejected' : 'Approved';
-      const res = await fetch(`${BACKEND}/api/hitl/actioncenter/complete`, {
+      const res = await fetch(`${BACKEND}/v1/api/hitl/actioncenter/complete`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -345,7 +343,7 @@ export default function HitlSandboxPage() {
     if (sseRef.current) sseRef.current.close();
     setSseStatus('connecting');
 
-    const es = new EventSource(`${BACKEND}/api/pipeline/events/${id}`);
+    const es = new EventSource(`${BACKEND}/v1/api/pipeline/events/${id}`);
     sseRef.current = es;
 
     es.onopen = () => setSseStatus('live');
@@ -510,7 +508,7 @@ export default function HitlSandboxPage() {
         preferredLanguage: formData.preferredLanguage?.toLowerCase() === 'en' ? 'english' : (formData.preferredLanguage?.toLowerCase() || 'english'),
       };
 
-      const res = await fetch(`${BACKEND}/api/pipeline/submit`, {
+      const res = await fetch(`${BACKEND}/v1/api/pipeline/submit`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(submission),
